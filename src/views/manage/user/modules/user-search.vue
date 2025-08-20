@@ -35,7 +35,7 @@
       current: 1,
       size: 10,
       status: null,
-      userName: null,
+      username: null,
       userGender: null,
       nickName: null,
       userPhone: null,
@@ -60,8 +60,8 @@
       <NCollapseItem :title="$t('common.search')" name="user-search">
         <NForm ref="formRef" :model="model" :rules="rules" label-placement="left" :label-width="80">
           <NGrid responsive="screen" item-responsive>
-            <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.user.userName')" path="userName" class="pr-24px">
-              <NInput v-model:value="model.userName" :placeholder="$t('page.manage.user.form.userName')" />
+            <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.user.username')" path="username" class="pr-24px">
+              <NInput v-model:value="model.username" :placeholder="$t('page.manage.user.form.username')" />
             </NFormItemGi>
             <NFormItemGi
               span="24 s:12 m:6"

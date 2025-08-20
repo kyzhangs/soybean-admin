@@ -3,11 +3,11 @@ import { alova } from '../request';
 /**
  * Login
  *
- * @param userName User name
+ * @param username Username
  * @param password Password
  */
-export function fetchLogin(userName: string, password: string) {
-  return alova.Post<Api.Auth.LoginToken>('/auth/login', { userName, password });
+export function fetchLogin(username: string, password: string) {
+  return alova.Post<Api.Auth.LoginToken>('/auth/login', { username, password });
 }
 
 /** Get user info */

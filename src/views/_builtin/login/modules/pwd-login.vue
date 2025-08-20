@@ -15,13 +15,13 @@
   const { formRef, validate } = useNaiveForm();
 
   interface FormModel {
-    userName: string;
+    username: string;
     password: string;
   }
 
   const model: FormModel = reactive({
-    userName: 'Soybean',
-    password: '123456'
+    username: 'sysadmin',
+    password: '111111'
   });
 
   const rules = computed<Record<keyof FormModel, App.Global.FormRule[]>>(() => {
@@ -29,14 +29,14 @@
     const { formRules } = useFormRules();
 
     return {
-      userName: formRules.userName,
+      username: formRules.username,
       password: formRules.pwd
     };
   });
 
   async function handleSubmit() {
     await validate();
-    await authStore.login(model.userName, model.password);
+    await authStore.login(model.username, model.password);
   }
 
   type AccountKey = 'super' | 'admin' | 'user';
@@ -44,7 +44,7 @@
   interface Account {
     key: AccountKey;
     label: string;
-    userName: string;
+    username: string;
     password: string;
   }
 
@@ -52,32 +52,32 @@
     {
       key: 'super',
       label: $t('page.login.pwdLogin.superAdmin'),
-      userName: 'Super',
-      password: '123456'
+      username: 'sysadmin',
+      password: '111111'
     },
     {
       key: 'admin',
       label: $t('page.login.pwdLogin.admin'),
-      userName: 'Admin',
-      password: '123456'
+      username: 'admin',
+      password: '111111'
     },
     {
       key: 'user',
       label: $t('page.login.pwdLogin.user'),
-      userName: 'User',
-      password: '123456'
+      username: 'user',
+      password: '111111'
     }
   ]);
 
   async function handleAccountLogin(account: Account) {
-    await authStore.login(account.userName, account.password);
+    await authStore.login(account.username, account.password);
   }
 </script>
 
 <template>
   <NForm ref="formRef" :model="model" :rules="rules" size="large" :show-label="false" @keyup.enter="handleSubmit">
-    <NFormItem path="userName">
-      <NInput v-model:value="model.userName" :placeholder="$t('page.login.common.userNamePlaceholder')" />
+    <NFormItem path="username">
+      <NInput v-model:value="model.username" :placeholder="$t('page.login.common.usernamePlaceholder')" />
     </NFormItem>
     <NFormItem path="password">
       <NInput

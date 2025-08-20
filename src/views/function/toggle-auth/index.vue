@@ -20,7 +20,7 @@
   interface Account {
     key: AccountKey;
     label: string;
-    userName: string;
+    username: string;
     password: string;
   }
 
@@ -28,20 +28,20 @@
     {
       key: 'super',
       label: $t('page.login.pwdLogin.superAdmin'),
-      userName: 'Super',
-      password: '123456'
+      username: 'sysadmin',
+      password: '111111'
     },
     {
       key: 'admin',
       label: $t('page.login.pwdLogin.admin'),
-      userName: 'Admin',
-      password: '123456'
+      username: 'admin',
+      password: '111111'
     },
     {
       key: 'user',
       label: $t('page.login.pwdLogin.user'),
-      userName: 'User',
-      password: '123456'
+      username: 'user',
+      password: '111111'
     }
   ]);
 
@@ -51,7 +51,7 @@
     loginAccount.value = account.key;
 
     startLoading();
-    await authStore.login(account.userName, account.password, false);
+    await authStore.login(account.username, account.password, false);
     tabStore.initTabStore(route);
     endLoading();
     appStore.reloadPage();

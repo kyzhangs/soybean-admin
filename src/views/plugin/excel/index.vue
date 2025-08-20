@@ -14,7 +14,7 @@
     current: 1,
     size: 999,
     status: null,
-    userName: null,
+    username: null,
     userGender: null,
     nickName: null,
     userPhone: null,
@@ -46,8 +46,8 @@
         render: (_, index) => index + 1
       },
       {
-        key: 'userName',
-        title: $t('page.manage.user.userName'),
+        key: 'username',
+        title: $t('page.manage.user.username'),
         align: 'center',
         minWidth: 100
       },
