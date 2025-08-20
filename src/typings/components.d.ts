@@ -51,6 +51,7 @@ declare module 'vue' {
     IconMdiRefresh: typeof import('~icons/mdi/refresh')['default']
     'IconMingcute:zoomInLine': typeof import('~icons/mingcute/zoom-in-line')['default']
     'IconMingcute:zoomOutLine': typeof import('~icons/mingcute/zoom-out-line')['default']
+    IconTooltip: typeof import('./../components/common/icon-tooltip.vue')['default']
     IconUilSearch: typeof import('~icons/uil/search')['default']
     LangSwitch: typeof import('./../components/common/lang-switch.vue')['default']
     LookForward: typeof import('./../components/custom/look-forward.vue')['default']

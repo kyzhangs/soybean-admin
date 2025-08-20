@@ -254,6 +254,7 @@ async function handleSubmit() {
 
   const params = getSubmitParams();
 
+  // eslint-disable-next-line no-console
   console.log('params: ', params);
 
   // request

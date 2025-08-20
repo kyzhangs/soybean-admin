@@ -13,6 +13,7 @@ import { $t } from '@/locales';
 import ConfigProvider from '../../ConfigProvider.vue';
 
 function fetchList(params: any, values: any) {
+  // eslint-disable-next-line no-console
   console.log(params, values);
   return new Promise<{ total: number; list: any[] }>(resolve => {
     setTimeout(() => {
