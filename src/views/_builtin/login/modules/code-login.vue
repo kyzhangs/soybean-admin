@@ -1,42 +1,42 @@
 <script setup lang="ts">
-import { computed, reactive } from 'vue';
-import { useRouterPush } from '@/hooks/common/router';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
-import { useCaptcha } from '@/hooks/business/captcha';
-import { $t } from '@/locales';
+  import { computed, reactive } from 'vue';
+  import { useRouterPush } from '@/hooks/common/router';
+  import { useFormRules, useNaiveForm } from '@/hooks/common/form';
+  import { useCaptcha } from '@/hooks/business/captcha';
+  import { $t } from '@/locales';
 
-defineOptions({
-  name: 'CodeLogin'
-});
+  defineOptions({
+    name: 'CodeLogin'
+  });
 
-const { toggleLoginModule } = useRouterPush();
-const { formRef, validate } = useNaiveForm();
-const { label, isCounting, loading, getCaptcha } = useCaptcha();
+  const { toggleLoginModule } = useRouterPush();
+  const { formRef, validate } = useNaiveForm();
+  const { label, isCounting, loading, getCaptcha } = useCaptcha();
 
-interface FormModel {
-  phone: string;
-  code: string;
-}
+  interface FormModel {
+    phone: string;
+    code: string;
+  }
 
-const model: FormModel = reactive({
-  phone: '',
-  code: ''
-});
+  const model: FormModel = reactive({
+    phone: '',
+    code: ''
+  });
 
-const rules = computed<Record<keyof FormModel, App.Global.FormRule[]>>(() => {
-  const { formRules } = useFormRules();
+  const rules = computed<Record<keyof FormModel, App.Global.FormRule[]>>(() => {
+    const { formRules } = useFormRules();
 
-  return {
-    phone: formRules.phone,
-    code: formRules.code
-  };
-});
+    return {
+      phone: formRules.phone,
+      code: formRules.code
+    };
+  });
 
-async function handleSubmit() {
-  await validate();
-  // request
-  window.$message?.success($t('page.login.common.validateSuccess'));
-}
+  async function handleSubmit() {
+    await validate();
+    // request
+    window.$message?.success($t('page.login.common.validateSuccess'));
+  }
 </script>
 
 <template>

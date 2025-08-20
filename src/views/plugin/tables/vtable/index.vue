@@ -1,228 +1,228 @@
 <script setup lang="tsx">
-import { computed, onMounted, ref } from 'vue';
-import {
-  Group,
-  Image,
-  ListColumn,
-  ListTable,
-  Menu,
-  PivotChart,
-  PivotColumnDimension,
-  PivotCorner,
-  PivotIndicator,
-  PivotRowDimension,
-  PivotTable,
-  Tag,
-  Text,
-  VTable,
-  registerChartModule
-} from '@visactor/vue-vtable';
-import VChart from '@visactor/vchart';
-import { useThemeStore } from '@/store/modules/theme';
-import { customListRecords, listTableRecords, pivotChartColumns, pivotChartIndicators, pivotChartRows } from './data';
+  import { computed, onMounted, ref } from 'vue';
+  import {
+    Group,
+    Image,
+    ListColumn,
+    ListTable,
+    Menu,
+    PivotChart,
+    PivotColumnDimension,
+    PivotCorner,
+    PivotIndicator,
+    PivotRowDimension,
+    PivotTable,
+    Tag,
+    Text,
+    VTable,
+    registerChartModule
+  } from '@visactor/vue-vtable';
+  import VChart from '@visactor/vchart';
+  import { useThemeStore } from '@/store/modules/theme';
+  import { customListRecords, listTableRecords, pivotChartColumns, pivotChartIndicators, pivotChartRows } from './data';
 
-registerChartModule('vchart', VChart);
-const titleColorPool = ['#3370ff', '#34c724', '#ff9f1a', '#ff4050', '#1f2329'];
+  registerChartModule('vchart', VChart);
+  const titleColorPool = ['#3370ff', '#34c724', '#ff9f1a', '#ff4050', '#1f2329'];
 
-const themeStore = useThemeStore();
+  const themeStore = useThemeStore();
 
-// list table
-const listTableRef = ref(null);
-const listOptions = computed(() => {
-  const options = {
-    theme: themeStore.darkMode ? VTable.themes.DARK : VTable.themes.DEFAULT
-  };
-  return options;
-});
-const listRecords = ref<Record<string, string | number>[]>(listTableRecords);
+  // list table
+  const listTableRef = ref(null);
+  const listOptions = computed(() => {
+    const options = {
+      theme: themeStore.darkMode ? VTable.themes.DARK : VTable.themes.DEFAULT
+    };
+    return options;
+  });
+  const listRecords = ref<Record<string, string | number>[]>(listTableRecords);
 
-// group table
-const groupTableRef = ref(null);
-const groupOptions = computed(() => {
-  const options = {
-    groupBy: ['Category', 'Sub-Category'],
-    theme: (themeStore.darkMode ? VTable.themes.DARK : VTable.themes.DEFAULT).extends({
-      groupTitleStyle: {
-        fontWeight: 'bold',
-        bgColor: (args: any) => {
-          const { col, row, table } = args;
-          const index = table.getGroupTitleLevel(col, row);
-          if (index !== undefined) {
-            return titleColorPool[index % titleColorPool.length] as string;
+  // group table
+  const groupTableRef = ref(null);
+  const groupOptions = computed(() => {
+    const options = {
+      groupBy: ['Category', 'Sub-Category'],
+      theme: (themeStore.darkMode ? VTable.themes.DARK : VTable.themes.DEFAULT).extends({
+        groupTitleStyle: {
+          fontWeight: 'bold',
+          bgColor: (args: any) => {
+            const { col, row, table } = args;
+            const index = table.getGroupTitleLevel(col, row);
+            if (index !== undefined) {
+              return titleColorPool[index % titleColorPool.length] as string;
+            }
+            return 'white';
           }
-          return 'white';
         }
-      }
-    })
-  };
-  return options;
-});
-const groupRecords = ref<Record<string, string | number>[]>(listTableRecords);
+      })
+    };
+    return options;
+  });
+  const groupRecords = ref<Record<string, string | number>[]>(listTableRecords);
 
-// pivot table
-const pivotTableRef = ref(null);
-const pivotTableOptions = computed(() => {
-  return {
-    tooltip: {
-      isShowOverflowTextTooltip: true
-    },
-    dataConfig: {
-      sortRules: [
-        {
-          sortField: 'Category',
-          sortBy: ['Office Supplies', 'Technology', 'Furniture']
-        }
-      ]
-    },
-    widthMode: 'standard',
-    theme: themeStore.darkMode ? VTable.themes.DARK : VTable.themes.DEFAULT,
-    emptyTip: {
-      text: 'no data records'
-    }
-  };
-});
-const pivotTableIndicators = ref([
-  {
-    indicatorKey: 'Quantity',
-    title: 'Quantity',
-    width: 'auto',
-    showSort: false,
-    headerStyle: { fontWeight: 'normal' },
-    style: {
-      padding: [16, 28, 16, 28],
-      color(args: any) {
-        return args.dataValue >= 0 ? 'black' : 'red';
+  // pivot table
+  const pivotTableRef = ref(null);
+  const pivotTableOptions = computed(() => {
+    return {
+      tooltip: {
+        isShowOverflowTextTooltip: true
+      },
+      dataConfig: {
+        sortRules: [
+          {
+            sortField: 'Category',
+            sortBy: ['Office Supplies', 'Technology', 'Furniture']
+          }
+        ]
+      },
+      widthMode: 'standard',
+      theme: themeStore.darkMode ? VTable.themes.DARK : VTable.themes.DEFAULT,
+      emptyTip: {
+        text: 'no data records'
       }
-    }
-  },
-  {
-    indicatorKey: 'Sales',
-    title: 'Sales',
-    width: 'auto',
-    showSort: false,
-    headerStyle: { fontWeight: 'normal' },
-    format: (rec: string) => `$${Number(rec).toFixed(2)}`,
-    style: {
-      padding: [16, 28, 16, 28],
-      color(args: any) {
-        return args.dataValue >= 0 ? 'black' : 'red';
-      }
-    }
-  },
-  {
-    indicatorKey: 'Profit',
-    title: 'Profit',
-    width: 'auto',
-    showSort: false,
-    headerStyle: { fontWeight: 'normal' },
-    format: (rec: string) => `$${Number(rec).toFixed(2)}`,
-    style: {
-      padding: [16, 28, 16, 28],
-      color(args: any) {
-        return args.dataValue >= 0 ? 'black' : 'red';
-      }
-    }
-  }
-]);
-const pivotTableRows = ref([
-  {
-    dimensionKey: 'City',
-    title: 'City',
-    headerStyle: { textStick: true },
-    width: 'auto'
-  }
-]);
-const pivotTableRecords = ref([]);
-
-// pivot chart
-const pivotChartRef = ref(null);
-const pivotChartOptions = computed(() => {
-  return {
-    rows: pivotChartRows,
-    columns: pivotChartColumns,
-    indicators: pivotChartIndicators,
-    indicatorsAsCol: false,
-    defaultRowHeight: 200,
-    defaultHeaderRowHeight: 50,
-    defaultColWidth: 280,
-    defaultHeaderColWidth: 100,
-    indicatorTitle: '指标',
-    autoWrapText: true,
-    corner: {
-      titleOnDimension: 'row',
-      headerStyle: { autoWrapText: true }
-    },
-    legends: {
-      orient: 'bottom',
-      type: 'discrete',
-      data: [
-        { label: 'Consumer-Quantity', shape: { fill: '#2E62F1', symbolType: 'circle' } },
-        { label: 'Consumer-Quantity', shape: { fill: '#4DC36A', symbolType: 'square' } },
-        { label: 'Home Office-Quantity', shape: { fill: '#FF8406', symbolType: 'square' } },
-        { label: 'Consumer-Sales', shape: { fill: '#FFCC00', symbolType: 'square' } },
-        { label: 'Consumer-Sales', shape: { fill: '#4F44CF', symbolType: 'square' } },
-        { label: 'Home Office-Sales', shape: { fill: '#5AC8FA', symbolType: 'square' } },
-        { label: 'Consumer-Profit', shape: { fill: '#003A8C', symbolType: 'square' } },
-        { label: 'Consumer-Profit', shape: { fill: '#B08AE2', symbolType: 'square' } },
-        { label: 'Home Office-Profit', shape: { fill: '#FF6341', symbolType: 'square' } }
-      ]
-    },
-    theme: (themeStore.darkMode ? VTable.themes.DARK : VTable.themes.DEFAULT).extends({
-      bodyStyle: { borderColor: 'gray', borderLineWidth: [1, 0, 0, 1] },
-      headerStyle: { borderColor: 'gray', borderLineWidth: [0, 0, 1, 1], hover: { cellBgColor: '#CCE0FF' } },
-      rowHeaderStyle: { borderColor: 'gray', borderLineWidth: [1, 1, 0, 0], hover: { cellBgColor: '#CCE0FF' } },
-      cornerHeaderStyle: { borderColor: 'gray', borderLineWidth: [0, 1, 1, 0], hover: { cellBgColor: '' } },
-      cornerRightTopCellStyle: { borderColor: 'gray', borderLineWidth: [0, 0, 1, 1], hover: { cellBgColor: '' } },
-      cornerLeftBottomCellStyle: { borderColor: 'gray', borderLineWidth: [1, 1, 0, 0], hover: { cellBgColor: '' } },
-      cornerRightBottomCellStyle: { borderColor: 'gray', borderLineWidth: [1, 0, 0, 1], hover: { cellBgColor: '' } },
-      rightFrozenStyle: { borderColor: 'gray', borderLineWidth: [1, 0, 1, 1], hover: { cellBgColor: '' } },
-      bottomFrozenStyle: { borderColor: 'gray', borderLineWidth: [1, 1, 0, 1], hover: { cellBgColor: '' } },
-      selectionStyle: { cellBgColor: '', cellBorderColor: '' },
-      frameStyle: { borderLineWidth: 0 }
-    }),
-    emptyTip: {
-      text: 'no data records'
-    }
-  };
-});
-const pivotChartRecords = ref({} as any);
-const handleLegendItemClick = (args: { value: any }) => {
-  (pivotChartRef?.value as any)?.vTableInstance.updateFilterRules([
+    };
+  });
+  const pivotTableIndicators = ref([
     {
-      filterKey: 'Segment-Indicator',
-      filteredValues: args.value
+      indicatorKey: 'Quantity',
+      title: 'Quantity',
+      width: 'auto',
+      showSort: false,
+      headerStyle: { fontWeight: 'normal' },
+      style: {
+        padding: [16, 28, 16, 28],
+        color(args: any) {
+          return args.dataValue >= 0 ? 'black' : 'red';
+        }
+      }
+    },
+    {
+      indicatorKey: 'Sales',
+      title: 'Sales',
+      width: 'auto',
+      showSort: false,
+      headerStyle: { fontWeight: 'normal' },
+      format: (rec: string) => `$${Number(rec).toFixed(2)}`,
+      style: {
+        padding: [16, 28, 16, 28],
+        color(args: any) {
+          return args.dataValue >= 0 ? 'black' : 'red';
+        }
+      }
+    },
+    {
+      indicatorKey: 'Profit',
+      title: 'Profit',
+      width: 'auto',
+      showSort: false,
+      headerStyle: { fontWeight: 'normal' },
+      format: (rec: string) => `$${Number(rec).toFixed(2)}`,
+      style: {
+        padding: [16, 28, 16, 28],
+        color(args: any) {
+          return args.dataValue >= 0 ? 'black' : 'red';
+        }
+      }
     }
   ]);
-};
+  const pivotTableRows = ref([
+    {
+      dimensionKey: 'City',
+      title: 'City',
+      headerStyle: { textStick: true },
+      width: 'auto'
+    }
+  ]);
+  const pivotTableRecords = ref([]);
 
-// custom layout list table
-const customLayoutListTableRef = ref(null);
-const customLayoutListTableOptions = computed(() => {
-  return {
-    defaultRowHeight: 80,
-    theme: themeStore.darkMode ? VTable.themes.DARK : VTable.themes.DEFAULT
+  // pivot chart
+  const pivotChartRef = ref(null);
+  const pivotChartOptions = computed(() => {
+    return {
+      rows: pivotChartRows,
+      columns: pivotChartColumns,
+      indicators: pivotChartIndicators,
+      indicatorsAsCol: false,
+      defaultRowHeight: 200,
+      defaultHeaderRowHeight: 50,
+      defaultColWidth: 280,
+      defaultHeaderColWidth: 100,
+      indicatorTitle: '指标',
+      autoWrapText: true,
+      corner: {
+        titleOnDimension: 'row',
+        headerStyle: { autoWrapText: true }
+      },
+      legends: {
+        orient: 'bottom',
+        type: 'discrete',
+        data: [
+          { label: 'Consumer-Quantity', shape: { fill: '#2E62F1', symbolType: 'circle' } },
+          { label: 'Consumer-Quantity', shape: { fill: '#4DC36A', symbolType: 'square' } },
+          { label: 'Home Office-Quantity', shape: { fill: '#FF8406', symbolType: 'square' } },
+          { label: 'Consumer-Sales', shape: { fill: '#FFCC00', symbolType: 'square' } },
+          { label: 'Consumer-Sales', shape: { fill: '#4F44CF', symbolType: 'square' } },
+          { label: 'Home Office-Sales', shape: { fill: '#5AC8FA', symbolType: 'square' } },
+          { label: 'Consumer-Profit', shape: { fill: '#003A8C', symbolType: 'square' } },
+          { label: 'Consumer-Profit', shape: { fill: '#B08AE2', symbolType: 'square' } },
+          { label: 'Home Office-Profit', shape: { fill: '#FF6341', symbolType: 'square' } }
+        ]
+      },
+      theme: (themeStore.darkMode ? VTable.themes.DARK : VTable.themes.DEFAULT).extends({
+        bodyStyle: { borderColor: 'gray', borderLineWidth: [1, 0, 0, 1] },
+        headerStyle: { borderColor: 'gray', borderLineWidth: [0, 0, 1, 1], hover: { cellBgColor: '#CCE0FF' } },
+        rowHeaderStyle: { borderColor: 'gray', borderLineWidth: [1, 1, 0, 0], hover: { cellBgColor: '#CCE0FF' } },
+        cornerHeaderStyle: { borderColor: 'gray', borderLineWidth: [0, 1, 1, 0], hover: { cellBgColor: '' } },
+        cornerRightTopCellStyle: { borderColor: 'gray', borderLineWidth: [0, 0, 1, 1], hover: { cellBgColor: '' } },
+        cornerLeftBottomCellStyle: { borderColor: 'gray', borderLineWidth: [1, 1, 0, 0], hover: { cellBgColor: '' } },
+        cornerRightBottomCellStyle: { borderColor: 'gray', borderLineWidth: [1, 0, 0, 1], hover: { cellBgColor: '' } },
+        rightFrozenStyle: { borderColor: 'gray', borderLineWidth: [1, 0, 1, 1], hover: { cellBgColor: '' } },
+        bottomFrozenStyle: { borderColor: 'gray', borderLineWidth: [1, 1, 0, 1], hover: { cellBgColor: '' } },
+        selectionStyle: { cellBgColor: '', cellBorderColor: '' },
+        frameStyle: { borderLineWidth: 0 }
+      }),
+      emptyTip: {
+        text: 'no data records'
+      }
+    };
+  });
+  const pivotChartRecords = ref({} as any);
+  const handleLegendItemClick = (args: { value: any }) => {
+    (pivotChartRef?.value as any)?.vTableInstance.updateFilterRules([
+      {
+        filterKey: 'Segment-Indicator',
+        filteredValues: args.value
+      }
+    ]);
   };
-});
-const customLayoutListTableRecords = ref(customListRecords);
-const customLayoutListTableColumnStyle = ref({ fontFamily: 'Arial', fontSize: 12, fontWeight: 'bold' });
 
-onMounted(() => {
-  // pivot tablt records
-  fetch('https://lf9-dp-fe-cms-tos.byteorg.com/obj/bit-cloud/VTable/North_American_Superstore_Pivot_data.json')
-    .then(res => res.json())
-    .then(jsonData => {
-      // update record
-      pivotTableRecords.value = jsonData;
-    });
+  // custom layout list table
+  const customLayoutListTableRef = ref(null);
+  const customLayoutListTableOptions = computed(() => {
+    return {
+      defaultRowHeight: 80,
+      theme: themeStore.darkMode ? VTable.themes.DARK : VTable.themes.DEFAULT
+    };
+  });
+  const customLayoutListTableRecords = ref(customListRecords);
+  const customLayoutListTableColumnStyle = ref({ fontFamily: 'Arial', fontSize: 12, fontWeight: 'bold' });
 
-  // pivot chart records
-  fetch('https://lf9-dp-fe-cms-tos.byteorg.com/obj/bit-cloud/VTable/North_American_Superstore_Pivot_Chart_data.json')
-    .then(res => res.json())
-    .then(data => {
-      // update record
-      pivotChartRecords.value = data;
-    });
-});
+  onMounted(() => {
+    // pivot tablt records
+    fetch('https://lf9-dp-fe-cms-tos.byteorg.com/obj/bit-cloud/VTable/North_American_Superstore_Pivot_data.json')
+      .then(res => res.json())
+      .then(jsonData => {
+        // update record
+        pivotTableRecords.value = jsonData;
+      });
+
+    // pivot chart records
+    fetch('https://lf9-dp-fe-cms-tos.byteorg.com/obj/bit-cloud/VTable/North_American_Superstore_Pivot_Chart_data.json')
+      .then(res => res.json())
+      .then(data => {
+        // update record
+        pivotChartRecords.value = data;
+      });
+  });
 </script>
 
 <template>

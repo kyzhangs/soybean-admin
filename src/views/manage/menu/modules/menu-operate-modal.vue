@@ -1,283 +1,283 @@
 <script setup lang="tsx">
-import { computed, ref, watch } from 'vue';
-import type { SelectOption } from 'naive-ui';
-import { enableStatusOptions, menuIconTypeOptions, menuTypeOptions } from '@/constants/business';
-import { fetchGetAllRoles } from '@/service/api';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
-import { getLocalIcons } from '@/utils/icon';
-import { $t } from '@/locales';
-import SvgIcon from '@/components/custom/svg-icon.vue';
-import {
-  getLayoutAndPage,
-  getPathParamFromRoutePath,
-  getRoutePathByRouteName,
-  getRoutePathWithParam,
-  transformLayoutAndPageToComponent
-} from './shared';
+  import { computed, ref, watch } from 'vue';
+  import type { SelectOption } from 'naive-ui';
+  import { enableStatusOptions, menuIconTypeOptions, menuTypeOptions } from '@/constants/business';
+  import { fetchGetAllRoles } from '@/service/api';
+  import { useFormRules, useNaiveForm } from '@/hooks/common/form';
+  import { getLocalIcons } from '@/utils/icon';
+  import { $t } from '@/locales';
+  import SvgIcon from '@/components/custom/svg-icon.vue';
+  import {
+    getLayoutAndPage,
+    getPathParamFromRoutePath,
+    getRoutePathByRouteName,
+    getRoutePathWithParam,
+    transformLayoutAndPageToComponent
+  } from './shared';
 
-defineOptions({
-  name: 'MenuOperateModal'
-});
+  defineOptions({
+    name: 'MenuOperateModal'
+  });
 
-export type OperateType = NaiveUI.TableOperateType | 'addChild';
+  export type OperateType = NaiveUI.TableOperateType | 'addChild';
 
-interface Props {
-  /** the type of operation */
-  operateType: OperateType;
-  /** the edit menu data or the parent menu data when adding a child menu */
-  rowData?: Api.SystemManage.Menu | null;
-  /** all pages */
-  allPages: string[];
-}
-
-const props = defineProps<Props>();
-
-interface Emits {
-  (e: 'submitted'): void;
-}
-
-const emit = defineEmits<Emits>();
-
-const visible = defineModel<boolean>('visible', {
-  default: false
-});
-
-const { formRef, validate, restoreValidation } = useNaiveForm();
-const { defaultRequiredRule } = useFormRules();
-
-const title = computed(() => {
-  const titles: Record<OperateType, string> = {
-    add: $t('page.manage.menu.addMenu'),
-    addChild: $t('page.manage.menu.addChildMenu'),
-    edit: $t('page.manage.menu.editMenu')
-  };
-  return titles[props.operateType];
-});
-
-type Model = Pick<
-  Api.SystemManage.Menu,
-  | 'menuType'
-  | 'menuName'
-  | 'routeName'
-  | 'routePath'
-  | 'component'
-  | 'order'
-  | 'i18nKey'
-  | 'icon'
-  | 'iconType'
-  | 'status'
-  | 'parentId'
-  | 'keepAlive'
-  | 'constant'
-  | 'href'
-  | 'hideInMenu'
-  | 'activeMenu'
-  | 'multiTab'
-  | 'fixedIndexInTab'
-> & {
-  query: NonNullable<Api.SystemManage.Menu['query']>;
-  buttons: NonNullable<Api.SystemManage.Menu['buttons']>;
-  layout: string;
-  page: string;
-  pathParam: string;
-};
-
-const model = ref(createDefaultModel());
-
-function createDefaultModel(): Model {
-  return {
-    menuType: '1',
-    menuName: '',
-    routeName: '',
-    routePath: '',
-    pathParam: '',
-    component: '',
-    layout: '',
-    page: '',
-    i18nKey: null,
-    icon: '',
-    iconType: '1',
-    parentId: 0,
-    status: '1',
-    keepAlive: false,
-    constant: false,
-    order: 0,
-    href: null,
-    hideInMenu: false,
-    activeMenu: null,
-    multiTab: false,
-    fixedIndexInTab: null,
-    query: [],
-    buttons: []
-  };
-}
-
-type RuleKey = Extract<keyof Model, 'menuName' | 'status' | 'routeName' | 'routePath'>;
-
-const rules: Record<RuleKey, App.Global.FormRule> = {
-  menuName: defaultRequiredRule,
-  status: defaultRequiredRule,
-  routeName: defaultRequiredRule,
-  routePath: defaultRequiredRule
-};
-
-const disabledMenuType = computed(() => props.operateType === 'edit');
-
-const localIcons = getLocalIcons();
-const localIconOptions = localIcons.map<SelectOption>(item => ({
-  label: () => (
-    <div class="flex-y-center gap-16px">
-      <SvgIcon localIcon={item} class="text-icon" />
-      <span>{item}</span>
-    </div>
-  ),
-  value: item
-}));
-
-const showLayout = computed(() => model.value.parentId === 0);
-
-const showPage = computed(() => model.value.menuType === '2');
-
-const pageOptions = computed(() => {
-  const allPages = [...props.allPages];
-
-  if (model.value.routeName && !allPages.includes(model.value.routeName)) {
-    allPages.unshift(model.value.routeName);
+  interface Props {
+    /** the type of operation */
+    operateType: OperateType;
+    /** the edit menu data or the parent menu data when adding a child menu */
+    rowData?: Api.SystemManage.Menu | null;
+    /** all pages */
+    allPages: string[];
   }
 
-  const opts: CommonType.Option[] = allPages.map(page => ({
-    label: page,
-    value: page
+  const props = defineProps<Props>();
+
+  interface Emits {
+    (e: 'submitted'): void;
+  }
+
+  const emit = defineEmits<Emits>();
+
+  const visible = defineModel<boolean>('visible', {
+    default: false
+  });
+
+  const { formRef, validate, restoreValidation } = useNaiveForm();
+  const { defaultRequiredRule } = useFormRules();
+
+  const title = computed(() => {
+    const titles: Record<OperateType, string> = {
+      add: $t('page.manage.menu.addMenu'),
+      addChild: $t('page.manage.menu.addChildMenu'),
+      edit: $t('page.manage.menu.editMenu')
+    };
+    return titles[props.operateType];
+  });
+
+  type Model = Pick<
+    Api.SystemManage.Menu,
+    | 'menuType'
+    | 'menuName'
+    | 'routeName'
+    | 'routePath'
+    | 'component'
+    | 'order'
+    | 'i18nKey'
+    | 'icon'
+    | 'iconType'
+    | 'status'
+    | 'parentId'
+    | 'keepAlive'
+    | 'constant'
+    | 'href'
+    | 'hideInMenu'
+    | 'activeMenu'
+    | 'multiTab'
+    | 'fixedIndexInTab'
+  > & {
+    query: NonNullable<Api.SystemManage.Menu['query']>;
+    buttons: NonNullable<Api.SystemManage.Menu['buttons']>;
+    layout: string;
+    page: string;
+    pathParam: string;
+  };
+
+  const model = ref(createDefaultModel());
+
+  function createDefaultModel(): Model {
+    return {
+      menuType: '1',
+      menuName: '',
+      routeName: '',
+      routePath: '',
+      pathParam: '',
+      component: '',
+      layout: '',
+      page: '',
+      i18nKey: null,
+      icon: '',
+      iconType: '1',
+      parentId: 0,
+      status: '1',
+      keepAlive: false,
+      constant: false,
+      order: 0,
+      href: null,
+      hideInMenu: false,
+      activeMenu: null,
+      multiTab: false,
+      fixedIndexInTab: null,
+      query: [],
+      buttons: []
+    };
+  }
+
+  type RuleKey = Extract<keyof Model, 'menuName' | 'status' | 'routeName' | 'routePath'>;
+
+  const rules: Record<RuleKey, App.Global.FormRule> = {
+    menuName: defaultRequiredRule,
+    status: defaultRequiredRule,
+    routeName: defaultRequiredRule,
+    routePath: defaultRequiredRule
+  };
+
+  const disabledMenuType = computed(() => props.operateType === 'edit');
+
+  const localIcons = getLocalIcons();
+  const localIconOptions = localIcons.map<SelectOption>(item => ({
+    label: () => (
+      <div class="flex-y-center gap-16px">
+        <SvgIcon localIcon={item} class="text-icon" />
+        <span>{item}</span>
+      </div>
+    ),
+    value: item
   }));
 
-  return opts;
-});
+  const showLayout = computed(() => model.value.parentId === 0);
 
-const layoutOptions: CommonType.Option[] = [
-  {
-    label: 'base',
-    value: 'base'
-  },
-  {
-    label: 'blank',
-    value: 'blank'
-  }
-];
+  const showPage = computed(() => model.value.menuType === '2');
 
-/** the enabled role options */
-const roleOptions = ref<CommonType.Option<string>[]>([]);
+  const pageOptions = computed(() => {
+    const allPages = [...props.allPages];
 
-async function getRoleOptions() {
-  const { error, data } = await fetchGetAllRoles();
+    if (model.value.routeName && !allPages.includes(model.value.routeName)) {
+      allPages.unshift(model.value.routeName);
+    }
 
-  if (!error) {
-    const options = data.map(item => ({
-      label: item.roleName,
-      value: item.roleCode
+    const opts: CommonType.Option[] = allPages.map(page => ({
+      label: page,
+      value: page
     }));
 
-    roleOptions.value = [...options];
+    return opts;
+  });
+
+  const layoutOptions: CommonType.Option[] = [
+    {
+      label: 'base',
+      value: 'base'
+    },
+    {
+      label: 'blank',
+      value: 'blank'
+    }
+  ];
+
+  /** the enabled role options */
+  const roleOptions = ref<CommonType.Option<string>[]>([]);
+
+  async function getRoleOptions() {
+    const { error, data } = await fetchGetAllRoles();
+
+    if (!error) {
+      const options = data.map(item => ({
+        label: item.roleName,
+        value: item.roleCode
+      }));
+
+      roleOptions.value = [...options];
+    }
   }
-}
 
-function handleInitModel() {
-  model.value = createDefaultModel();
+  function handleInitModel() {
+    model.value = createDefaultModel();
 
-  if (!props.rowData) return;
+    if (!props.rowData) return;
 
-  if (props.operateType === 'addChild') {
-    const { id } = props.rowData;
+    if (props.operateType === 'addChild') {
+      const { id } = props.rowData;
 
-    Object.assign(model.value, { parentId: id });
+      Object.assign(model.value, { parentId: id });
+    }
+
+    if (props.operateType === 'edit') {
+      const { component, ...rest } = props.rowData;
+
+      const { layout, page } = getLayoutAndPage(component);
+      const { path, param } = getPathParamFromRoutePath(rest.routePath);
+
+      Object.assign(model.value, rest, { layout, page, routePath: path, pathParam: param });
+    }
+
+    if (!model.value.query) {
+      model.value.query = [];
+    }
+    if (!model.value.buttons) {
+      model.value.buttons = [];
+    }
   }
 
-  if (props.operateType === 'edit') {
-    const { component, ...rest } = props.rowData;
-
-    const { layout, page } = getLayoutAndPage(component);
-    const { path, param } = getPathParamFromRoutePath(rest.routePath);
-
-    Object.assign(model.value, rest, { layout, page, routePath: path, pathParam: param });
+  function closeDrawer() {
+    visible.value = false;
   }
 
-  if (!model.value.query) {
-    model.value.query = [];
+  function handleUpdateRoutePathByRouteName() {
+    if (model.value.routeName) {
+      model.value.routePath = getRoutePathByRouteName(model.value.routeName);
+    } else {
+      model.value.routePath = '';
+    }
   }
-  if (!model.value.buttons) {
-    model.value.buttons = [];
+
+  function handleUpdateI18nKeyByRouteName() {
+    if (model.value.routeName) {
+      model.value.i18nKey = `route.${model.value.routeName}` as App.I18n.I18nKey;
+    } else {
+      model.value.i18nKey = null;
+    }
   }
-}
 
-function closeDrawer() {
-  visible.value = false;
-}
+  function handleCreateButton() {
+    const buttonItem: Api.SystemManage.MenuButton = {
+      code: '',
+      desc: ''
+    };
 
-function handleUpdateRoutePathByRouteName() {
-  if (model.value.routeName) {
-    model.value.routePath = getRoutePathByRouteName(model.value.routeName);
-  } else {
-    model.value.routePath = '';
+    return buttonItem;
   }
-}
 
-function handleUpdateI18nKeyByRouteName() {
-  if (model.value.routeName) {
-    model.value.i18nKey = `route.${model.value.routeName}` as App.I18n.I18nKey;
-  } else {
-    model.value.i18nKey = null;
+  function getSubmitParams() {
+    const { layout, page, pathParam, ...params } = model.value;
+
+    const component = transformLayoutAndPageToComponent(layout, page);
+    const routePath = getRoutePathWithParam(model.value.routePath, pathParam);
+
+    params.component = component;
+    params.routePath = routePath;
+
+    return params;
   }
-}
 
-function handleCreateButton() {
-  const buttonItem: Api.SystemManage.MenuButton = {
-    code: '',
-    desc: ''
-  };
+  async function handleSubmit() {
+    await validate();
 
-  return buttonItem;
-}
+    const params = getSubmitParams();
 
-function getSubmitParams() {
-  const { layout, page, pathParam, ...params } = model.value;
+    // eslint-disable-next-line no-console
+    console.log('params: ', params);
 
-  const component = transformLayoutAndPageToComponent(layout, page);
-  const routePath = getRoutePathWithParam(model.value.routePath, pathParam);
-
-  params.component = component;
-  params.routePath = routePath;
-
-  return params;
-}
-
-async function handleSubmit() {
-  await validate();
-
-  const params = getSubmitParams();
-
-  // eslint-disable-next-line no-console
-  console.log('params: ', params);
-
-  // request
-  window.$message?.success($t('common.updateSuccess'));
-  closeDrawer();
-  emit('submitted');
-}
-
-watch(visible, () => {
-  if (visible.value) {
-    handleInitModel();
-    restoreValidation();
-    getRoleOptions();
+    // request
+    window.$message?.success($t('common.updateSuccess'));
+    closeDrawer();
+    emit('submitted');
   }
-});
 
-watch(
-  () => model.value.routeName,
-  () => {
-    handleUpdateRoutePathByRouteName();
-    handleUpdateI18nKeyByRouteName();
-  }
-);
+  watch(visible, () => {
+    if (visible.value) {
+      handleInitModel();
+      restoreValidation();
+      getRoleOptions();
+    }
+  });
+
+  watch(
+    () => model.value.routeName,
+    () => {
+      handleUpdateRoutePathByRouteName();
+      handleUpdateI18nKeyByRouteName();
+    }
+  );
 </script>
 
 <template>

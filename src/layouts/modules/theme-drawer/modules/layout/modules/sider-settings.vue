@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useThemeStore } from '@/store/modules/theme';
-import { $t } from '@/locales';
-import SettingItem from '../../../components/setting-item.vue';
+  import { computed } from 'vue';
+  import { useThemeStore } from '@/store/modules/theme';
+  import { $t } from '@/locales';
+  import SettingItem from '../../../components/setting-item.vue';
 
-defineOptions({
-  name: 'SiderSettings'
-});
+  defineOptions({
+    name: 'SiderSettings'
+  });
 
-const themeStore = useThemeStore();
+  const themeStore = useThemeStore();
 
-const layoutMode = computed(() => themeStore.layout.mode);
-const isMixLayoutMode = computed(() => layoutMode.value.includes('mix') || layoutMode.value.includes('hybrid'));
+  const layoutMode = computed(() => themeStore.layout.mode);
+  const isMixLayoutMode = computed(() => layoutMode.value.includes('mix') || layoutMode.value.includes('hybrid'));
 </script>
 
 <template>
@@ -36,18 +36,18 @@ const isMixLayoutMode = computed(() => layoutMode.value.includes('mix') || layou
 </template>
 
 <style scoped>
-.setting-list-move,
-.setting-list-enter-active,
-.setting-list-leave-active {
-  --uno: transition-all-300;
-}
+  .setting-list-move,
+  .setting-list-enter-active,
+  .setting-list-leave-active {
+    --uno: transition-all-300;
+  }
 
-.setting-list-enter-from,
-.setting-list-leave-to {
-  --uno: opacity-0 -translate-x-30px;
-}
+  .setting-list-enter-from,
+  .setting-list-leave-to {
+    --uno: opacity-0 -translate-x-30px;
+  }
 
-.setting-list-leave-active {
-  --uno: absolute;
-}
+  .setting-list-leave-active {
+    --uno: absolute;
+  }
 </style>

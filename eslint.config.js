@@ -1,7 +1,13 @@
 import { defineConfig } from '@soybeanjs/eslint-config';
 
 export default defineConfig(
-  { vue: true, unocss: true },
+  {
+    vue: true,
+    unocss: true,
+    prettierRules: {
+      vueIndentScriptAndStyle: true
+    }
+  },
   {
     rules: {
       'vue/multi-word-component-names': [

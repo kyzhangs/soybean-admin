@@ -1,57 +1,57 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { enableStatusOptions, userGenderOptions } from '@/constants/business';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
-import { translateOptions } from '@/utils/common';
-import { $t } from '@/locales';
+  import { computed } from 'vue';
+  import { enableStatusOptions, userGenderOptions } from '@/constants/business';
+  import { useFormRules, useNaiveForm } from '@/hooks/common/form';
+  import { translateOptions } from '@/utils/common';
+  import { $t } from '@/locales';
 
-defineOptions({
-  name: 'UserSearch'
-});
+  defineOptions({
+    name: 'UserSearch'
+  });
 
-interface Emits {
-  (e: 'search'): void;
-}
+  interface Emits {
+    (e: 'search'): void;
+  }
 
-const emit = defineEmits<Emits>();
+  const emit = defineEmits<Emits>();
 
-const { formRef, validate, restoreValidation } = useNaiveForm();
+  const { formRef, validate, restoreValidation } = useNaiveForm();
 
-const model = defineModel<Api.SystemManage.UserSearchParams>('model', { required: true });
+  const model = defineModel<Api.SystemManage.UserSearchParams>('model', { required: true });
 
-type RuleKey = Extract<keyof Api.SystemManage.UserSearchParams, 'userEmail' | 'userPhone'>;
+  type RuleKey = Extract<keyof Api.SystemManage.UserSearchParams, 'userEmail' | 'userPhone'>;
 
-const rules = computed<Record<RuleKey, App.Global.FormRule>>(() => {
-  const { patternRules } = useFormRules(); // inside computed to make locale reactive
+  const rules = computed<Record<RuleKey, App.Global.FormRule>>(() => {
+    const { patternRules } = useFormRules(); // inside computed to make locale reactive
 
-  return {
-    userEmail: patternRules.email,
-    userPhone: patternRules.phone
-  };
-});
+    return {
+      userEmail: patternRules.email,
+      userPhone: patternRules.phone
+    };
+  });
 
-function resetModel() {
-  model.value = {
-    current: 1,
-    size: 10,
-    status: null,
-    userName: null,
-    userGender: null,
-    nickName: null,
-    userPhone: null,
-    userEmail: null
-  };
-}
+  function resetModel() {
+    model.value = {
+      current: 1,
+      size: 10,
+      status: null,
+      userName: null,
+      userGender: null,
+      nickName: null,
+      userPhone: null,
+      userEmail: null
+    };
+  }
 
-async function reset() {
-  await restoreValidation();
-  resetModel();
-}
+  async function reset() {
+    await restoreValidation();
+    resetModel();
+  }
 
-async function search() {
-  await validate();
-  emit('search');
-}
+  async function search() {
+    await validate();
+    emit('search');
+  }
 </script>
 
 <template>

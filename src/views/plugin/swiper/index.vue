@@ -1,88 +1,95 @@
 <script setup lang="ts">
-import SwiperCore from 'swiper';
-import { Navigation, Pagination } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import type { SwiperOptions } from 'swiper/types';
+  import SwiperCore from 'swiper';
+  import { Navigation, Pagination } from 'swiper/modules';
+  import { Swiper, SwiperSlide } from 'swiper/vue';
+  import type { SwiperOptions } from 'swiper/types';
 
-type SwiperExampleOptions = Pick<
-  SwiperOptions,
-  'navigation' | 'pagination' | 'scrollbar' | 'slidesPerView' | 'slidesPerGroup' | 'spaceBetween' | 'direction' | 'loop'
->;
+  type SwiperExampleOptions = Pick<
+    SwiperOptions,
+    | 'navigation'
+    | 'pagination'
+    | 'scrollbar'
+    | 'slidesPerView'
+    | 'slidesPerGroup'
+    | 'spaceBetween'
+    | 'direction'
+    | 'loop'
+  >;
 
-interface SwiperExample {
-  id: number;
-  label: string;
-  options: Partial<SwiperExampleOptions>;
-}
-
-SwiperCore.use([Navigation, Pagination]);
-
-const swiperExample: SwiperExample[] = [
-  { id: 0, label: 'Default', options: {} },
-  {
-    id: 1,
-    label: 'Navigation',
-    options: {
-      navigation: true
-    }
-  },
-  {
-    id: 2,
-    label: 'Pagination',
-    options: {
-      pagination: true
-    }
-  },
-  {
-    id: 3,
-    label: 'Pagination dynamic',
-    options: {
-      pagination: { dynamicBullets: true }
-    }
-  },
-  {
-    id: 4,
-    label: 'Pagination progress',
-    options: {
-      navigation: true,
-      pagination: {
-        type: 'progressbar'
-      }
-    }
-  },
-  {
-    id: 5,
-    label: 'Pagination fraction',
-    options: {
-      navigation: true,
-      pagination: {
-        type: 'fraction'
-      }
-    }
-  },
-  {
-    id: 6,
-    label: 'Slides per view',
-    options: {
-      pagination: {
-        clickable: true
-      },
-      slidesPerView: 3,
-      spaceBetween: 30
-    }
-  },
-  {
-    id: 7,
-    label: 'Infinite loop',
-    options: {
-      navigation: true,
-      pagination: {
-        clickable: true
-      },
-      loop: true
-    }
+  interface SwiperExample {
+    id: number;
+    label: string;
+    options: Partial<SwiperExampleOptions>;
   }
-];
+
+  SwiperCore.use([Navigation, Pagination]);
+
+  const swiperExample: SwiperExample[] = [
+    { id: 0, label: 'Default', options: {} },
+    {
+      id: 1,
+      label: 'Navigation',
+      options: {
+        navigation: true
+      }
+    },
+    {
+      id: 2,
+      label: 'Pagination',
+      options: {
+        pagination: true
+      }
+    },
+    {
+      id: 3,
+      label: 'Pagination dynamic',
+      options: {
+        pagination: { dynamicBullets: true }
+      }
+    },
+    {
+      id: 4,
+      label: 'Pagination progress',
+      options: {
+        navigation: true,
+        pagination: {
+          type: 'progressbar'
+        }
+      }
+    },
+    {
+      id: 5,
+      label: 'Pagination fraction',
+      options: {
+        navigation: true,
+        pagination: {
+          type: 'fraction'
+        }
+      }
+    },
+    {
+      id: 6,
+      label: 'Slides per view',
+      options: {
+        pagination: {
+          clickable: true
+        },
+        slidesPerView: 3,
+        spaceBetween: 30
+      }
+    },
+    {
+      id: 7,
+      label: 'Infinite loop',
+      options: {
+        navigation: true,
+        pagination: {
+          clickable: true
+        },
+        loop: true
+      }
+    }
+  ];
 </script>
 
 <template>

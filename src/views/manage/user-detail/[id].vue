@@ -1,10 +1,10 @@
 <!-- eslint-disable vue/no-unused-properties -->
 <script setup lang="ts">
-interface Props {
-  id: string;
-}
+  interface Props {
+    id: string;
+  }
 
-defineProps<Props>();
+  defineProps<Props>();
 </script>
 
 <template>

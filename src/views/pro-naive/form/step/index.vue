@@ -1,40 +1,40 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useMessage } from 'naive-ui';
-import { createProForm } from 'pro-naive-ui';
-import { $t } from '@/locales';
-import ConfigProvider from '../../ConfigProvider.vue';
+  import { ref } from 'vue';
+  import { useMessage } from 'naive-ui';
+  import { createProForm } from 'pro-naive-ui';
+  import { $t } from '@/locales';
+  import ConfigProvider from '../../ConfigProvider.vue';
 
-const step = ref(1);
-const submiting = ref(false);
-const message = useMessage();
-const form = createProForm();
+  const step = ref(1);
+  const submiting = ref(false);
+  const message = useMessage();
+  const form = createProForm();
 
-const form2 = createProForm({
-  onSubmit: async values => {
-    submiting.value = true;
-    await delay(1000);
-    message.success(
-      JSON.stringify({
-        ...form.values.value,
-        ...values
-      })
-    );
-    submiting.value = false;
+  const form2 = createProForm({
+    onSubmit: async values => {
+      submiting.value = true;
+      await delay(1000);
+      message.success(
+        JSON.stringify({
+          ...form.values.value,
+          ...values
+        })
+      );
+      submiting.value = false;
+    }
+  });
+
+  function toNextStepAfterValidated() {
+    form.validate()?.then(() => {
+      step.value += 1;
+    });
   }
-});
 
-function toNextStepAfterValidated() {
-  form.validate()?.then(() => {
-    step.value += 1;
-  });
-}
-
-function delay(time: number) {
-  return new Promise<void>(resolve => {
-    setTimeout(resolve, time);
-  });
-}
+  function delay(time: number) {
+    return new Promise<void>(resolve => {
+      setTimeout(resolve, time);
+    });
+  }
 </script>
 
 <template>

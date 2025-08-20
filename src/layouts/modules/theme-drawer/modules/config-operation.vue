@@ -1,48 +1,48 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import Clipboard from 'clipboard';
-import { useThemeStore } from '@/store/modules/theme';
-import { $t } from '@/locales';
+  import { computed, onMounted, ref } from 'vue';
+  import Clipboard from 'clipboard';
+  import { useThemeStore } from '@/store/modules/theme';
+  import { $t } from '@/locales';
 
-defineOptions({
-  name: 'ConfigOperation'
-});
-
-const themeStore = useThemeStore();
-
-const domRef = ref<HTMLElement | null>(null);
-
-function initClipboard() {
-  if (!domRef.value) return;
-
-  const clipboard = new Clipboard(domRef.value);
-
-  clipboard.on('success', () => {
-    window.$message?.success($t('theme.configOperation.copySuccessMsg'));
+  defineOptions({
+    name: 'ConfigOperation'
   });
-}
 
-function getClipboardText() {
-  const reg = /"\w+":/g;
+  const themeStore = useThemeStore();
 
-  const json = themeStore.settingsJson;
+  const domRef = ref<HTMLElement | null>(null);
 
-  return json.replace(reg, match => match.replace(/"/g, ''));
-}
+  function initClipboard() {
+    if (!domRef.value) return;
 
-function handleReset() {
-  themeStore.resetStore();
+    const clipboard = new Clipboard(domRef.value);
 
-  setTimeout(() => {
-    window.$message?.success($t('theme.configOperation.resetSuccessMsg'));
-  }, 50);
-}
+    clipboard.on('success', () => {
+      window.$message?.success($t('theme.configOperation.copySuccessMsg'));
+    });
+  }
 
-const dataClipboardText = computed(() => getClipboardText());
+  function getClipboardText() {
+    const reg = /"\w+":/g;
 
-onMounted(() => {
-  initClipboard();
-});
+    const json = themeStore.settingsJson;
+
+    return json.replace(reg, match => match.replace(/"/g, ''));
+  }
+
+  function handleReset() {
+    themeStore.resetStore();
+
+    setTimeout(() => {
+      window.$message?.success($t('theme.configOperation.resetSuccessMsg'));
+    }, 50);
+  }
+
+  const dataClipboardText = computed(() => getClipboardText());
+
+  onMounted(() => {
+    initClipboard();
+  });
 </script>
 
 <template>

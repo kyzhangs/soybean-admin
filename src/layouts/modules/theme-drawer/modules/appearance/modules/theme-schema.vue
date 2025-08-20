@@ -1,35 +1,35 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { themeSchemaRecord } from '@/constants/app';
-import { useThemeStore } from '@/store/modules/theme';
-import { $t } from '@/locales';
-import SettingItem from '../../../components/setting-item.vue';
+  import { computed } from 'vue';
+  import { themeSchemaRecord } from '@/constants/app';
+  import { useThemeStore } from '@/store/modules/theme';
+  import { $t } from '@/locales';
+  import SettingItem from '../../../components/setting-item.vue';
 
-defineOptions({
-  name: 'ThemeSchema'
-});
+  defineOptions({
+    name: 'ThemeSchema'
+  });
 
-const themeStore = useThemeStore();
+  const themeStore = useThemeStore();
 
-const icons: Record<UnionKey.ThemeScheme, string> = {
-  light: 'material-symbols:sunny',
-  dark: 'material-symbols:nightlight-rounded',
-  auto: 'material-symbols:hdr-auto'
-};
+  const icons: Record<UnionKey.ThemeScheme, string> = {
+    light: 'material-symbols:sunny',
+    dark: 'material-symbols:nightlight-rounded',
+    auto: 'material-symbols:hdr-auto'
+  };
 
-function handleSegmentChange(value: string | number) {
-  themeStore.setThemeScheme(value as UnionKey.ThemeScheme);
-}
+  function handleSegmentChange(value: string | number) {
+    themeStore.setThemeScheme(value as UnionKey.ThemeScheme);
+  }
 
-function handleGrayscaleChange(value: boolean) {
-  themeStore.setGrayscale(value);
-}
+  function handleGrayscaleChange(value: boolean) {
+    themeStore.setGrayscale(value);
+  }
 
-function handleColourWeaknessChange(value: boolean) {
-  themeStore.setColourWeakness(value);
-}
+  function handleColourWeaknessChange(value: boolean) {
+    themeStore.setColourWeakness(value);
+  }
 
-const showSiderInverted = computed(() => !themeStore.darkMode && themeStore.layout.mode.includes('vertical'));
+  const showSiderInverted = computed(() => !themeStore.darkMode && themeStore.layout.mode.includes('vertical'));
 </script>
 
 <template>
@@ -64,13 +64,13 @@ const showSiderInverted = computed(() => !themeStore.darkMode && themeStore.layo
 </template>
 
 <style scoped>
-.sider-inverted-enter-active,
-.sider-inverted-leave-active {
-  --uno: h-22px transition-all-300;
-}
+  .sider-inverted-enter-active,
+  .sider-inverted-leave-active {
+    --uno: h-22px transition-all-300;
+  }
 
-.sider-inverted-enter-from,
-.sider-inverted-leave-to {
-  --uno: translate-x-20px opacity-0 h-0;
-}
+  .sider-inverted-enter-from,
+  .sider-inverted-leave-to {
+    --uno: translate-x-20px opacity-0 h-0;
+  }
 </style>

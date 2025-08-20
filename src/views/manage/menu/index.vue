@@ -1,234 +1,234 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
-import type { Ref } from 'vue';
-import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { useBoolean } from '@sa/hooks';
-import { yesOrNoRecord } from '@/constants/common';
-import { enableStatusRecord, menuTypeRecord } from '@/constants/business';
-import { fetchGetAllPages, fetchGetMenuList } from '@/service/api';
-import { useAppStore } from '@/store/modules/app';
-import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
-import { $t } from '@/locales';
-import SvgIcon from '@/components/custom/svg-icon.vue';
-import MenuOperateModal, { type OperateType } from './modules/menu-operate-modal.vue';
+  import { ref } from 'vue';
+  import type { Ref } from 'vue';
+  import { NButton, NPopconfirm, NTag } from 'naive-ui';
+  import { useBoolean } from '@sa/hooks';
+  import { yesOrNoRecord } from '@/constants/common';
+  import { enableStatusRecord, menuTypeRecord } from '@/constants/business';
+  import { fetchGetAllPages, fetchGetMenuList } from '@/service/api';
+  import { useAppStore } from '@/store/modules/app';
+  import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+  import { $t } from '@/locales';
+  import SvgIcon from '@/components/custom/svg-icon.vue';
+  import MenuOperateModal, { type OperateType } from './modules/menu-operate-modal.vue';
 
-const appStore = useAppStore();
+  const appStore = useAppStore();
 
-const { bool: visible, setTrue: openModal } = useBoolean();
+  const { bool: visible, setTrue: openModal } = useBoolean();
 
-const wrapperRef = ref<HTMLElement | null>(null);
+  const wrapperRef = ref<HTMLElement | null>(null);
 
-const { columns, columnChecks, data, loading, pagination, getData, getDataByPage } = useNaivePaginatedTable({
-  api: () => fetchGetMenuList(),
-  transform: response => defaultTransform(response),
-  columns: () => [
-    {
-      type: 'selection',
-      align: 'center',
-      width: 48
-    },
-    {
-      key: 'id',
-      title: $t('page.manage.menu.id'),
-      align: 'center'
-    },
-    {
-      key: 'menuType',
-      title: $t('page.manage.menu.menuType'),
-      align: 'center',
-      width: 80,
-      render: row => {
-        const tagMap: Record<Api.SystemManage.MenuType, NaiveUI.ThemeColor> = {
-          1: 'default',
-          2: 'primary'
-        };
+  const { columns, columnChecks, data, loading, pagination, getData, getDataByPage } = useNaivePaginatedTable({
+    api: () => fetchGetMenuList(),
+    transform: response => defaultTransform(response),
+    columns: () => [
+      {
+        type: 'selection',
+        align: 'center',
+        width: 48
+      },
+      {
+        key: 'id',
+        title: $t('page.manage.menu.id'),
+        align: 'center'
+      },
+      {
+        key: 'menuType',
+        title: $t('page.manage.menu.menuType'),
+        align: 'center',
+        width: 80,
+        render: row => {
+          const tagMap: Record<Api.SystemManage.MenuType, NaiveUI.ThemeColor> = {
+            1: 'default',
+            2: 'primary'
+          };
 
-        const label = $t(menuTypeRecord[row.menuType]);
+          const label = $t(menuTypeRecord[row.menuType]);
 
-        return <NTag type={tagMap[row.menuType]}>{label}</NTag>;
-      }
-    },
-    {
-      key: 'menuName',
-      title: $t('page.manage.menu.menuName'),
-      align: 'center',
-      minWidth: 120,
-      render: row => {
-        const { i18nKey, menuName } = row;
-
-        const label = i18nKey ? $t(i18nKey) : menuName;
-
-        return <span>{label}</span>;
-      }
-    },
-    {
-      key: 'icon',
-      title: $t('page.manage.menu.icon'),
-      align: 'center',
-      width: 60,
-      render: row => {
-        const icon = row.iconType === '1' ? row.icon : undefined;
-
-        const localIcon = row.iconType === '2' ? row.icon : undefined;
-
-        return (
-          <div class="flex-center">
-            <SvgIcon icon={icon} localIcon={localIcon} class="text-icon" />
-          </div>
-        );
-      }
-    },
-    {
-      key: 'routeName',
-      title: $t('page.manage.menu.routeName'),
-      align: 'center',
-      minWidth: 120
-    },
-    {
-      key: 'routePath',
-      title: $t('page.manage.menu.routePath'),
-      align: 'center',
-      minWidth: 120
-    },
-    {
-      key: 'status',
-      title: $t('page.manage.menu.menuStatus'),
-      align: 'center',
-      width: 80,
-      render: row => {
-        if (row.status === null) {
-          return null;
+          return <NTag type={tagMap[row.menuType]}>{label}</NTag>;
         }
+      },
+      {
+        key: 'menuName',
+        title: $t('page.manage.menu.menuName'),
+        align: 'center',
+        minWidth: 120,
+        render: row => {
+          const { i18nKey, menuName } = row;
 
-        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
-          1: 'success',
-          2: 'warning'
-        };
+          const label = i18nKey ? $t(i18nKey) : menuName;
 
-        const label = $t(enableStatusRecord[row.status]);
+          return <span>{label}</span>;
+        }
+      },
+      {
+        key: 'icon',
+        title: $t('page.manage.menu.icon'),
+        align: 'center',
+        width: 60,
+        render: row => {
+          const icon = row.iconType === '1' ? row.icon : undefined;
 
-        return <NTag type={tagMap[row.status]}>{label}</NTag>;
-      }
-    },
-    {
-      key: 'hideInMenu',
-      title: $t('page.manage.menu.hideInMenu'),
-      align: 'center',
-      width: 80,
-      render: row => {
-        const hide: CommonType.YesOrNo = row.hideInMenu ? 'Y' : 'N';
+          const localIcon = row.iconType === '2' ? row.icon : undefined;
 
-        const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
-          Y: 'error',
-          N: 'default'
-        };
+          return (
+            <div class="flex-center">
+              <SvgIcon icon={icon} localIcon={localIcon} class="text-icon" />
+            </div>
+          );
+        }
+      },
+      {
+        key: 'routeName',
+        title: $t('page.manage.menu.routeName'),
+        align: 'center',
+        minWidth: 120
+      },
+      {
+        key: 'routePath',
+        title: $t('page.manage.menu.routePath'),
+        align: 'center',
+        minWidth: 120
+      },
+      {
+        key: 'status',
+        title: $t('page.manage.menu.menuStatus'),
+        align: 'center',
+        width: 80,
+        render: row => {
+          if (row.status === null) {
+            return null;
+          }
 
-        const label = $t(yesOrNoRecord[hide]);
+          const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
+            1: 'success',
+            2: 'warning'
+          };
 
-        return <NTag type={tagMap[hide]}>{label}</NTag>;
-      }
-    },
-    {
-      key: 'parentId',
-      title: $t('page.manage.menu.parentId'),
-      width: 90,
-      align: 'center'
-    },
-    {
-      key: 'order',
-      title: $t('page.manage.menu.order'),
-      align: 'center',
-      width: 60
-    },
-    {
-      key: 'operate',
-      title: $t('common.operate'),
-      align: 'center',
-      width: 230,
-      render: row => (
-        <div class="flex-center justify-end gap-8px">
-          {row.menuType === '1' && (
-            <NButton type="primary" ghost size="small" onClick={() => handleAddChildMenu(row)}>
-              {$t('page.manage.menu.addChildMenu')}
+          const label = $t(enableStatusRecord[row.status]);
+
+          return <NTag type={tagMap[row.status]}>{label}</NTag>;
+        }
+      },
+      {
+        key: 'hideInMenu',
+        title: $t('page.manage.menu.hideInMenu'),
+        align: 'center',
+        width: 80,
+        render: row => {
+          const hide: CommonType.YesOrNo = row.hideInMenu ? 'Y' : 'N';
+
+          const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
+            Y: 'error',
+            N: 'default'
+          };
+
+          const label = $t(yesOrNoRecord[hide]);
+
+          return <NTag type={tagMap[hide]}>{label}</NTag>;
+        }
+      },
+      {
+        key: 'parentId',
+        title: $t('page.manage.menu.parentId'),
+        width: 90,
+        align: 'center'
+      },
+      {
+        key: 'order',
+        title: $t('page.manage.menu.order'),
+        align: 'center',
+        width: 60
+      },
+      {
+        key: 'operate',
+        title: $t('common.operate'),
+        align: 'center',
+        width: 230,
+        render: row => (
+          <div class="flex-center justify-end gap-8px">
+            {row.menuType === '1' && (
+              <NButton type="primary" ghost size="small" onClick={() => handleAddChildMenu(row)}>
+                {$t('page.manage.menu.addChildMenu')}
+              </NButton>
+            )}
+            <NButton type="primary" ghost size="small" onClick={() => handleEdit(row)}>
+              {$t('common.edit')}
             </NButton>
-          )}
-          <NButton type="primary" ghost size="small" onClick={() => handleEdit(row)}>
-            {$t('common.edit')}
-          </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
-            {{
-              default: () => $t('common.confirmDelete'),
-              trigger: () => (
-                <NButton type="error" ghost size="small">
-                  {$t('common.delete')}
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
-        </div>
-      )
-    }
-  ]
-});
+            <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+              {{
+                default: () => $t('common.confirmDelete'),
+                trigger: () => (
+                  <NButton type="error" ghost size="small">
+                    {$t('common.delete')}
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          </div>
+        )
+      }
+    ]
+  });
 
-const { checkedRowKeys, onBatchDeleted, onDeleted } = useTableOperate(data, 'id', getData);
+  const { checkedRowKeys, onBatchDeleted, onDeleted } = useTableOperate(data, 'id', getData);
 
-const operateType = ref<OperateType>('add');
+  const operateType = ref<OperateType>('add');
 
-function handleAdd() {
-  operateType.value = 'add';
-  openModal();
-}
+  function handleAdd() {
+    operateType.value = 'add';
+    openModal();
+  }
 
-async function handleBatchDelete() {
-  // request
+  async function handleBatchDelete() {
+    // request
 
-  // eslint-disable-next-line no-console
-  console.log(checkedRowKeys.value);
+    // eslint-disable-next-line no-console
+    console.log(checkedRowKeys.value);
 
-  onBatchDeleted();
-}
+    onBatchDeleted();
+  }
 
-function handleDelete(id: number) {
-  // request
+  function handleDelete(id: number) {
+    // request
 
-  // eslint-disable-next-line no-console
-  console.log(id);
+    // eslint-disable-next-line no-console
+    console.log(id);
 
-  onDeleted();
-}
+    onDeleted();
+  }
 
-/** the edit menu data or the parent menu data when adding a child menu */
-const editingData: Ref<Api.SystemManage.Menu | null> = ref(null);
+  /** the edit menu data or the parent menu data when adding a child menu */
+  const editingData: Ref<Api.SystemManage.Menu | null> = ref(null);
 
-function handleEdit(item: Api.SystemManage.Menu) {
-  operateType.value = 'edit';
-  editingData.value = { ...item };
+  function handleEdit(item: Api.SystemManage.Menu) {
+    operateType.value = 'edit';
+    editingData.value = { ...item };
 
-  openModal();
-}
+    openModal();
+  }
 
-function handleAddChildMenu(item: Api.SystemManage.Menu) {
-  operateType.value = 'addChild';
+  function handleAddChildMenu(item: Api.SystemManage.Menu) {
+    operateType.value = 'addChild';
 
-  editingData.value = { ...item };
+    editingData.value = { ...item };
 
-  openModal();
-}
+    openModal();
+  }
 
-const allPages = ref<string[]>([]);
+  const allPages = ref<string[]>([]);
 
-async function getAllPages() {
-  const { data: pages } = await fetchGetAllPages();
-  allPages.value = pages || [];
-}
+  async function getAllPages() {
+    const { data: pages } = await fetchGetAllPages();
+    allPages.value = pages || [];
+  }
 
-function init() {
-  getAllPages();
-}
+  function init() {
+    getAllPages();
+  }
 
-// init
-init();
+  // init
+  init();
 </script>
 
 <template>

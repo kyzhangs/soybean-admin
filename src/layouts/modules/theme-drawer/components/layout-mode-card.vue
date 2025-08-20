@@ -1,75 +1,75 @@
 <script setup lang="ts">
-import type { PopoverPlacement } from 'naive-ui';
-import { themeLayoutModeRecord } from '@/constants/app';
-import { $t } from '@/locales';
+  import type { PopoverPlacement } from 'naive-ui';
+  import { themeLayoutModeRecord } from '@/constants/app';
+  import { $t } from '@/locales';
 
-defineOptions({
-  name: 'LayoutModeCard'
-});
+  defineOptions({
+    name: 'LayoutModeCard'
+  });
 
-interface Props {
-  /** Layout mode */
-  mode: UnionKey.ThemeLayoutMode;
-  /** Disabled */
-  disabled?: boolean;
-}
-
-const props = defineProps<Props>();
-
-interface Emits {
-  /** Layout mode change */
-  (e: 'update:mode', mode: UnionKey.ThemeLayoutMode): void;
-}
-
-const emit = defineEmits<Emits>();
-
-type LayoutConfig = Record<
-  UnionKey.ThemeLayoutMode,
-  {
-    placement: PopoverPlacement;
-    menuClass: string;
-    mainClass: string;
+  interface Props {
+    /** Layout mode */
+    mode: UnionKey.ThemeLayoutMode;
+    /** Disabled */
+    disabled?: boolean;
   }
->;
 
-const layoutConfig: LayoutConfig = {
-  vertical: {
-    placement: 'bottom',
-    menuClass: 'w-1/3 h-full',
-    mainClass: 'w-2/3 h-3/4'
-  },
-  'vertical-mix': {
-    placement: 'bottom',
-    menuClass: 'w-1/4 h-full',
-    mainClass: 'w-2/3 h-3/4'
-  },
-  'vertical-hybrid-header-first': {
-    placement: 'bottom',
-    menuClass: 'w-1/4 h-full',
-    mainClass: 'w-2/3 h-3/4'
-  },
-  horizontal: {
-    placement: 'bottom',
-    menuClass: 'w-full h-1/4',
-    mainClass: 'w-full h-3/4'
-  },
-  'top-hybrid-sidebar-first': {
-    placement: 'bottom',
-    menuClass: 'w-full h-1/4',
-    mainClass: 'w-2/3 h-3/4'
-  },
-  'top-hybrid-header-first': {
-    placement: 'bottom',
-    menuClass: 'w-full h-1/4',
-    mainClass: 'w-2/3 h-3/4'
+  const props = defineProps<Props>();
+
+  interface Emits {
+    /** Layout mode change */
+    (e: 'update:mode', mode: UnionKey.ThemeLayoutMode): void;
   }
-};
 
-function handleChangeMode(mode: UnionKey.ThemeLayoutMode) {
-  if (props.disabled) return;
+  const emit = defineEmits<Emits>();
 
-  emit('update:mode', mode);
-}
+  type LayoutConfig = Record<
+    UnionKey.ThemeLayoutMode,
+    {
+      placement: PopoverPlacement;
+      menuClass: string;
+      mainClass: string;
+    }
+  >;
+
+  const layoutConfig: LayoutConfig = {
+    vertical: {
+      placement: 'bottom',
+      menuClass: 'w-1/3 h-full',
+      mainClass: 'w-2/3 h-3/4'
+    },
+    'vertical-mix': {
+      placement: 'bottom',
+      menuClass: 'w-1/4 h-full',
+      mainClass: 'w-2/3 h-3/4'
+    },
+    'vertical-hybrid-header-first': {
+      placement: 'bottom',
+      menuClass: 'w-1/4 h-full',
+      mainClass: 'w-2/3 h-3/4'
+    },
+    horizontal: {
+      placement: 'bottom',
+      menuClass: 'w-full h-1/4',
+      mainClass: 'w-full h-3/4'
+    },
+    'top-hybrid-sidebar-first': {
+      placement: 'bottom',
+      menuClass: 'w-full h-1/4',
+      mainClass: 'w-2/3 h-3/4'
+    },
+    'top-hybrid-header-first': {
+      placement: 'bottom',
+      menuClass: 'w-full h-1/4',
+      mainClass: 'w-2/3 h-3/4'
+    }
+  };
+
+  function handleChangeMode(mode: UnionKey.ThemeLayoutMode) {
+    if (props.disabled) return;
+
+    emit('update:mode', mode);
+  }
 </script>
 
 <template>

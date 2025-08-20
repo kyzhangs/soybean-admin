@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import ThemeSchema from './modules/theme-schema.vue';
-import ThemeColor from './modules/theme-color.vue';
+  import ThemeSchema from './modules/theme-schema.vue';
+  import ThemeColor from './modules/theme-color.vue';
 
-defineOptions({
-  name: 'AppearanceSettings'
-});
+  defineOptions({
+    name: 'AppearanceSettings'
+  });
 </script>
 
 <template>

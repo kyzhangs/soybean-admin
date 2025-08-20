@@ -1,59 +1,59 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useMessage } from 'naive-ui';
-import { createProForm, zhCN } from 'pro-naive-ui';
-import { $t } from '@/locales';
-import ConfigProvider from '../../ConfigProvider.vue';
+  import { ref } from 'vue';
+  import { useMessage } from 'naive-ui';
+  import { createProForm, zhCN } from 'pro-naive-ui';
+  import { $t } from '@/locales';
+  import ConfigProvider from '../../ConfigProvider.vue';
 
-const submiting = ref(false);
-const message = useMessage();
+  const submiting = ref(false);
+  const message = useMessage();
 
-const form = createProForm({
-  initialValues: {
-    attributes: [
-      {
-        name: $t('page.proNaive.form.basic.color'),
-        items: [
-          { name: $t('page.proNaive.form.basic.specificationColorRed') },
-          { name: $t('page.proNaive.form.basic.specificationColorOrange') }
-        ]
-      }
-    ]
-  },
-  onReset: () => {
-    message.success('reset success');
-  },
-  onSubmit: async values => {
-    submiting.value = true;
-    await delay(1000);
-    message.success(JSON.stringify(values));
-    submiting.value = false;
-  }
-});
-
-function delay(time: number) {
-  return new Promise<void>(resolve => {
-    setTimeout(resolve, time);
+  const form = createProForm({
+    initialValues: {
+      attributes: [
+        {
+          name: $t('page.proNaive.form.basic.color'),
+          items: [
+            { name: $t('page.proNaive.form.basic.specificationColorRed') },
+            { name: $t('page.proNaive.form.basic.specificationColorOrange') }
+          ]
+        }
+      ]
+    },
+    onReset: () => {
+      message.success('reset success');
+    },
+    onSubmit: async values => {
+      submiting.value = true;
+      await delay(1000);
+      message.success(JSON.stringify(values));
+      submiting.value = false;
+    }
   });
-}
 
-function fillValues() {
-  const values = {
-    appName: $t('page.proNaive.form.basic.appName'),
-    appStatus: 0,
-    responseDate: Date.now()
-  };
-  // 方式一：直接修改 form.values.value
-  // form.values.value.appName = '应用名称';
-  // form.values.value.appStatus = 0;
-  // form.values.value.responseDate = Date.now();
+  function delay(time: number) {
+    return new Promise<void>(resolve => {
+      setTimeout(resolve, time);
+    });
+  }
 
-  // 方式二：使用 Object.assign
-  Object.assign(form.values.value, values);
+  function fillValues() {
+    const values = {
+      appName: $t('page.proNaive.form.basic.appName'),
+      appStatus: 0,
+      responseDate: Date.now()
+    };
+    // 方式一：直接修改 form.values.value
+    // form.values.value.appName = '应用名称';
+    // form.values.value.appStatus = 0;
+    // form.values.value.responseDate = Date.now();
 
-  // 方式三：直接重写 form.values.value
-  // form.values.value = {...}
-}
+    // 方式二：使用 Object.assign
+    Object.assign(form.values.value, values);
+
+    // 方式三：直接重写 form.values.value
+    // form.values.value = {...}
+  }
 </script>
 
 <template>

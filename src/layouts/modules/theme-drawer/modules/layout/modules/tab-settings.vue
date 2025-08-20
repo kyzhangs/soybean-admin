@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { resetCacheStrategyOptions, themeTabModeOptions } from '@/constants/app';
-import { useThemeStore } from '@/store/modules/theme';
-import { translateOptions } from '@/utils/common';
-import { $t } from '@/locales';
-import SettingItem from '../../../components/setting-item.vue';
+  import { resetCacheStrategyOptions, themeTabModeOptions } from '@/constants/app';
+  import { useThemeStore } from '@/store/modules/theme';
+  import { translateOptions } from '@/utils/common';
+  import { $t } from '@/locales';
+  import SettingItem from '../../../components/setting-item.vue';
 
-defineOptions({
-  name: 'TabSettings'
-});
+  defineOptions({
+    name: 'TabSettings'
+  });
 
-const themeStore = useThemeStore();
+  const themeStore = useThemeStore();
 </script>
 
 <template>
@@ -47,18 +47,18 @@ const themeStore = useThemeStore();
 </template>
 
 <style scoped>
-.setting-list-move,
-.setting-list-enter-active,
-.setting-list-leave-active {
-  --uno: transition-all-300;
-}
+  .setting-list-move,
+  .setting-list-enter-active,
+  .setting-list-leave-active {
+    --uno: transition-all-300;
+  }
 
-.setting-list-enter-from,
-.setting-list-leave-to {
-  --uno: opacity-0 -translate-x-30px;
-}
+  .setting-list-enter-from,
+  .setting-list-leave-to {
+    --uno: opacity-0 -translate-x-30px;
+  }
 
-.setting-list-leave-active {
-  --uno: absolute;
-}
+  .setting-list-leave-active {
+    --uno: absolute;
+  }
 </style>

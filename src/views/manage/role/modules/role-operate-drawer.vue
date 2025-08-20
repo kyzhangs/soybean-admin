@@ -1,99 +1,99 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { useBoolean } from '@sa/hooks';
-import { enableStatusOptions } from '@/constants/business';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
-import { $t } from '@/locales';
-import MenuAuthModal from './menu-auth-modal.vue';
-import ButtonAuthModal from './button-auth-modal.vue';
+  import { computed, ref, watch } from 'vue';
+  import { useBoolean } from '@sa/hooks';
+  import { enableStatusOptions } from '@/constants/business';
+  import { useFormRules, useNaiveForm } from '@/hooks/common/form';
+  import { $t } from '@/locales';
+  import MenuAuthModal from './menu-auth-modal.vue';
+  import ButtonAuthModal from './button-auth-modal.vue';
 
-defineOptions({
-  name: 'RoleOperateDrawer'
-});
+  defineOptions({
+    name: 'RoleOperateDrawer'
+  });
 
-interface Props {
-  /** the type of operation */
-  operateType: NaiveUI.TableOperateType;
-  /** the edit row data */
-  rowData?: Api.SystemManage.Role | null;
-}
-
-const props = defineProps<Props>();
-
-interface Emits {
-  (e: 'submitted'): void;
-}
-
-const emit = defineEmits<Emits>();
-
-const visible = defineModel<boolean>('visible', {
-  default: false
-});
-
-const { formRef, validate, restoreValidation } = useNaiveForm();
-const { defaultRequiredRule } = useFormRules();
-const { bool: menuAuthVisible, setTrue: openMenuAuthModal } = useBoolean();
-const { bool: buttonAuthVisible, setTrue: openButtonAuthModal } = useBoolean();
-
-const title = computed(() => {
-  const titles: Record<NaiveUI.TableOperateType, string> = {
-    add: $t('page.manage.role.addRole'),
-    edit: $t('page.manage.role.editRole')
-  };
-  return titles[props.operateType];
-});
-
-type Model = Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'roleDesc' | 'status'>;
-
-const model = ref(createDefaultModel());
-
-function createDefaultModel(): Model {
-  return {
-    roleName: '',
-    roleCode: '',
-    roleDesc: '',
-    status: null
-  };
-}
-
-type RuleKey = Exclude<keyof Model, 'roleDesc'>;
-
-const rules: Record<RuleKey, App.Global.FormRule> = {
-  roleName: defaultRequiredRule,
-  roleCode: defaultRequiredRule,
-  status: defaultRequiredRule
-};
-
-const roleId = computed(() => props.rowData?.id || -1);
-
-const isEdit = computed(() => props.operateType === 'edit');
-
-function handleInitModel() {
-  model.value = createDefaultModel();
-
-  if (props.operateType === 'edit' && props.rowData) {
-    Object.assign(model.value, props.rowData);
+  interface Props {
+    /** the type of operation */
+    operateType: NaiveUI.TableOperateType;
+    /** the edit row data */
+    rowData?: Api.SystemManage.Role | null;
   }
-}
 
-function closeDrawer() {
-  visible.value = false;
-}
+  const props = defineProps<Props>();
 
-async function handleSubmit() {
-  await validate();
-  // request
-  window.$message?.success($t('common.updateSuccess'));
-  closeDrawer();
-  emit('submitted');
-}
-
-watch(visible, () => {
-  if (visible.value) {
-    handleInitModel();
-    restoreValidation();
+  interface Emits {
+    (e: 'submitted'): void;
   }
-});
+
+  const emit = defineEmits<Emits>();
+
+  const visible = defineModel<boolean>('visible', {
+    default: false
+  });
+
+  const { formRef, validate, restoreValidation } = useNaiveForm();
+  const { defaultRequiredRule } = useFormRules();
+  const { bool: menuAuthVisible, setTrue: openMenuAuthModal } = useBoolean();
+  const { bool: buttonAuthVisible, setTrue: openButtonAuthModal } = useBoolean();
+
+  const title = computed(() => {
+    const titles: Record<NaiveUI.TableOperateType, string> = {
+      add: $t('page.manage.role.addRole'),
+      edit: $t('page.manage.role.editRole')
+    };
+    return titles[props.operateType];
+  });
+
+  type Model = Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'roleDesc' | 'status'>;
+
+  const model = ref(createDefaultModel());
+
+  function createDefaultModel(): Model {
+    return {
+      roleName: '',
+      roleCode: '',
+      roleDesc: '',
+      status: null
+    };
+  }
+
+  type RuleKey = Exclude<keyof Model, 'roleDesc'>;
+
+  const rules: Record<RuleKey, App.Global.FormRule> = {
+    roleName: defaultRequiredRule,
+    roleCode: defaultRequiredRule,
+    status: defaultRequiredRule
+  };
+
+  const roleId = computed(() => props.rowData?.id || -1);
+
+  const isEdit = computed(() => props.operateType === 'edit');
+
+  function handleInitModel() {
+    model.value = createDefaultModel();
+
+    if (props.operateType === 'edit' && props.rowData) {
+      Object.assign(model.value, props.rowData);
+    }
+  }
+
+  function closeDrawer() {
+    visible.value = false;
+  }
+
+  async function handleSubmit() {
+    await validate();
+    // request
+    window.$message?.success($t('common.updateSuccess'));
+    closeDrawer();
+    emit('submitted');
+  }
+
+  watch(visible, () => {
+    if (visible.value) {
+      handleInitModel();
+      restoreValidation();
+    }
+  });
 </script>
 
 <template>

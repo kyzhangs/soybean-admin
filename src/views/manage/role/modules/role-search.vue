@@ -1,33 +1,33 @@
 <script setup lang="ts">
-import { enableStatusOptions } from '@/constants/business';
-import { translateOptions } from '@/utils/common';
-import { $t } from '@/locales';
+  import { enableStatusOptions } from '@/constants/business';
+  import { translateOptions } from '@/utils/common';
+  import { $t } from '@/locales';
 
-defineOptions({
-  name: 'RoleSearch'
-});
+  defineOptions({
+    name: 'RoleSearch'
+  });
 
-interface Emits {
-  (e: 'search'): void;
-}
+  interface Emits {
+    (e: 'search'): void;
+  }
 
-const emit = defineEmits<Emits>();
+  const emit = defineEmits<Emits>();
 
-const model = defineModel<Api.SystemManage.RoleSearchParams>('model', { required: true });
+  const model = defineModel<Api.SystemManage.RoleSearchParams>('model', { required: true });
 
-function resetModel() {
-  model.value = {
-    current: 1,
-    size: 10,
-    roleName: null,
-    roleCode: null,
-    status: null
-  };
-}
+  function resetModel() {
+    model.value = {
+      current: 1,
+      size: 10,
+      roleName: null,
+      roleCode: null,
+      status: null
+    };
+  }
 
-function search() {
-  emit('search');
-}
+  function search() {
+    emit('search');
+  }
 </script>
 
 <template>

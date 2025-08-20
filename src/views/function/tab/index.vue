@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useTabStore } from '@/store/modules/tab';
-import { useRouterPush } from '@/hooks/common/router';
-import { $t } from '@/locales';
+  import { ref } from 'vue';
+  import { useTabStore } from '@/store/modules/tab';
+  import { useRouterPush } from '@/hooks/common/router';
+  import { $t } from '@/locales';
 
-const tabStore = useTabStore();
-const { routerPushByKey } = useRouterPush();
+  const tabStore = useTabStore();
+  const { routerPushByKey } = useRouterPush();
 
-const tabLabel = ref('');
+  const tabLabel = ref('');
 
-function changeTabLabel() {
-  tabStore.setTabLabel(tabLabel.value);
-}
+  function changeTabLabel() {
+    tabStore.setTabLabel(tabLabel.value);
+  }
 
-function resetTabLabel() {
-  tabStore.resetTabLabel();
-}
+  function resetTabLabel() {
+    tabStore.resetTabLabel();
+  }
 </script>
 
 <template>

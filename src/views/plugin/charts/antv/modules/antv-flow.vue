@@ -1,85 +1,85 @@
 <script setup lang="tsx">
-import { shallowRef, useTemplateRef, watch } from 'vue';
-import { useDebounceFn } from '@vueuse/core';
-import { vResizeObserver } from '@vueuse/components';
-import type { CustomBehaviorOption, Graph } from '@antv/g6';
-import { useAntFlow } from './antv-g6-flow';
-import { nodeStatus } from './status';
-import type { CustomGraphData } from './types';
+  import { shallowRef, useTemplateRef, watch } from 'vue';
+  import { useDebounceFn } from '@vueuse/core';
+  import { vResizeObserver } from '@vueuse/components';
+  import type { CustomBehaviorOption, Graph } from '@antv/g6';
+  import { useAntFlow } from './antv-g6-flow';
+  import { nodeStatus } from './status';
+  import type { CustomGraphData } from './types';
 
-defineOptions({
-  name: 'AntvFLow'
-});
-
-interface Props {
-  behaviors?: CustomBehaviorOption[];
-  data: CustomGraphData;
-  selected?: string;
-  height?: string;
-  autoFit?: 'view' | 'center';
-}
-
-const props = defineProps<Props>();
-
-const containerRef = useTemplateRef('containerRef');
-const graphRef = shallowRef<Graph | null>(null);
-
-// 监听容器尺寸变化，调整画布大小为图容器大小
-const onContainerResize = useDebounceFn(() => {
-  if (graphRef.value) {
-    graphRef.value.resize();
-  }
-}, 5);
-
-async function draw() {
-  if (graphRef.value) {
-    graphRef.value.destroy();
-  }
-  const { graph } = useAntFlow({
-    container: 'antv-flow',
-    data: props.data,
-    behaviors: props.behaviors,
-    autoFit: props.autoFit
+  defineOptions({
+    name: 'AntvFLow'
   });
-  graphRef.value = graph;
-  await selectNode();
-}
 
-async function selectNode() {
-  if (props.selected && graphRef.value) {
-    try {
-      await graphRef.value.setElementState(props.selected, 'selected');
-    } catch {}
+  interface Props {
+    behaviors?: CustomBehaviorOption[];
+    data: CustomGraphData;
+    selected?: string;
+    height?: string;
+    autoFit?: 'view' | 'center';
   }
-}
 
-function zoomOut() {
-  graphRef.value?.zoomBy(0.9);
-}
+  const props = defineProps<Props>();
 
-function zoomIn() {
-  graphRef.value?.zoomBy(1.1);
-}
+  const containerRef = useTemplateRef('containerRef');
+  const graphRef = shallowRef<Graph | null>(null);
 
-function resetZoom() {
-  graphRef.value?.zoomTo(1);
-  graphRef.value?.fitCenter();
-}
+  // 监听容器尺寸变化，调整画布大小为图容器大小
+  const onContainerResize = useDebounceFn(() => {
+    if (graphRef.value) {
+      graphRef.value.resize();
+    }
+  }, 5);
 
-function fitZoom() {
-  graphRef.value?.fitView();
-  graphRef.value?.fitCenter();
-}
+  async function draw() {
+    if (graphRef.value) {
+      graphRef.value.destroy();
+    }
+    const { graph } = useAntFlow({
+      container: 'antv-flow',
+      data: props.data,
+      behaviors: props.behaviors,
+      autoFit: props.autoFit
+    });
+    graphRef.value = graph;
+    await selectNode();
+  }
 
-watch(
-  [() => props.data, () => props.selected],
-  () => {
-    draw();
-  },
-  { deep: true }
-);
+  async function selectNode() {
+    if (props.selected && graphRef.value) {
+      try {
+        await graphRef.value.setElementState(props.selected, 'selected');
+      } catch {}
+    }
+  }
 
-defineExpose({ selectNode, graph: graphRef });
+  function zoomOut() {
+    graphRef.value?.zoomBy(0.9);
+  }
+
+  function zoomIn() {
+    graphRef.value?.zoomBy(1.1);
+  }
+
+  function resetZoom() {
+    graphRef.value?.zoomTo(1);
+    graphRef.value?.fitCenter();
+  }
+
+  function fitZoom() {
+    graphRef.value?.fitView();
+    graphRef.value?.fitCenter();
+  }
+
+  watch(
+    [() => props.data, () => props.selected],
+    () => {
+      draw();
+    },
+    { deep: true }
+  );
+
+  defineExpose({ selectNode, graph: graphRef });
 </script>
 
 <template>

@@ -1,33 +1,33 @@
 <script setup lang="ts">
-import type { PopoverPlacement } from 'naive-ui';
-import { twMerge } from 'tailwind-merge';
+  import type { PopoverPlacement } from 'naive-ui';
+  import { twMerge } from 'tailwind-merge';
 
-defineOptions({
-  name: 'ButtonIcon',
-  inheritAttrs: false
-});
+  defineOptions({
+    name: 'ButtonIcon',
+    inheritAttrs: false
+  });
 
-interface Props {
-  /** Button class */
-  class?: string;
-  /** Iconify icon name */
-  icon?: string;
-  /** Tooltip content */
-  tooltipContent?: string;
-  /** Tooltip placement */
-  tooltipPlacement?: PopoverPlacement;
-  zIndex?: number;
-}
+  interface Props {
+    /** Button class */
+    class?: string;
+    /** Iconify icon name */
+    icon?: string;
+    /** Tooltip content */
+    tooltipContent?: string;
+    /** Tooltip placement */
+    tooltipPlacement?: PopoverPlacement;
+    zIndex?: number;
+  }
 
-const props = withDefaults(defineProps<Props>(), {
-  class: '',
-  icon: '',
-  tooltipContent: '',
-  tooltipPlacement: 'bottom',
-  zIndex: 98
-});
+  const props = withDefaults(defineProps<Props>(), {
+    class: '',
+    icon: '',
+    tooltipContent: '',
+    tooltipPlacement: 'bottom',
+    zIndex: 98
+  });
 
-const DEFAULT_CLASS = 'h-[36px] text-icon';
+  const DEFAULT_CLASS = 'h-[36px] text-icon';
 </script>
 
 <template>

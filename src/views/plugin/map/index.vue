@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import type { Component } from 'vue';
-import { BaiduMap, GaodeMap, TencentMap } from './components';
+  import type { Component } from 'vue';
+  import { BaiduMap, GaodeMap, TencentMap } from './components';
 
-interface Map {
-  id: string;
-  label: string;
-  component: Component;
-}
+  interface Map {
+    id: string;
+    label: string;
+    component: Component;
+  }
 
-const maps: Map[] = [
-  { id: 'gaode', label: '高德地图', component: GaodeMap },
-  { id: 'tencent', label: '腾讯地图', component: TencentMap },
-  { id: 'baidu', label: '百度地图', component: BaiduMap }
-];
+  const maps: Map[] = [
+    { id: 'gaode', label: '高德地图', component: GaodeMap },
+    { id: 'tencent', label: '腾讯地图', component: TencentMap },
+    { id: 'baidu', label: '百度地图', component: BaiduMap }
+  ];
 </script>
 
 <template>

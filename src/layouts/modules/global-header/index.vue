@@ -1,32 +1,32 @@
 <script setup lang="ts">
-import { useFullscreen } from '@vueuse/core';
-import { GLOBAL_HEADER_MENU_ID } from '@/constants/app';
-import { useAppStore } from '@/store/modules/app';
-import { useThemeStore } from '@/store/modules/theme';
-import GlobalLogo from '../global-logo/index.vue';
-import GlobalBreadcrumb from '../global-breadcrumb/index.vue';
-import GlobalSearch from '../global-search/index.vue';
-import ThemeButton from './components/theme-button.vue';
-import UserAvatar from './components/user-avatar.vue';
+  import { useFullscreen } from '@vueuse/core';
+  import { GLOBAL_HEADER_MENU_ID } from '@/constants/app';
+  import { useAppStore } from '@/store/modules/app';
+  import { useThemeStore } from '@/store/modules/theme';
+  import GlobalLogo from '../global-logo/index.vue';
+  import GlobalBreadcrumb from '../global-breadcrumb/index.vue';
+  import GlobalSearch from '../global-search/index.vue';
+  import ThemeButton from './components/theme-button.vue';
+  import UserAvatar from './components/user-avatar.vue';
 
-defineOptions({
-  name: 'GlobalHeader'
-});
+  defineOptions({
+    name: 'GlobalHeader'
+  });
 
-interface Props {
-  /** Whether to show the logo */
-  showLogo?: App.Global.HeaderProps['showLogo'];
-  /** Whether to show the menu toggler */
-  showMenuToggler?: App.Global.HeaderProps['showMenuToggler'];
-  /** Whether to show the menu */
-  showMenu?: App.Global.HeaderProps['showMenu'];
-}
+  interface Props {
+    /** Whether to show the logo */
+    showLogo?: App.Global.HeaderProps['showLogo'];
+    /** Whether to show the menu toggler */
+    showMenuToggler?: App.Global.HeaderProps['showMenuToggler'];
+    /** Whether to show the menu */
+    showMenu?: App.Global.HeaderProps['showMenu'];
+  }
 
-defineProps<Props>();
+  defineProps<Props>();
 
-const appStore = useAppStore();
-const themeStore = useThemeStore();
-const { isFullscreen, toggle } = useFullscreen();
+  const appStore = useAppStore();
+  const themeStore = useThemeStore();
+  const { isFullscreen, toggle } = useFullscreen();
 </script>
 
 <template>

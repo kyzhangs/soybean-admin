@@ -1,138 +1,138 @@
 <script setup lang="tsx">
-import { reactive } from 'vue';
-import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { enableStatusRecord } from '@/constants/business';
-import { fetchGetRoleList } from '@/service/api';
-import { useAppStore } from '@/store/modules/app';
-import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
-import { $t } from '@/locales';
-import RoleOperateDrawer from './modules/role-operate-drawer.vue';
-import RoleSearch from './modules/role-search.vue';
+  import { reactive } from 'vue';
+  import { NButton, NPopconfirm, NTag } from 'naive-ui';
+  import { enableStatusRecord } from '@/constants/business';
+  import { fetchGetRoleList } from '@/service/api';
+  import { useAppStore } from '@/store/modules/app';
+  import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+  import { $t } from '@/locales';
+  import RoleOperateDrawer from './modules/role-operate-drawer.vue';
+  import RoleSearch from './modules/role-search.vue';
 
-const appStore = useAppStore();
+  const appStore = useAppStore();
 
-const searchParams: Api.SystemManage.RoleSearchParams = reactive({
-  current: 1,
-  size: 10,
-  roleName: null,
-  roleCode: null,
-  status: null
-});
+  const searchParams: Api.SystemManage.RoleSearchParams = reactive({
+    current: 1,
+    size: 10,
+    roleName: null,
+    roleCode: null,
+    status: null
+  });
 
-const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
-  api: () => fetchGetRoleList(searchParams),
-  transform: response => defaultTransform(response),
-  onPaginationParamsChange: params => {
-    searchParams.current = params.page;
-    searchParams.size = params.pageSize;
-  },
-  columns: () => [
-    {
-      type: 'selection',
-      align: 'center',
-      width: 48
+  const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
+    api: () => fetchGetRoleList(searchParams),
+    transform: response => defaultTransform(response),
+    onPaginationParamsChange: params => {
+      searchParams.current = params.page;
+      searchParams.size = params.pageSize;
     },
-    {
-      key: 'index',
-      title: $t('common.index'),
-      width: 64,
-      align: 'center',
-      render: (_, index) => index + 1
-    },
-    {
-      key: 'roleName',
-      title: $t('page.manage.role.roleName'),
-      align: 'center',
-      minWidth: 120
-    },
-    {
-      key: 'roleCode',
-      title: $t('page.manage.role.roleCode'),
-      align: 'center',
-      minWidth: 120
-    },
-    {
-      key: 'roleDesc',
-      title: $t('page.manage.role.roleDesc'),
-      minWidth: 120
-    },
-    {
-      key: 'status',
-      title: $t('page.manage.role.roleStatus'),
-      align: 'center',
-      width: 100,
-      render: row => {
-        if (row.status === null) {
-          return null;
+    columns: () => [
+      {
+        type: 'selection',
+        align: 'center',
+        width: 48
+      },
+      {
+        key: 'index',
+        title: $t('common.index'),
+        width: 64,
+        align: 'center',
+        render: (_, index) => index + 1
+      },
+      {
+        key: 'roleName',
+        title: $t('page.manage.role.roleName'),
+        align: 'center',
+        minWidth: 120
+      },
+      {
+        key: 'roleCode',
+        title: $t('page.manage.role.roleCode'),
+        align: 'center',
+        minWidth: 120
+      },
+      {
+        key: 'roleDesc',
+        title: $t('page.manage.role.roleDesc'),
+        minWidth: 120
+      },
+      {
+        key: 'status',
+        title: $t('page.manage.role.roleStatus'),
+        align: 'center',
+        width: 100,
+        render: row => {
+          if (row.status === null) {
+            return null;
+          }
+
+          const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
+            1: 'success',
+            2: 'warning'
+          };
+
+          const label = $t(enableStatusRecord[row.status]);
+
+          return <NTag type={tagMap[row.status]}>{label}</NTag>;
         }
-
-        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
-          1: 'success',
-          2: 'warning'
-        };
-
-        const label = $t(enableStatusRecord[row.status]);
-
-        return <NTag type={tagMap[row.status]}>{label}</NTag>;
+      },
+      {
+        key: 'operate',
+        title: $t('common.operate'),
+        align: 'center',
+        width: 130,
+        render: row => (
+          <div class="flex-center gap-8px">
+            <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+              {$t('common.edit')}
+            </NButton>
+            <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+              {{
+                default: () => $t('common.confirmDelete'),
+                trigger: () => (
+                  <NButton type="error" ghost size="small">
+                    {$t('common.delete')}
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          </div>
+        )
       }
-    },
-    {
-      key: 'operate',
-      title: $t('common.operate'),
-      align: 'center',
-      width: 130,
-      render: row => (
-        <div class="flex-center gap-8px">
-          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
-            {$t('common.edit')}
-          </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
-            {{
-              default: () => $t('common.confirmDelete'),
-              trigger: () => (
-                <NButton type="error" ghost size="small">
-                  {$t('common.delete')}
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
-        </div>
-      )
-    }
-  ]
-});
+    ]
+  });
 
-const {
-  drawerVisible,
-  operateType,
-  editingData,
-  handleAdd,
-  handleEdit,
-  checkedRowKeys,
-  onBatchDeleted,
-  onDeleted
-  // closeDrawer
-} = useTableOperate(data, 'id', getData);
+  const {
+    drawerVisible,
+    operateType,
+    editingData,
+    handleAdd,
+    handleEdit,
+    checkedRowKeys,
+    onBatchDeleted,
+    onDeleted
+    // closeDrawer
+  } = useTableOperate(data, 'id', getData);
 
-async function handleBatchDelete() {
-  // request
-  // eslint-disable-next-line no-console
-  console.log(checkedRowKeys.value);
+  async function handleBatchDelete() {
+    // request
+    // eslint-disable-next-line no-console
+    console.log(checkedRowKeys.value);
 
-  onBatchDeleted();
-}
+    onBatchDeleted();
+  }
 
-function handleDelete(id: number) {
-  // request
-  // eslint-disable-next-line no-console
-  console.log(id);
+  function handleDelete(id: number) {
+    // request
+    // eslint-disable-next-line no-console
+    console.log(id);
 
-  onDeleted();
-}
+    onDeleted();
+  }
 
-function edit(id: number) {
-  handleEdit(id);
-}
+  function edit(id: number) {
+    handleEdit(id);
+  }
 </script>
 
 <template>

@@ -1,47 +1,47 @@
 <script setup lang="ts">
-import { computed, reactive } from 'vue';
-import { useRouterPush } from '@/hooks/common/router';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
-import { $t } from '@/locales';
+  import { computed, reactive } from 'vue';
+  import { useRouterPush } from '@/hooks/common/router';
+  import { useFormRules, useNaiveForm } from '@/hooks/common/form';
+  import { $t } from '@/locales';
 
-defineOptions({
-  name: 'ResetPwd'
-});
+  defineOptions({
+    name: 'ResetPwd'
+  });
 
-const { toggleLoginModule } = useRouterPush();
-const { formRef, validate } = useNaiveForm();
+  const { toggleLoginModule } = useRouterPush();
+  const { formRef, validate } = useNaiveForm();
 
-interface FormModel {
-  phone: string;
-  code: string;
-  password: string;
-  confirmPassword: string;
-}
+  interface FormModel {
+    phone: string;
+    code: string;
+    password: string;
+    confirmPassword: string;
+  }
 
-const model: FormModel = reactive({
-  phone: '',
-  code: '',
-  password: '',
-  confirmPassword: ''
-});
+  const model: FormModel = reactive({
+    phone: '',
+    code: '',
+    password: '',
+    confirmPassword: ''
+  });
 
-type RuleRecord = Partial<Record<keyof FormModel, App.Global.FormRule[]>>;
+  type RuleRecord = Partial<Record<keyof FormModel, App.Global.FormRule[]>>;
 
-const rules = computed<RuleRecord>(() => {
-  const { formRules, createConfirmPwdRule } = useFormRules();
+  const rules = computed<RuleRecord>(() => {
+    const { formRules, createConfirmPwdRule } = useFormRules();
 
-  return {
-    phone: formRules.phone,
-    password: formRules.pwd,
-    confirmPassword: createConfirmPwdRule(model.password)
-  };
-});
+    return {
+      phone: formRules.phone,
+      password: formRules.pwd,
+      confirmPassword: createConfirmPwdRule(model.password)
+    };
+  });
 
-async function handleSubmit() {
-  await validate();
-  // request to reset password
-  window.$message?.success($t('page.login.common.validateSuccess'));
-}
+  async function handleSubmit() {
+    await validate();
+    // request to reset password
+    window.$message?.success($t('page.login.common.validateSuccess'));
+  }
 </script>
 
 <template>

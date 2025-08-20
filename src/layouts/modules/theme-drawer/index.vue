@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useAppStore } from '@/store/modules/app';
-import { $t } from '@/locales';
-import AppearanceSettings from './modules/appearance/index.vue';
-import LayoutSettings from './modules/layout/index.vue';
-import GeneralSettings from './modules/general/index.vue';
-import ConfigOperation from './modules/config-operation.vue';
+  import { computed, ref } from 'vue';
+  import { useAppStore } from '@/store/modules/app';
+  import { $t } from '@/locales';
+  import AppearanceSettings from './modules/appearance/index.vue';
+  import LayoutSettings from './modules/layout/index.vue';
+  import GeneralSettings from './modules/general/index.vue';
+  import ConfigOperation from './modules/config-operation.vue';
 
-defineOptions({
-  name: 'ThemeDrawer'
-});
+  defineOptions({
+    name: 'ThemeDrawer'
+  });
 
-const appStore = useAppStore();
-const activeTab = ref('appearance');
+  const appStore = useAppStore();
+  const activeTab = ref('appearance');
 
-const drawerWidth = computed(() => {
-  const width = 400;
+  const drawerWidth = computed(() => {
+    const width = 400;
 
-  // On mobile devices, use 90% of viewport width with a maximum of 400px
-  if (appStore.isMobile) {
-    return `min(90vw, ${width}px)`;
-  }
+    // On mobile devices, use 90% of viewport width with a maximum of 400px
+    if (appStore.isMobile) {
+      return `min(90vw, ${width}px)`;
+    }
 
-  return width;
-});
+    return width;
+  });
 </script>
 
 <template>
@@ -51,13 +51,13 @@ const drawerWidth = computed(() => {
 </template>
 
 <style scoped>
-:deep(.n-tab) {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+  :deep(.n-tab) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
-:deep(.n-tab-pane) {
-  padding: 0;
-}
+  :deep(.n-tab-pane) {
+    padding: 0;
+  }
 </style>
