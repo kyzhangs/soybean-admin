@@ -697,12 +697,16 @@ declare namespace App {
           user: {
             title: string;
             username: string;
-            userGender: string;
-            nickName: string;
-            userPhone: string;
-            userEmail: string;
-            userStatus: string;
-            userRole: string;
+            gender: string;
+            name: string;
+            phone: string;
+            email: string;
+            status: string;
+            role: string;
+            avatar: string;
+            isActive: string;
+            lastLogin: string;
+            activeTime: string;
             form: {
               username: string;
               userGender: string;
@@ -714,9 +718,10 @@ declare namespace App {
             };
             addUser: string;
             editUser: string;
-            gender: {
+            userGender: {
               male: string;
               female: string;
+              unknown: string;
             };
           };
           menu: {

@@ -94,10 +94,10 @@ export function useNaivePaginatedTable<ResponseData, ApiData>(
     showSizePicker: true,
     pageSizes: [10, 15, 20, 25, 30],
     prefix: showTotal.value ? page => $t('datatable.itemCount', { total: page.itemCount }) : undefined,
-    onUpdatePage(page) {
+    onUpdatePage: (page: number) => {
       pagination.page = page;
     },
-    onUpdatePageSize(pageSize) {
+    onUpdatePageSize: (pageSize: number) => {
       pagination.pageSize = pageSize;
       pagination.page = 1;
     },
@@ -144,6 +144,13 @@ export function useNaivePaginatedTable<ResponseData, ApiData>(
     await result.getData();
   }
 
+  // calculate the total width of the table this is used for horizontal scrolling
+  const scrollX = computed(() => {
+    return result.columns.value.reduce((acc, column) => {
+      return acc + Number(column.minWidth ?? column.width ?? 120);
+    }, 0);
+  });
+
   scope.run(() => {
     watch(
       () => appStore.locale,
@@ -167,7 +174,8 @@ export function useNaivePaginatedTable<ResponseData, ApiData>(
     ...result,
     getDataByPage,
     pagination,
-    mobilePagination
+    mobilePagination,
+    scrollX
   };
 }
 
@@ -230,17 +238,30 @@ export function useTableOperate<TableData>(
 }
 
 export function defaultTransform<ApiData>(
-  response: FlatResponseData<any, Api.Common.PaginatingQueryRecord<ApiData>>
+  response: FlatResponseData<any, Api.Common.PaginatingQueryRecord<ApiData>>,
+  options?: { withIndex?: boolean; indexKey?: string }
 ): PaginationData<ApiData> {
   const { data, error } = response;
 
   if (!error) {
-    const { records, current, size, total } = data;
+    const { total, page, page_size, rows } = data;
+
+    const withIndex = options?.withIndex ?? true;
+    const indexKey = options?.indexKey ?? 'index';
+
+    const processedRows = withIndex
+      ? rows.map((item, index) => {
+          return {
+            ...item,
+            [indexKey]: (page - 1) * page_size + index + 1
+          } as ApiData;
+        })
+      : rows;
 
     return {
-      data: records,
-      pageNum: current,
-      pageSize: size,
+      data: processedRows,
+      pageNum: page,
+      pageSize: page_size,
       total
     };
   }

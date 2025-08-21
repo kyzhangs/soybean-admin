@@ -246,8 +246,7 @@ export const generatedRoutes: GeneratedRoute[] = [
       title: 'manage',
       i18nKey: 'route.manage',
       icon: 'carbon:cloud-service-management',
-      order: 9,
-      roles: ['R_ADMIN']
+      order: 2
     },
     children: [
       {
@@ -259,7 +258,6 @@ export const generatedRoutes: GeneratedRoute[] = [
           i18nKey: 'route.manage_menu',
           icon: 'material-symbols:route',
           order: 3,
-          roles: ['R_ADMIN'],
           keepAlive: true
         }
       },
@@ -283,8 +281,7 @@ export const generatedRoutes: GeneratedRoute[] = [
           title: 'manage_user',
           i18nKey: 'route.manage_user',
           icon: 'ic:round-manage-accounts',
-          order: 1,
-          roles: ['R_ADMIN']
+          order: 1
         }
       },
       {
@@ -296,7 +293,6 @@ export const generatedRoutes: GeneratedRoute[] = [
           title: 'manage_user-detail',
           i18nKey: 'route.manage_user-detail',
           hideInMenu: true,
-          roles: ['R_ADMIN'],
           activeMenu: 'manage_user'
         }
       }

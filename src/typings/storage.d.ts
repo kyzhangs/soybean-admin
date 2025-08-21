@@ -38,6 +38,6 @@ declare namespace StorageType {
       siderCollapse: boolean;
     };
     /** The last login user id */
-    lastLoginUserId: string;
+    lastLoginUserId: number;
   }
 }

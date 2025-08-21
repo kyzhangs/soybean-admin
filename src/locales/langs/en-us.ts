@@ -522,12 +522,16 @@ const local: App.I18n.Schema = {
       user: {
         title: 'User List',
         username: 'User Name',
-        userGender: 'Gender',
-        nickName: 'Nick Name',
-        userPhone: 'Phone Number',
-        userEmail: 'Email',
-        userStatus: 'User Status',
-        userRole: 'User Role',
+        gender: 'Gender',
+        name: 'Name',
+        phone: 'Phone Number',
+        email: 'Email',
+        status: 'User Status',
+        role: 'User Role',
+        avatar: 'Avatar',
+        isActive: 'Is Active',
+        lastLogin: 'Last Login Time',
+        activeTime: 'Active Time: {time}',
         form: {
           username: 'Please enter user name',
           userGender: 'Please select gender',
@@ -539,9 +543,10 @@ const local: App.I18n.Schema = {
         },
         addUser: 'Add User',
         editUser: 'Edit User',
-        gender: {
+        userGender: {
           male: 'Male',
-          female: 'Female'
+          female: 'Female',
+          unknown: 'Unknown'
         }
       },
       menu: {
@@ -617,8 +622,8 @@ const local: App.I18n.Schema = {
   form: {
     required: 'Cannot be empty',
     username: {
-      required: 'Please enter user name',
-      invalid: 'User name format is incorrect'
+      required: 'Please enter username',
+      invalid: 'Username format is incorrect'
     },
     phone: {
       required: 'Please enter phone number',

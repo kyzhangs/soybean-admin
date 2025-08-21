@@ -21,9 +21,16 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   const token = ref(getToken());
 
-  const userInfo: Api.Auth.UserInfo = reactive({
-    userId: '',
-    username: '',
+  const userInfo: Api.User.UserInfo = reactive({
+    id: 0,
+    username: 'anonymous',
+    name: null,
+    gender: null,
+    email: null,
+    phone: null,
+    avatar: null,
+    is_active: false,
+    active_time: null,
     roles: [],
     buttons: []
   });
@@ -37,6 +44,11 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   /** Is login */
   const isLogin = computed(() => Boolean(token.value));
+
+  /** display name */
+  const userDisplayName = computed(() => {
+    return userInfo.name || userInfo.username;
+  });
 
   /** Reset auth store */
   async function resetStore() {
@@ -56,12 +68,12 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   /** Record the user ID of the previous login session Used to compare with the current user ID on next login */
   function recordUserId() {
-    if (!userInfo.userId) {
+    if (!userInfo.id) {
       return;
     }
 
     // Store current user ID locally for next login comparison
-    localStg.set('lastLoginUserId', userInfo.userId);
+    localStg.set('lastLoginUserId', userInfo.id);
   }
 
   /**
@@ -70,14 +82,14 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
    * @returns {boolean} Whether to clear all tabs
    */
   function checkTabClear(): boolean {
-    if (!userInfo.userId) {
+    if (!userInfo.id) {
       return false;
     }
 
     const lastLoginUserId = localStg.get('lastLoginUserId');
 
     // Clear all tabs if current user is different from previous user
-    if (!lastLoginUserId || lastLoginUserId !== userInfo.userId) {
+    if (!lastLoginUserId || lastLoginUserId !== userInfo.id) {
       localStg.remove('globalTabs');
       tabStore.clearTabs();
 
@@ -117,7 +129,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
         window.$notification?.success({
           title: $t('page.login.common.loginSuccess'),
-          content: $t('page.login.common.welcomeBack', { username: userInfo.username }),
+          content: $t('page.login.common.welcomeBack', { username: authStore.userDisplayName }),
           duration: 4500
         });
       }
@@ -128,7 +140,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     endLoading();
   }
 
-  async function loginByToken(loginToken: Api.Auth.LoginToken) {
+  async function loginByToken(loginToken: Api.Auth.Token) {
     // 1. stored in the localStorage, the later requests need it in headers
     localStg.set('token', loginToken.access_token);
     localStg.set('refreshToken', loginToken.refresh_token);
@@ -175,6 +187,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     userInfo,
     isStaticSuper,
     isLogin,
+    userDisplayName,
     loginLoading,
     resetStore,
     login,

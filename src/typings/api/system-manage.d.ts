@@ -5,7 +5,7 @@ declare namespace Api {
    * backend api module: "systemManage"
    */
   namespace SystemManage {
-    type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>;
+    // type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'page' | 'page_size'>;
 
     /** role */
     type Role = Common.CommonRecord<{
@@ -19,7 +19,7 @@ declare namespace Api {
 
     /** role search params */
     type RoleSearchParams = CommonType.RecordNullable<
-      Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'status'> & CommonSearchParams
+      Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'status'> & Api.Common.CommonSearchParams
     >;
 
     /** role list */
@@ -33,33 +33,49 @@ declare namespace Api {
      *
      * - "1": "male"
      * - "2": "female"
+     * - "3": "unknown"
      */
-    type UserGender = '1' | '2';
+    type UserGender = '1' | '2' | '3';
 
     /** user */
     type User = Common.CommonRecord<{
-      /** user name */
+      /** username */
       username: string;
-      /** user gender */
-      userGender: UserGender | null;
-      /** user nick name */
-      nickName: string;
-      /** user phone */
-      userPhone: string;
-      /** user email */
-      userEmail: string;
-      /** user role code collection */
-      userRoles: string[];
-    }>;
+    }> &
+      CommonType.RecordNullable<{
+        /** name */
+        name: string;
+        /** user gender */
+        gender: UserGender;
+        /** user email */
+        email: string;
+        /** user phone */
+        phone: string;
+        /** avatar */
+        avatar: string;
+        /** active time */
+        active_time: string;
+      }>;
 
     /** user search params */
     type UserSearchParams = CommonType.RecordNullable<
-      Pick<Api.SystemManage.User, 'username' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'status'> &
-        CommonSearchParams
+      Api.Common.CommonSearchParams & Pick<Api.SystemManage.User, 'username' | 'gender' | 'name' | 'phone' | 'email'>
     >;
 
+    type UserCreate = Pick<User, 'username' | 'name' | 'email' | 'phone' | 'gender' | 'avatar'> & {
+      is_active: boolean;
+      is_forbid: boolean;
+    };
+
     /** user list */
-    type UserList = Common.PaginatingQueryRecord<User>;
+    type UserList = Common.PaginatingQueryRecord<
+      User & {
+        /** is forbidden */
+        is_forbid: boolean;
+        /** user is_active */
+        is_active: boolean;
+      }
+    >;
 
     /**
      * menu type

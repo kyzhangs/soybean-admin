@@ -12,8 +12,8 @@
   const appStore = useAppStore();
 
   const searchParams: Api.SystemManage.RoleSearchParams = reactive({
-    current: 1,
-    size: 10,
+    page: 1,
+    page_size: 10,
     roleName: null,
     roleCode: null,
     status: null
@@ -23,8 +23,8 @@
     api: () => fetchGetRoleList(searchParams),
     transform: response => defaultTransform(response),
     onPaginationParamsChange: params => {
-      searchParams.current = params.page;
-      searchParams.size = params.pageSize;
+      searchParams.page = params.page;
+      searchParams.page_size = params.pageSize;
     },
     columns: () => [
       {
@@ -68,12 +68,13 @@
 
           const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
             1: 'success',
-            2: 'warning'
+            0: 'warning'
           };
 
-          const label = $t(enableStatusRecord[row.status]);
+          const value = row.status === '1' ? 1 : 0;
+          const label = $t(enableStatusRecord[value]);
 
-          return <NTag type={tagMap[row.status]}>{label}</NTag>;
+          return <NTag type={tagMap[value]}>{label}</NTag>;
         }
       },
       {

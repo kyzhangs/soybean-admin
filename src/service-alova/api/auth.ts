@@ -7,12 +7,12 @@ import { alova } from '../request';
  * @param password Password
  */
 export function fetchLogin(username: string, password: string) {
-  return alova.Post<Api.Auth.LoginToken>('/auth/login', { username, password });
+  return alova.Post<Api.Auth.Token>('/auth/token', { username, password });
 }
 
 /** Get user info */
 export function fetchGetUserInfo() {
-  return alova.Get<Api.Auth.UserInfo>('/auth/getUserInfo');
+  return alova.Get<Api.User.UserInfo>('/user/profile');
 }
 
 /** Send captcha to target phone */
@@ -30,10 +30,10 @@ export function verifyCaptcha(phone: string, code: string) {
  *
  * @param refreshToken Refresh token
  */
-export function fetchRefreshToken(refreshToken: string) {
-  return alova.Post<Api.Auth.LoginToken>(
-    '/auth/refreshToken',
-    { refreshToken },
+export function fetchRefreshToken(refresh_token: string) {
+  return alova.Post<Api.Auth.Token>(
+    '/auth/refresh-token',
+    { refresh_token },
     {
       meta: {
         authRole: 'refreshToken'

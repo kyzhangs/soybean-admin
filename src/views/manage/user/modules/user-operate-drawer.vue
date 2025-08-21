@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue';
-  import { enableStatusOptions, userGenderOptions } from '@/constants/business';
-  import { fetchGetAllRoles } from '@/service/api';
+  // import { enableStatusOptions, userGenderOptions } from '@/constants/business';
+  // import { fetchGetAllRoles } from '@/service/api';
   import { useFormRules, useNaiveForm } from '@/hooks/common/form';
   import { $t } from '@/locales';
 
@@ -39,55 +39,52 @@
     return titles[props.operateType];
   });
 
-  type Model = Pick<
-    Api.SystemManage.User,
-    'username' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'userRoles' | 'status'
-  >;
+  type Model = Api.SystemManage.UserCreate;
 
   const model = ref(createDefaultModel());
 
-  function createDefaultModel(): Model {
+  function createDefaultModel(): Api.SystemManage.UserCreate {
     return {
       username: '',
-      userGender: null,
-      nickName: '',
-      userPhone: '',
-      userEmail: '',
-      userRoles: [],
-      status: null
+      name: '',
+      gender: null,
+      phone: '',
+      email: '',
+      is_active: false,
+      is_forbid: false
     };
   }
 
   type RuleKey = Extract<keyof Model, 'username' | 'status'>;
 
   const rules: Record<RuleKey, App.Global.FormRule> = {
-    username: defaultRequiredRule,
-    status: defaultRequiredRule
+    username: defaultRequiredRule
+    // status: defaultRequiredRule
   };
 
   /** the enabled role options */
-  const roleOptions = ref<CommonType.Option<string>[]>([]);
+  // const roleOptions = ref<CommonType.Option<string>[]>([]);
 
-  async function getRoleOptions() {
-    const { error, data } = await fetchGetAllRoles();
+  // async function getRoleOptions() {
+  //   const { error, data } = await fetchGetAllRoles();
 
-    if (!error) {
-      const options = data.map(item => ({
-        label: item.roleName,
-        value: item.roleCode
-      }));
+  //   if (!error) {
+  //     const options = data.map(item => ({
+  //       label: item.roleName,
+  //       value: item.roleCode
+  //     }));
 
-      // the mock data does not have the roleCode, so fill it
-      // if the real request, remove the following code
-      const userRoleOptions = model.value.userRoles.map(item => ({
-        label: item,
-        value: item
-      }));
-      // end
+  //     // the mock data does not have the roleCode, so fill it
+  //     // if the real request, remove the following code
+  //     const userRoleOptions = model.value.userRoles.map(item => ({
+  //       label: item,
+  //       value: item
+  //     }));
+  //     // end
 
-      roleOptions.value = [...userRoleOptions, ...options];
-    }
-  }
+  //     roleOptions.value = [...userRoleOptions, ...options];
+  //   }
+  // }
 
   function handleInitModel() {
     model.value = createDefaultModel();
@@ -113,7 +110,7 @@
     if (visible.value) {
       handleInitModel();
       restoreValidation();
-      getRoleOptions();
+      // getRoleOptions();
     }
   });
 </script>
@@ -125,33 +122,39 @@
         <NFormItem :label="$t('page.manage.user.username')" path="username">
           <NInput v-model:value="model.username" :placeholder="$t('page.manage.user.form.username')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userGender')" path="userGender">
-          <NRadioGroup v-model:value="model.userGender">
+        <!--
+ <NFormItem :label="$t('page.manage.user.userGender')" path="userGender">
+          <NRadioGroup v-model:value="model.gender">
             <NRadio v-for="item in userGenderOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
-        </NFormItem>
+        </NFormItem> 
+-->
         <NFormItem :label="$t('page.manage.user.nickName')" path="nickName">
-          <NInput v-model:value="model.nickName" :placeholder="$t('page.manage.user.form.nickName')" />
+          <NInput v-model:value="model.name" :placeholder="$t('page.manage.user.form.nickName')" />
         </NFormItem>
         <NFormItem :label="$t('page.manage.user.userPhone')" path="userPhone">
-          <NInput v-model:value="model.userPhone" :placeholder="$t('page.manage.user.form.userPhone')" />
+          <NInput v-model:value="model.phone" :placeholder="$t('page.manage.user.form.userPhone')" />
         </NFormItem>
         <NFormItem :label="$t('page.manage.user.userEmail')" path="email">
-          <NInput v-model:value="model.userEmail" :placeholder="$t('page.manage.user.form.userEmail')" />
+          <NInput v-model:value="model.email" :placeholder="$t('page.manage.user.form.userEmail')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userStatus')" path="status">
-          <NRadioGroup v-model:value="model.status">
+        <!--
+ <NFormItem :label="$t('page.manage.user.userStatus')" path="status">
+          <NRadioGroup v-model:value="model.is_forbid">
             <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
-        </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userRole')" path="roles">
+        </NFormItem> 
+-->
+        <!--
+ <NFormItem :label="$t('page.manage.user.userRole')" path="roles">
           <NSelect
             v-model:value="model.userRoles"
             multiple
             :options="roleOptions"
             :placeholder="$t('page.manage.user.form.userRole')"
           />
-        </NFormItem>
+        </NFormItem> 
+-->
       </NForm>
       <template #footer>
         <NSpace :size="16">

@@ -519,12 +519,16 @@ const local: App.I18n.Schema = {
       user: {
         title: '用户列表',
         username: '用户名',
-        userGender: '性别',
-        nickName: '昵称',
-        userPhone: '手机号',
-        userEmail: '邮箱',
-        userStatus: '用户状态',
-        userRole: '用户角色',
+        gender: '性别',
+        name: '姓名',
+        phone: '手机号',
+        email: '邮箱',
+        status: '用户状态',
+        role: '用户角色',
+        avatar: '头像',
+        isActive: '是否激活',
+        lastLogin: '最近登录时间',
+        activeTime: '激活时间：{time}',
         form: {
           username: '请输入用户名',
           userGender: '请选择性别',
@@ -536,9 +540,10 @@ const local: App.I18n.Schema = {
         },
         addUser: '新增用户',
         editUser: '编辑用户',
-        gender: {
+        userGender: {
           male: '男',
-          female: '女'
+          female: '女',
+          unknown: '未知'
         }
       },
       menu: {

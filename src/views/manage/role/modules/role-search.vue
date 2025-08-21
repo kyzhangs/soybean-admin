@@ -17,8 +17,8 @@
 
   function resetModel() {
     model.value = {
-      current: 1,
-      size: 10,
+      page: 1,
+      page_size: 10,
       roleName: null,
       roleCode: null,
       status: null

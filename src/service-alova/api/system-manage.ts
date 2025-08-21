@@ -19,10 +19,7 @@ export function fetchGetUserList(params?: Api.SystemManage.UserSearchParams) {
   return alova.Get<Api.SystemManage.UserList>('/systemManage/getUserList', { params });
 }
 
-export type UserModel = Pick<
-  Api.SystemManage.User,
-  'username' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'userRoles' | 'status'
->;
+export type UserModel = Pick<Api.SystemManage.User, 'username' | 'gender' | 'name' | 'phone' | 'email' | 'status'>;
 /** add user */
 export function addUser(data: UserModel) {
   return alova.Post<null>('/systemManage/addUser', data);

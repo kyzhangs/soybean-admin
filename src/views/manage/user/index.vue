@@ -1,6 +1,6 @@
 <script setup lang="tsx">
   import { reactive } from 'vue';
-  import { NButton, NPopconfirm, NTag } from 'naive-ui';
+  import { NButton, NPopconfirm, NTag, NTooltip } from 'naive-ui';
   import { enableStatusRecord, userGenderRecord } from '@/constants/business';
   import { fetchGetUserList } from '@/service/api';
   import { useAppStore } from '@/store/modules/app';
@@ -12,125 +12,149 @@
   const appStore = useAppStore();
 
   const searchParams: Api.SystemManage.UserSearchParams = reactive({
-    current: 1,
-    size: 10,
-    status: null,
+    page: 1,
+    page_size: 10,
     username: null,
-    userGender: null,
-    nickName: null,
-    userPhone: null,
-    userEmail: null
+    gender: null,
+    name: null,
+    phone: null,
+    email: null
   });
 
-  const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination } = useNaivePaginatedTable({
-    api: () => fetchGetUserList(searchParams),
-    transform: response => defaultTransform(response),
-    onPaginationParamsChange: params => {
-      searchParams.current = params.page;
-      searchParams.size = params.pageSize;
-    },
-    columns: () => [
-      {
-        type: 'selection',
-        align: 'center',
-        width: 48
+  const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination, scrollX } =
+    useNaivePaginatedTable({
+      api: () => fetchGetUserList(searchParams),
+      transform: response => defaultTransform(response),
+      onPaginationParamsChange: params => {
+        searchParams.page = params.page;
+        searchParams.page_size = params.pageSize;
       },
-      {
-        key: 'index',
-        title: $t('common.index'),
-        align: 'center',
-        width: 64,
-        render: (_, index) => index + 1
-      },
-      {
-        key: 'username',
-        title: $t('page.manage.user.username'),
-        align: 'center',
-        minWidth: 100
-      },
-      {
-        key: 'userGender',
-        title: $t('page.manage.user.userGender'),
-        align: 'center',
-        width: 100,
-        render: row => {
-          if (row.userGender === null) {
-            return null;
+      columns: () => [
+        {
+          type: 'selection',
+          align: 'center',
+          width: 48
+        },
+        {
+          key: 'index',
+          title: $t('common.index'),
+          align: 'center',
+          width: 62
+        },
+        {
+          key: 'username',
+          title: $t('page.manage.user.username'),
+          align: 'center',
+          width: 100
+        },
+        {
+          key: 'name',
+          title: $t('page.manage.user.name'),
+          align: 'center',
+          width: 100
+        },
+        {
+          key: 'gender',
+          title: $t('page.manage.user.gender'),
+          align: 'center',
+          width: 100,
+          render: row => {
+            const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
+              1: 'primary',
+              2: 'error',
+              3: 'warning'
+            };
+
+            const value = row.gender ? row.gender : 3;
+            const label = $t(userGenderRecord[value]);
+
+            return <NTag type={tagMap[value]}>{label}</NTag>;
           }
-
-          const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
-            1: 'primary',
-            2: 'error'
-          };
-
-          const label = $t(userGenderRecord[row.userGender]);
-
-          return <NTag type={tagMap[row.userGender]}>{label}</NTag>;
-        }
-      },
-      {
-        key: 'nickName',
-        title: $t('page.manage.user.nickName'),
-        align: 'center',
-        minWidth: 100
-      },
-      {
-        key: 'userPhone',
-        title: $t('page.manage.user.userPhone'),
-        align: 'center',
-        width: 120
-      },
-      {
-        key: 'userEmail',
-        title: $t('page.manage.user.userEmail'),
-        align: 'center',
-        minWidth: 200
-      },
-      {
-        key: 'status',
-        title: $t('page.manage.user.userStatus'),
-        align: 'center',
-        width: 100,
-        render: row => {
-          if (row.status === null) {
-            return null;
+        },
+        {
+          key: 'phone',
+          title: $t('page.manage.user.phone'),
+          align: 'center',
+          width: 120
+        },
+        {
+          key: 'email',
+          title: $t('page.manage.user.email'),
+          align: 'center',
+          width: 200
+        },
+        {
+          key: 'is_active',
+          title: $t('page.manage.user.isActive'),
+          align: 'center',
+          width: 120,
+          render: row => {
+            const tag = (
+              <NTag type={row.is_active ? 'success' : 'warning'}>
+                {row.is_active ? $t('common.yesOrNo.yes') : $t('common.yesOrNo.no')}
+              </NTag>
+            );
+            if (row.is_active && row.active_time) {
+              return (
+                <NTooltip>
+                  {{
+                    default: () => $t('page.manage.user.activeTime', { time: row.active_time }),
+                    trigger: () => tag
+                  }}
+                </NTooltip>
+              );
+            }
+            return tag;
           }
+        },
+        {
+          key: 'last_login',
+          title: $t('page.manage.user.lastLogin'),
+          align: 'center',
+          width: 180
+        },
+        {
+          key: 'is_forbid',
+          title: $t('page.manage.user.status'),
+          align: 'center',
+          width: 100,
+          render: row => {
+            const statusMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
+              '1': 'success',
+              '0': 'error'
+            };
 
-          const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
-            1: 'success',
-            2: 'warning'
-          };
+            const value = row.is_forbid ? 0 : 1;
+            const label = $t(enableStatusRecord[value]);
 
-          const label = $t(enableStatusRecord[row.status]);
-
-          return <NTag type={tagMap[row.status]}>{label}</NTag>;
+            return <NTag type={statusMap[value]}>{label}</NTag>;
+          }
+        },
+        {
+          key: 'operate',
+          title: $t('common.operate'),
+          align: 'center',
+          width: 180,
+          render: row => (
+            <div class="flex-center gap-8px">
+              <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+                {$t('common.edit')}
+              </NButton>
+              <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+                {{
+                  default: () => $t('common.confirmDelete'),
+                  trigger: () => (
+                    <NButton type="error" ghost size="small">
+                      {$t('common.delete')}
+                    </NButton>
+                  )
+                }}
+              </NPopconfirm>
+            </div>
+          )
         }
-      },
-      {
-        key: 'operate',
-        title: $t('common.operate'),
-        align: 'center',
-        width: 130,
-        render: row => (
-          <div class="flex-center gap-8px">
-            <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
-              {$t('common.edit')}
-            </NButton>
-            <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
-              {{
-                default: () => $t('common.confirmDelete'),
-                trigger: () => (
-                  <NButton type="error" ghost size="small">
-                    {$t('common.delete')}
-                  </NButton>
-                )
-              }}
-            </NPopconfirm>
-          </div>
-        )
-      }
-    ]
-  });
+      ]
+    });
 
   const {
     drawerVisible,
@@ -152,7 +176,7 @@
     onBatchDeleted();
   }
 
-  function handleDelete(id: number) {
+  function handleDelete(id: any) {
     // request
     // eslint-disable-next-line no-console
     console.log(id);
@@ -160,7 +184,7 @@
     onDeleted();
   }
 
-  function edit(id: number) {
+  function edit(id: any) {
     handleEdit(id);
   }
 </script>
@@ -185,7 +209,7 @@
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="962"
+        :scroll-x="scrollX"
         :loading="loading"
         remote
         :row-key="row => row.id"

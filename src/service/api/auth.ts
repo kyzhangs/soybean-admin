@@ -7,7 +7,7 @@ import { request } from '../request';
  * @param password Password
  */
 export function fetchLogin(username: string, password: string) {
-  return request<Api.Auth.LoginToken>({
+  return request<Api.Auth.Token>({
     url: '/auth/token',
     method: 'post',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -18,22 +18,17 @@ export function fetchLogin(username: string, password: string) {
   });
 }
 
-/** Get user info */
-export function fetchGetUserInfo() {
-  return request<Api.Auth.UserInfo>({ url: '/user/profile' });
-}
-
 /**
  * Refresh token
  *
  * @param refreshToken Refresh token
  */
-export function fetchRefreshToken(refreshToken: string) {
-  return request<Api.Auth.LoginToken>({
+export function fetchRefreshToken(refresh_token: string) {
+  return request<Api.Auth.Token>({
     url: '/auth/refresh-token',
     method: 'post',
     data: {
-      refreshToken
+      refresh_token
     }
   });
 }

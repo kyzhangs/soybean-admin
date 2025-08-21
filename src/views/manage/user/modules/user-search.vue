@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed } from 'vue';
-  import { enableStatusOptions, userGenderOptions } from '@/constants/business';
+  import { userGenderOptions } from '@/constants/business';
   import { useFormRules, useNaiveForm } from '@/hooks/common/form';
   import { translateOptions } from '@/utils/common';
   import { $t } from '@/locales';
@@ -32,14 +32,13 @@
 
   function resetModel() {
     model.value = {
-      current: 1,
-      size: 10,
-      status: null,
+      page: 1,
+      page_size: 10,
       username: null,
-      userGender: null,
-      nickName: null,
-      userPhone: null,
-      userEmail: null
+      gender: null,
+      name: null,
+      phone: null,
+      email: null
     };
   }
 
@@ -70,22 +69,23 @@
               class="pr-24px"
             >
               <NSelect
-                v-model:value="model.userGender"
+                v-model:value="model.gender"
                 :placeholder="$t('page.manage.user.form.userGender')"
                 :options="translateOptions(userGenderOptions)"
                 clearable
               />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.user.nickName')" path="nickName" class="pr-24px">
-              <NInput v-model:value="model.nickName" :placeholder="$t('page.manage.user.form.nickName')" />
+              <NInput v-model:value="model.name" :placeholder="$t('page.manage.user.form.nickName')" />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.user.userPhone')" path="userPhone" class="pr-24px">
-              <NInput v-model:value="model.userPhone" :placeholder="$t('page.manage.user.form.userPhone')" />
+              <NInput v-model:value="model.phone" :placeholder="$t('page.manage.user.form.userPhone')" />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.user.userEmail')" path="userEmail" class="pr-24px">
-              <NInput v-model:value="model.userEmail" :placeholder="$t('page.manage.user.form.userEmail')" />
+              <NInput v-model:value="model.email" :placeholder="$t('page.manage.user.form.userEmail')" />
             </NFormItemGi>
-            <NFormItemGi
+            <!--
+ <NFormItemGi
               span="24 s:12 m:6"
               :label="$t('page.manage.user.userStatus')"
               path="userStatus"
@@ -97,7 +97,8 @@
                 :options="translateOptions(enableStatusOptions)"
                 clearable
               />
-            </NFormItemGi>
+            </NFormItemGi> 
+-->
             <NFormItemGi span="24 m:12" class="pr-24px">
               <NSpace class="w-full" justify="end">
                 <NButton @click="reset">

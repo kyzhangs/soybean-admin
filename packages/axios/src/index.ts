@@ -1,8 +1,8 @@
 import axios, { AxiosError } from 'axios';
 import type { AxiosResponse, CreateAxiosDefaults, InternalAxiosRequestConfig } from 'axios';
 import axiosRetry from 'axios-retry';
-import { nanoid } from '@sa/utils';
 import { createAxiosConfig, createDefaultOptions, createRetryOptions } from './options';
+import { generateUuidV4 } from './uuid';
 import { BACKEND_ERROR_CODE, REQUEST_ID_KEY } from './constant';
 import type {
   CustomAxiosRequestConfig,
@@ -33,7 +33,7 @@ function createCommonRequest<
     const config: InternalAxiosRequestConfig = { ...conf };
 
     // set request id
-    const requestId = nanoid();
+    const requestId = generateUuidV4();
     config.headers.set(REQUEST_ID_KEY, requestId);
 
     // config abort controller

@@ -107,6 +107,11 @@ export const request = createFlatRequest(
         backendErrorCode = String(error.response?.data?.code || '');
       }
 
+      // handle 404 error
+      if (error.response?.status === 404) {
+        message = error.response?.data?.message || message;
+      }
+
       // the error message is displayed in the modal
       const modalLogoutCodes = import.meta.env.VITE_SERVICE_MODAL_LOGOUT_CODES?.split(',') || [];
       if (modalLogoutCodes.includes(backendErrorCode)) {
