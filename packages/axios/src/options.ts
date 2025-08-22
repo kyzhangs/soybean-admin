@@ -50,7 +50,7 @@ export function createAxiosConfig(config?: Partial<CreateAxiosDefaults>) {
     },
     validateStatus: isHttpSuccess,
     paramsSerializer: params => {
-      return stringify(params);
+      return stringify(params, { skipNulls: true }); // 过滤掉值为 null 的参数
     }
   };
 

@@ -239,66 +239,6 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
-    name: 'manage',
-    path: '/manage',
-    component: 'layout.base',
-    meta: {
-      title: 'manage',
-      i18nKey: 'route.manage',
-      icon: 'carbon:cloud-service-management',
-      order: 2
-    },
-    children: [
-      {
-        name: 'manage_menu',
-        path: '/manage/menu',
-        component: 'view.manage_menu',
-        meta: {
-          title: 'manage_menu',
-          i18nKey: 'route.manage_menu',
-          icon: 'material-symbols:route',
-          order: 3,
-          keepAlive: true
-        }
-      },
-      {
-        name: 'manage_role',
-        path: '/manage/role',
-        component: 'view.manage_role',
-        meta: {
-          title: 'manage_role',
-          i18nKey: 'route.manage_role',
-          icon: 'carbon:user-role',
-          order: 2,
-          roles: ['R_SUPER']
-        }
-      },
-      {
-        name: 'manage_user',
-        path: '/manage/user',
-        component: 'view.manage_user',
-        meta: {
-          title: 'manage_user',
-          i18nKey: 'route.manage_user',
-          icon: 'ic:round-manage-accounts',
-          order: 1
-        }
-      },
-      {
-        name: 'manage_user-detail',
-        path: '/manage/user-detail/:id',
-        component: 'view.manage_user-detail',
-        props: true,
-        meta: {
-          title: 'manage_user-detail',
-          i18nKey: 'route.manage_user-detail',
-          hideInMenu: true,
-          activeMenu: 'manage_user'
-        }
-      }
-    ]
-  },
-  {
     name: 'multi-menu',
     path: '/multi-menu',
     component: 'layout.base',
@@ -684,6 +624,63 @@ export const generatedRoutes: GeneratedRoute[] = [
             }
           }
         ]
+      }
+    ]
+  },
+  {
+    name: 'system-manage',
+    path: '/system-manage',
+    component: 'layout.base',
+    meta: {
+      title: 'system-manage',
+      i18nKey: 'route.system-manage',
+      icon: "carbon:cloud-service-management",
+      order: 2
+    },
+    children: [
+      {
+        name: 'system-manage_menu',
+        path: '/system-manage/menu',
+        component: 'view.system-manage_menu',
+        meta: {
+          order: 3,
+          title: 'system-manage_menu',
+          i18nKey: 'route.system-manage_menu',
+          icon: 'material-symbols:route',
+          keepAlive: true,
+        }
+      },
+      {
+        name: 'system-manage_role',
+        path: '/system-manage/role',
+        component: 'view.system-manage_role',
+        meta: {
+          order: 2,
+          title: 'system-manage_role',
+          i18nKey: 'route.system-manage_role',
+          icon: 'carbon:user-role',
+        }
+      },
+      {
+        name: 'system-manage_user',
+        path: '/system-manage/user',
+        component: 'view.system-manage_user',
+        meta: {
+          order: 1,
+          title: 'system-manage_user',
+          i18nKey: 'route.system-manage_user',
+          icon: 'ic:round-manage-accounts',
+        }
+      },
+      {
+        name: 'system-manage_user-detail',
+        path: '/system-manage/user-detail/:id',
+        component: 'view.system-manage_user-detail',
+        meta: {
+          title: 'system-manage_user-detail',
+          i18nKey: 'route.system-manage_user-detail',
+          hideInMenu: true
+        }
       }
     ]
   },

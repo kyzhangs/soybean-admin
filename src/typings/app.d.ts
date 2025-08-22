@@ -330,6 +330,7 @@ declare namespace App {
         warning: string;
         error: string;
         index: string;
+        keyword: string;
         keywordSearch: string;
         logout: string;
         logoutConfirm: string;
@@ -697,6 +698,7 @@ declare namespace App {
           user: {
             title: string;
             username: string;
+            password: string;
             gender: string;
             name: string;
             phone: string;
@@ -709,12 +711,14 @@ declare namespace App {
             activeTime: string;
             form: {
               username: string;
-              userGender: string;
-              nickName: string;
-              userPhone: string;
-              userEmail: string;
-              userStatus: string;
-              userRole: string;
+              password: string;
+              gender: string;
+              name: string;
+              phone: string;
+              email: string;
+              keyword: string;
+              isActive: string;
+              isForbid: string;
             };
             addUser: string;
             editUser: string;

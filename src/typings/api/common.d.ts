@@ -23,6 +23,9 @@ declare namespace Api {
     /** common search params of table */
     type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'page' | 'page_size'>;
 
+    type KeywordSearchParams = {
+      keyword: string | null;
+    };
     /**
      * enable status
      *

@@ -1,8 +1,9 @@
 <script setup lang="tsx">
   import { reactive } from 'vue';
   import { NButton, NPopconfirm, NTag, NTooltip } from 'naive-ui';
+  import type { FlatResponseData } from '@sa/axios';
   import { enableStatusRecord, userGenderRecord } from '@/constants/business';
-  import { fetchGetUserList } from '@/service/api';
+  import { fetchBatchDeleteUser, fetchDeleteUser, fetchGetUserList } from '@/service/api';
   import { useAppStore } from '@/store/modules/app';
   import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
   import { $t } from '@/locales';
@@ -14,15 +15,16 @@
   const searchParams: Api.SystemManage.UserSearchParams = reactive({
     page: 1,
     page_size: 10,
-    username: null,
-    gender: null,
-    name: null,
+    keyword: null,
     phone: null,
-    email: null
+    email: null,
+    gender: null,
+    is_active: null,
+    is_forbid: null
   });
 
   const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination, scrollX } =
-    useNaivePaginatedTable({
+    useNaivePaginatedTable<FlatResponseData<any, Api.SystemManage.UserList>, Api.SystemManage.User4Admin>({
       api: () => fetchGetUserList(searchParams),
       transform: response => defaultTransform(response),
       onPaginationParamsChange: params => {
@@ -59,13 +61,16 @@
           align: 'center',
           width: 100,
           render: row => {
+            if (row.gender === null || row.gender === undefined) {
+              return null;
+            }
+
             const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
               1: 'primary',
-              2: 'error',
-              3: 'warning'
+              2: 'error'
             };
 
-            const value = row.gender ? row.gender : 3;
+            const value = row.gender;
             const label = $t(userGenderRecord[value]);
 
             return <NTag type={tagMap[value]}>{label}</NTag>;
@@ -169,22 +174,20 @@
   } = useTableOperate(data, 'id', getData);
 
   async function handleBatchDelete() {
-    // request
-    // eslint-disable-next-line no-console
-    console.log(checkedRowKeys.value);
-
-    onBatchDeleted();
+    const { error } = await fetchBatchDeleteUser(checkedRowKeys.value);
+    if (!error) {
+      onBatchDeleted();
+    }
   }
 
-  function handleDelete(id: any) {
-    // request
-    // eslint-disable-next-line no-console
-    console.log(id);
-
-    onDeleted();
+  async function handleDelete(id: number) {
+    const { error } = await fetchDeleteUser(id);
+    if (!error) {
+      onDeleted();
+    }
   }
 
-  function edit(id: any) {
+  function edit(id: number) {
     handleEdit(id);
   }
 </script>
@@ -220,7 +223,7 @@
         v-model:visible="drawerVisible"
         :operate-type="operateType"
         :row-data="editingData"
-        @submitted="getDataByPage"
+        @submitted="getData"
       />
     </NCard>
   </div>

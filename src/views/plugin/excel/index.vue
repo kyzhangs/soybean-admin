@@ -56,13 +56,12 @@
         align: 'center',
         width: 100,
         render: row => {
-          const value = row.gender ? row.gender : 3;
+          const value = row.gender as Api.SystemManage.UserGender;
           const label = $t(userGenderRecord[value]);
 
           const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
             1: 'primary',
-            2: 'error',
-            3: 'warning'
+            2: 'error'
           };
 
           return <NTag type={tagMap[value]}>{label}</NTag>;

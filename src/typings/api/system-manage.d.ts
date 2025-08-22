@@ -5,37 +5,13 @@ declare namespace Api {
    * backend api module: "systemManage"
    */
   namespace SystemManage {
-    // type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'page' | 'page_size'>;
-
-    /** role */
-    type Role = Common.CommonRecord<{
-      /** role name */
-      roleName: string;
-      /** role code */
-      roleCode: string;
-      /** role description */
-      roleDesc: string;
-    }>;
-
-    /** role search params */
-    type RoleSearchParams = CommonType.RecordNullable<
-      Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'status'> & Api.Common.CommonSearchParams
-    >;
-
-    /** role list */
-    type RoleList = Common.PaginatingQueryRecord<Role>;
-
-    /** all role */
-    type AllRole = Pick<Role, 'id' | 'roleName' | 'roleCode'>;
-
     /**
      * user gender
      *
      * - "1": "male"
      * - "2": "female"
-     * - "3": "unknown"
      */
-    type UserGender = '1' | '2' | '3';
+    type UserGender = '1' | '2';
 
     /** user */
     type User = Common.CommonRecord<{
@@ -57,25 +33,53 @@ declare namespace Api {
         active_time: string;
       }>;
 
-    /** user search params */
-    type UserSearchParams = CommonType.RecordNullable<
-      Api.Common.CommonSearchParams & Pick<Api.SystemManage.User, 'username' | 'gender' | 'name' | 'phone' | 'email'>
-    >;
-
-    type UserCreate = Pick<User, 'username' | 'name' | 'email' | 'phone' | 'gender' | 'avatar'> & {
-      is_active: boolean;
+    type User4Admin = User & {
+      /** is forbidden */
       is_forbid: boolean;
+      /** user is_active */
+      is_active: boolean;
     };
 
-    /** user list */
-    type UserList = Common.PaginatingQueryRecord<
-      User & {
-        /** is forbidden */
-        is_forbid: boolean;
-        /** user is_active */
-        is_active: boolean;
-      }
+    /** user search params */
+    type UserSearchParams = CommonType.RecordNullable<
+      Api.Common.CommonSearchParams &
+        Api.Common.KeywordSearchParams &
+        Pick<Api.SystemManage.User4Admin, 'email' | 'phone' | 'gender' | 'is_active' | 'is_forbid'>
     >;
+
+    type UserCreate = Pick<
+      User4Admin,
+      'username' | 'gender' | 'name' | 'email' | 'phone' | 'avatar' | 'is_active' | 'is_forbid'
+    >;
+
+    type UserUpdateParams = Pick<
+      User4Admin,
+      'name' | 'gender' | 'email' | 'phone' | 'avatar' | 'is_active' | 'is_forbid'
+    >;
+
+    /** user list */
+    type UserList = Common.PaginatingQueryRecord<User4Admin>;
+
+    /** role */
+    type Role = Common.CommonRecord<{
+      /** role name */
+      roleName: string;
+      /** role code */
+      roleCode: string;
+      /** role description */
+      roleDesc: string;
+    }>;
+
+    /** role search params */
+    type RoleSearchParams = CommonType.RecordNullable<
+      Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'status'> & Api.Common.CommonSearchParams
+    >;
+
+    /** role list */
+    type RoleList = Common.PaginatingQueryRecord<Role>;
+
+    /** all role */
+    type AllRole = Pick<Role, 'id' | 'roleName' | 'roleCode'>;
 
     /**
      * menu type

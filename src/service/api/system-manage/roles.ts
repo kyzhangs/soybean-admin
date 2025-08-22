@@ -1,4 +1,4 @@
-import { request } from '../request';
+import { request } from '@/service/request';
 
 /** get role list */
 export function fetchGetRoleList(params?: Api.SystemManage.RoleSearchParams) {
@@ -21,14 +21,6 @@ export function fetchGetAllRoles() {
   });
 }
 
-/** get user list */
-export function fetchGetUserList(params?: Api.SystemManage.UserSearchParams) {
-  return request<Api.SystemManage.UserList>({
-    url: '/system-manage/users',
-    params
-  });
-}
-
 /** get menu list */
 export function fetchGetMenuList() {
   return request<Api.SystemManage.MenuList>({
@@ -41,14 +33,6 @@ export function fetchGetMenuList() {
 export function fetchGetAllPages() {
   return request<string[]>({
     url: '/systemManage/getAllPages',
-    method: 'get'
-  });
-}
-
-/** get menu tree */
-export function fetchGetMenuTree() {
-  return request<Api.SystemManage.MenuTree[]>({
-    url: '/systemManage/getMenuTree',
     method: 'get'
   });
 }
