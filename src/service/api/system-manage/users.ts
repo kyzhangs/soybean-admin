@@ -9,8 +9,8 @@ export function fetchGetUserList(params?: Api.SystemManage.UserSearchParams) {
 }
 
 /** create user */
-export function fetchCreateUser(data?: Api.SystemManage.UserCreate) {
-  return request<Api.SystemManage.User4Admin>({
+export function fetchCreateUser(data: Api.SystemManage.UserCreateParams) {
+  return request<Api.SystemManage.User>({
     url: '/system-manage/users',
     method: 'post',
     data
@@ -19,7 +19,7 @@ export function fetchCreateUser(data?: Api.SystemManage.UserCreate) {
 
 /** batch delete user */
 export function fetchBatchDeleteUser(ids: string[]) {
-  return request<Api.SystemManage.User4Admin>({
+  return request<Api.SystemManage.User>({
     url: '/system-manage/users',
     method: 'delete',
     data: { ids }
@@ -27,8 +27,8 @@ export function fetchBatchDeleteUser(ids: string[]) {
 }
 
 /** update user */
-export function fetchUpdateUser(user_id: number, data?: Api.SystemManage.UserUpdateParams) {
-  return request<Api.SystemManage.User4Admin>({
+export function fetchUpdateUser(user_id: number, data: Api.SystemManage.UserUpdateParams) {
+  return request<Api.SystemManage.User>({
     url: `/system-manage/users/${user_id}`,
     method: 'put',
     data
@@ -37,8 +37,17 @@ export function fetchUpdateUser(user_id: number, data?: Api.SystemManage.UserUpd
 
 /** delete user */
 export function fetchDeleteUser(user_id: number) {
-  return request<Api.SystemManage.User4Admin>({
+  return request<Api.SystemManage.User>({
     url: `/system-manage/users/${user_id}`,
     method: 'delete'
+  });
+}
+
+/** reset user password */
+export function fetchResetUserPassword(user_id: number, data: Api.SystemManage.ResetUserPassword) {
+  return request<Api.SystemManage.User>({
+    url: `/system-manage/users/${user_id}/reset-password`,
+    method: 'post',
+    data
   });
 }

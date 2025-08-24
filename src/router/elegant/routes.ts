@@ -634,7 +634,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: 'system-manage',
       i18nKey: 'route.system-manage',
-      icon: "carbon:cloud-service-management",
+      icon: 'carbon:cloud-service-management',
       order: 2
     },
     children: [
@@ -647,7 +647,7 @@ export const generatedRoutes: GeneratedRoute[] = [
           title: 'system-manage_menu',
           i18nKey: 'route.system-manage_menu',
           icon: 'material-symbols:route',
-          keepAlive: true,
+          keepAlive: true
         }
       },
       {
@@ -658,18 +658,7 @@ export const generatedRoutes: GeneratedRoute[] = [
           order: 2,
           title: 'system-manage_role',
           i18nKey: 'route.system-manage_role',
-          icon: 'carbon:user-role',
-        }
-      },
-      {
-        name: 'system-manage_user',
-        path: '/system-manage/user',
-        component: 'view.system-manage_user',
-        meta: {
-          order: 1,
-          title: 'system-manage_user',
-          i18nKey: 'route.system-manage_user',
-          icon: 'ic:round-manage-accounts',
+          icon: 'carbon:user-role'
         }
       },
       {
@@ -680,6 +669,16 @@ export const generatedRoutes: GeneratedRoute[] = [
           title: 'system-manage_user-detail',
           i18nKey: 'route.system-manage_user-detail',
           hideInMenu: true
+        }
+      },
+      {
+        name: 'system-manage_users',
+        path: '/system-manage/users',
+        component: 'view.system-manage_users',
+        meta: {
+          title: 'system-manage_users',
+          i18nKey: 'route.system-manage_users',
+          icon: 'ic:round-manage-accounts'
         }
       }
     ]

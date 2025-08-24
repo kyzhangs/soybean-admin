@@ -61,6 +61,6 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   "system-manage_menu": () => import("@/views/system-manage/menu/index.vue"),
   "system-manage_role": () => import("@/views/system-manage/role/index.vue"),
   "system-manage_user-detail": () => import("@/views/system-manage/user-detail/[id].vue"),
-  "system-manage_user": () => import("@/views/system-manage/user/index.vue"),
+  "system-manage_users": () => import("@/views/system-manage/users/index.vue"),
   "user-center": () => import("@/views/user-center/index.vue"),
 };

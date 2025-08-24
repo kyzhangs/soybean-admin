@@ -20,6 +20,7 @@ const local: App.I18n.Schema = {
     config: '配置',
     confirm: '确认',
     delete: '删除',
+    generateRandom: '随机生成',
     deleteSuccess: '删除成功',
     confirmDelete: '确认删除吗？',
     edit: '编辑',
@@ -236,7 +237,7 @@ const local: App.I18n.Schema = {
     'function_toggle-auth': '切换权限',
     'function_super-page': '超级管理员可见',
     'system-manage': '系统管理',
-    'system-manage_user': '用户管理',
+    'system-manage_users': '用户管理',
     'system-manage_user-detail': '用户详情',
     'system-manage_role': '角色管理',
     'system-manage_menu': '菜单管理',
@@ -531,6 +532,10 @@ const local: App.I18n.Schema = {
         isActive: '是否激活',
         lastLogin: '最近登录时间',
         activeTime: '激活时间：{time}',
+        resetPassword: '重置密码',
+        resetPasswordSuccess: '重置密码成功',
+        randomPasswordSuccess: '随机密码生成成功',
+        contact: '联系方式',
         form: {
           username: '请输入用户名',
           password: '请输入密码',
@@ -539,9 +544,11 @@ const local: App.I18n.Schema = {
           phone: '请输入手机号',
           email: '请输入邮箱',
           keyword: '请输入用户名或姓名',
+          contact: '请输入邮箱或手机号',
           isActive: '激活状态',
           isForbid: '账号状态'
         },
+        advancedSearch: '高级搜索',
         addUser: '新增用户',
         editUser: '编辑用户',
         userGender: {
@@ -624,7 +631,7 @@ const local: App.I18n.Schema = {
     required: '不能为空',
     username: {
       required: '请输入用户名',
-      invalid: '用户名格式不正确'
+      invalid: '请输入4-16位字符，包含字母、数字、_、-'
     },
     phone: {
       required: '请输入手机号',
@@ -632,7 +639,7 @@ const local: App.I18n.Schema = {
     },
     pwd: {
       required: '请输入密码',
-      invalid: '密码格式不正确，6-18位字符，包含字母、数字、下划线'
+      invalid: '请输入6-18位字符，包含字母、数字、下划线'
     },
     confirmPwd: {
       required: '请输入确认密码',

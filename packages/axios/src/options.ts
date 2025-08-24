@@ -50,7 +50,15 @@ export function createAxiosConfig(config?: Partial<CreateAxiosDefaults>) {
     },
     validateStatus: isHttpSuccess,
     paramsSerializer: params => {
-      return stringify(params, { skipNulls: true }); // 过滤掉值为 null 的参数
+      return stringify(params, {
+        filter: (_, value) => {
+          // 过滤掉 null、undefined 和空字符串
+          if (value === null || value === undefined || value === '') {
+            return undefined;
+          }
+          return value;
+        }
+      });
     }
   };
 

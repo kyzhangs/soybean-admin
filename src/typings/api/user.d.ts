@@ -5,9 +5,13 @@ declare namespace Api {
    * backend api module: "user"
    */
   namespace User {
-    interface UserInfo extends Api.SystemManage.User {
-      roles: string[];
-      buttons: string[];
-    }
+    /** user info */
+    type UserInfo = Pick<Api.SystemManage.User, 'id' | 'username'> &
+      CommonType.RecordNullable<
+        Pick<Api.SystemManage.User, 'name' | 'email' | 'phone' | 'avatar' | 'active_time' | 'last_login'>
+      > & {
+        roles: string[];
+        buttons: string[];
+      };
   }
 }

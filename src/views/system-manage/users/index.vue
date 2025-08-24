@@ -1,7 +1,6 @@
 <script setup lang="tsx">
-  import { reactive } from 'vue';
+  import { reactive, ref } from 'vue';
   import { NButton, NPopconfirm, NTag, NTooltip } from 'naive-ui';
-  import type { FlatResponseData } from '@sa/axios';
   import { enableStatusRecord, userGenderRecord } from '@/constants/business';
   import { fetchBatchDeleteUser, fetchDeleteUser, fetchGetUserList } from '@/service/api';
   import { useAppStore } from '@/store/modules/app';
@@ -9,6 +8,7 @@
   import { $t } from '@/locales';
   import UserOperateDrawer from './modules/user-operate-drawer.vue';
   import UserSearch from './modules/user-search.vue';
+  import ResetPasswordModal from './modules/reset-password-modal.vue';
 
   const appStore = useAppStore();
 
@@ -16,20 +16,19 @@
     page: 1,
     page_size: 10,
     keyword: null,
-    phone: null,
-    email: null,
+    contact: null,
     gender: null,
     is_active: null,
     is_forbid: null
   });
 
   const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination, scrollX } =
-    useNaivePaginatedTable<FlatResponseData<any, Api.SystemManage.UserList>, Api.SystemManage.User4Admin>({
+    useNaivePaginatedTable({
       api: () => fetchGetUserList(searchParams),
       transform: response => defaultTransform(response),
       onPaginationParamsChange: params => {
-        searchParams.page = params.page;
-        searchParams.page_size = params.pageSize;
+        searchParams.page = params.page!;
+        searchParams.page_size = params.pageSize!;
       },
       columns: () => [
         {
@@ -61,7 +60,7 @@
           align: 'center',
           width: 100,
           render: row => {
-            if (row.gender === null || row.gender === undefined) {
+            if (row.gender === null) {
               return null;
             }
 
@@ -142,6 +141,9 @@
           width: 180,
           render: row => (
             <div class="flex-center gap-8px">
+              <NButton type="warning" ghost size="small" onClick={() => handleResetPassword(row.id)}>
+                {$t('page.manage.user.resetPassword')}
+              </NButton>
               <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
                 {$t('common.edit')}
               </NButton>
@@ -172,6 +174,15 @@
     onDeleted
     // closeDrawer
   } = useTableOperate(data, 'id', getData);
+
+  // 重置密码弹框状态管理
+  const resetPasswordModalVisible = ref(false);
+  const currentUserId = ref<number>(0);
+
+  function handleResetPassword(id: number) {
+    currentUserId.value = id;
+    resetPasswordModalVisible.value = true;
+  }
 
   async function handleBatchDelete() {
     const { error } = await fetchBatchDeleteUser(checkedRowKeys.value);
@@ -225,6 +236,7 @@
         :row-data="editingData"
         @submitted="getData"
       />
+      <ResetPasswordModal v-model:visible="resetPasswordModalVisible" :user-id="currentUserId" @submitted="getData" />
     </NCard>
   </div>
 </template>

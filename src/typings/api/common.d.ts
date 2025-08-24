@@ -23,16 +23,13 @@ declare namespace Api {
     /** common search params of table */
     type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'page' | 'page_size'>;
 
-    type KeywordSearchParams = {
-      keyword: string | null;
-    };
     /**
      * enable status
      *
-     * - "0": disabled
      * - "1": enabled
+     * - "0": disabled
      */
-    type EnableStatus = '0' | '1';
+    type EnableStatus = '1' | '0';
 
     /** common record */
     type CommonRecord<T = any> = {

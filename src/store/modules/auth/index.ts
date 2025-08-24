@@ -31,6 +31,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     avatar: null,
     is_active: false,
     active_time: null,
+    last_login: null,
     roles: [],
     buttons: []
   });

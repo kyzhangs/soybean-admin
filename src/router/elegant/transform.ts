@@ -239,8 +239,8 @@ const routeMap: RouteMap = {
   "system-manage": "/system-manage",
   "system-manage_menu": "/system-manage/menu",
   "system-manage_role": "/system-manage/role",
-  "system-manage_user": "/system-manage/user",
   "system-manage_user-detail": "/system-manage/user-detail/:id",
+  "system-manage_users": "/system-manage/users",
   "user-center": "/user-center"
 };
 

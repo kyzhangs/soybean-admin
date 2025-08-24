@@ -5,7 +5,9 @@ export const enableStatusRecord: Record<Api.Common.EnableStatus, App.I18n.I18nKe
   '1': 'page.manage.common.status.enable'
 };
 
-export const enableStatusOptions = transformRecordToOption(enableStatusRecord);
+export const enableStatusOptions = transformRecordToOption(enableStatusRecord).sort(
+  (a, b) => Number(b.value) - Number(a.value)
+);
 
 export const userGenderRecord: Record<Api.SystemManage.UserGender, App.I18n.I18nKey> = {
   '1': 'page.manage.user.userGender.male',

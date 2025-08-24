@@ -5,6 +5,9 @@ declare namespace Api {
    * backend api module: "systemManage"
    */
   namespace SystemManage {
+    /** page search params */
+    type PageSearchParams<T = any> = Common.CommonSearchParams & T;
+
     /**
      * user gender
      *
@@ -13,52 +16,44 @@ declare namespace Api {
      */
     type UserGender = '1' | '2';
 
-    /** user */
     type User = Common.CommonRecord<{
-      /** username */
       username: string;
-    }> &
-      CommonType.RecordNullable<{
-        /** name */
-        name: string;
-        /** user gender */
-        gender: UserGender;
-        /** user email */
-        email: string;
-        /** user phone */
-        phone: string;
-        /** avatar */
-        avatar: string;
-        /** active time */
-        active_time: string;
-      }>;
-
-    type User4Admin = User & {
-      /** is forbidden */
-      is_forbid: boolean;
-      /** user is_active */
+      name: string;
+      gender: UserGender;
+      email: string;
+      phone: string;
+      avatar: string;
       is_active: boolean;
-    };
+      active_time: string;
+      is_forbid: boolean;
+      last_login: string;
+    }>;
 
     /** user search params */
-    type UserSearchParams = CommonType.RecordNullable<
-      Api.Common.CommonSearchParams &
-        Api.Common.KeywordSearchParams &
-        Pick<Api.SystemManage.User4Admin, 'email' | 'phone' | 'gender' | 'is_active' | 'is_forbid'>
+    type UserSearchParams = PageSearchParams<
+      CommonType.RecordNullable<
+        Pick<User, 'gender' | 'is_active' | 'is_forbid'> & {
+          keyword: string;
+          contact: string;
+        }
+      >
     >;
 
-    type UserCreate = Pick<
-      User4Admin,
-      'username' | 'gender' | 'name' | 'email' | 'phone' | 'avatar' | 'is_active' | 'is_forbid'
-    >;
+    type UserCreateParams = CommonType.RecordNullable<Pick<User, 'name' | 'gender' | 'email' | 'phone'>> & {
+      username: string;
+      is_active: boolean;
+      is_forbid: boolean;
+    };
 
-    type UserUpdateParams = Pick<
-      User4Admin,
-      'name' | 'gender' | 'email' | 'phone' | 'avatar' | 'is_active' | 'is_forbid'
-    >;
+    type UserUpdateParams = Pick<UserCreateParams, 'name' | 'gender' | 'email' | 'phone' | 'is_active' | 'is_forbid'>;
 
     /** user list */
-    type UserList = Common.PaginatingQueryRecord<User4Admin>;
+    type UserList = Common.PaginatingQueryRecord<User>;
+
+    type ResetUserPassword = {
+      /** new password */
+      password: string;
+    };
 
     /** role */
     type Role = Common.CommonRecord<{

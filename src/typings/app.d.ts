@@ -324,6 +324,7 @@ declare namespace App {
         config: string;
         confirm: string;
         delete: string;
+        generateRandom: string;
         deleteSuccess: string;
         confirmDelete: string;
         edit: string;
@@ -709,6 +710,10 @@ declare namespace App {
             isActive: string;
             lastLogin: string;
             activeTime: string;
+            resetPassword: string;
+            resetPasswordSuccess: string;
+            randomPasswordSuccess: string;
+            contact: string;
             form: {
               username: string;
               password: string;
@@ -717,9 +722,11 @@ declare namespace App {
               phone: string;
               email: string;
               keyword: string;
+              contact: string;
               isActive: string;
               isForbid: string;
             };
+            advancedSearch: string;
             addUser: string;
             editUser: string;
             userGender: {

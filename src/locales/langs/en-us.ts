@@ -20,6 +20,7 @@ const local: App.I18n.Schema = {
     config: 'Config',
     confirm: 'Confirm',
     delete: 'Delete',
+    generateRandom: 'Generate Random',
     deleteSuccess: 'Delete Success',
     confirmDelete: 'Are you sure you want to delete?',
     edit: 'Edit',
@@ -239,7 +240,7 @@ const local: App.I18n.Schema = {
     'function_toggle-auth': 'Toggle Auth',
     'function_super-page': 'Super Admin Visible',
     'system-manage': 'System Manage',
-    'system-manage_user': 'User Manage',
+    'system-manage_users': 'Users Manage',
     'system-manage_user-detail': 'User Detail',
     'system-manage_role': 'Role Manage',
     'system-manage_menu': 'Menu Manage',
@@ -522,7 +523,7 @@ const local: App.I18n.Schema = {
       },
       user: {
         title: 'User List',
-        username: 'User Name',
+        username: 'Username',
         password: 'Password',
         gender: 'Gender',
         name: 'Name',
@@ -534,6 +535,10 @@ const local: App.I18n.Schema = {
         isActive: 'Is Active',
         lastLogin: 'Last Login Time',
         activeTime: 'Active Time: {time}',
+        resetPassword: 'Reset Password',
+        randomPasswordSuccess: 'Random password successfully',
+        resetPasswordSuccess: 'Reset password successfully',
+        contact: 'Contact Information',
         form: {
           username: 'Please enter username',
           password: 'Please enter password',
@@ -542,9 +547,11 @@ const local: App.I18n.Schema = {
           phone: 'Please enter phone number',
           email: 'Please enter email',
           keyword: 'Please enter username or name',
+          contact: 'Please enter email or phone number',
           isActive: 'Is Active',
           isForbid: 'Is Forbid'
         },
+        advancedSearch: 'Advanced Search',
         addUser: 'Add User',
         editUser: 'Edit User',
         userGender: {
@@ -627,7 +634,7 @@ const local: App.I18n.Schema = {
     required: 'Cannot be empty',
     username: {
       required: 'Please enter username',
-      invalid: 'Username format is incorrect'
+      invalid: 'Please enter 4-16 characters, including letters, numbers, _ and -'
     },
     phone: {
       required: 'Please enter phone number',
@@ -635,7 +642,7 @@ const local: App.I18n.Schema = {
     },
     pwd: {
       required: 'Please enter password',
-      invalid: '6-18 characters, including letters, numbers, and underscores'
+      invalid: 'Please enter 6-18 characters, including letters, numbers, and underscores'
     },
     confirmPwd: {
       required: 'Please enter password again',

@@ -12,12 +12,7 @@
 
   const searchParams: Api.SystemManage.UserSearchParams = reactive({
     page: 1,
-    page_size: 999,
-    username: null,
-    gender: null,
-    name: null,
-    phone: null,
-    email: null
+    page_size: 999
   });
 
   const { columns, data, loading } = useNaiveTable({
@@ -56,11 +51,15 @@
         align: 'center',
         width: 100,
         render: row => {
-          const value = row.gender as Api.SystemManage.UserGender;
+          if (row.gender === null || row.gender === undefined) {
+            return null;
+          }
+
+          const value = row.gender;
           const label = $t(userGenderRecord[value]);
 
           const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
-            1: 'primary',
+            1: 'info',
             2: 'error'
           };
 
@@ -126,7 +125,7 @@
 
           const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
             1: 'success',
-            0: 'warning'
+            0: 'error'
           };
 
           return <NTag type={tagMap[value]}>{label}</NTag>;
