@@ -20,14 +20,6 @@
 
   const model = defineModel<Api.SystemManage.UserSearchParams>('model', { required: true });
 
-  // // 高级搜索展开状态
-  // const showAdvancedSearch = ref(false);
-
-  // // 切换高级搜索展开状态
-  // async function toggleAdvancedSearch() {
-  //   showAdvancedSearch.value = !showAdvancedSearch.value;
-  // }
-
   const isActiveComputed = computed({
     get: () => {
       if (model.value.is_active === null) {
@@ -110,6 +102,7 @@
                     v-model:value="model.contact"
                     :placeholder="$t('page.manage.user.form.contact')"
                     clearable
+                    @clear="search"
                     @keyup.enter="search"
                   />
                 </NFormItemGi>
