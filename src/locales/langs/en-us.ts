@@ -551,7 +551,6 @@ const local: App.I18n.Schema = {
           isActive: 'Is Active',
           isForbid: 'Is Forbid'
         },
-        advancedSearch: 'Advanced Search',
         addUser: 'Add User',
         editUser: 'Edit User',
         userGender: {

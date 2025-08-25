@@ -13,8 +13,9 @@ declare namespace Api {
      *
      * - "1": "male"
      * - "2": "female"
+     * - "3": "unknown"
      */
-    type UserGender = '1' | '2';
+    type UserGender = '1' | '2' | '3';
 
     type User = Common.CommonRecord<{
       username: string;
@@ -25,14 +26,14 @@ declare namespace Api {
       avatar: string;
       is_active: boolean;
       active_time: string;
-      is_forbid: boolean;
+      status: Api.Common.EnableStatus;
       last_login: string;
     }>;
 
     /** user search params */
     type UserSearchParams = PageSearchParams<
       CommonType.RecordNullable<
-        Pick<User, 'gender' | 'is_active' | 'is_forbid'> & {
+        Pick<User, 'gender' | 'is_active' | 'status'> & {
           keyword: string;
           contact: string;
         }
@@ -42,10 +43,10 @@ declare namespace Api {
     type UserCreateParams = CommonType.RecordNullable<Pick<User, 'name' | 'gender' | 'email' | 'phone'>> & {
       username: string;
       is_active: boolean;
-      is_forbid: boolean;
+      status: Api.Common.EnableStatus;
     };
 
-    type UserUpdateParams = Pick<UserCreateParams, 'name' | 'gender' | 'email' | 'phone' | 'is_active' | 'is_forbid'>;
+    type UserUpdateParams = Pick<UserCreateParams, 'name' | 'gender' | 'email' | 'phone' | 'is_active' | 'status'>;
 
     /** user list */
     type UserList = Common.PaginatingQueryRecord<User>;

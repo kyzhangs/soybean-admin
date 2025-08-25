@@ -51,7 +51,7 @@
       phone: null,
       email: null,
       is_active: true,
-      is_forbid: false
+      status: '1'
     };
   }
 
@@ -65,19 +65,6 @@
 
   const isEdit = computed(() => props.operateType === 'edit');
   const userId = computed(() => props.rowData?.id || -1);
-
-  const isForbidComputed = computed({
-    get: () => {
-      return model.value.is_forbid ? '0' : '1';
-    },
-    set: (value: string | null) => {
-      if (value === '0') {
-        model.value.is_forbid = true;
-      } else if (value === '1') {
-        model.value.is_forbid = false;
-      }
-    }
-  });
 
   const isNameManual = ref({
     is_edit: false,
@@ -236,8 +223,8 @@
           </NRadioGroup>
         </NFormItemGi>
 
-        <NFormItemGi :span="12" :label="$t('page.manage.user.form.isForbid')" path="is_forbid">
-          <NRadioGroup v-model:value="isForbidComputed">
+        <NFormItemGi :span="12" :label="$t('page.manage.user.form.isForbid')" path="status">
+          <NRadioGroup v-model:value="model.status">
             <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
         </NFormItemGi>

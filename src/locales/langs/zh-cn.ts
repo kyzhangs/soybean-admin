@@ -548,7 +548,6 @@ const local: App.I18n.Schema = {
           isActive: '激活状态',
           isForbid: '账号状态'
         },
-        advancedSearch: '高级搜索',
         addUser: '新增用户',
         editUser: '编辑用户',
         userGender: {

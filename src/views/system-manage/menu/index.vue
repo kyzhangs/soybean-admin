@@ -96,12 +96,16 @@
         align: 'center',
         width: 80,
         render: row => {
+          if (row.status === null || row.status === undefined) {
+            return null;
+          }
+
           const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
             1: 'success',
-            0: 'warning'
+            2: 'error'
           };
 
-          const value = row.status === '1' ? 1 : 0;
+          const value = row.status;
           const label = $t(enableStatusRecord[value]);
 
           return <NTag type={tagMap[value]}>{label}</NTag>;

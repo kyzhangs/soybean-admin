@@ -19,7 +19,7 @@
     contact: null,
     gender: null,
     is_active: null,
-    is_forbid: null
+    status: null
   });
 
   const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination, scrollX } =
@@ -66,7 +66,8 @@
 
             const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
               1: 'primary',
-              2: 'error'
+              2: 'error',
+              3: 'warning'
             };
 
             const value = row.gender;
@@ -118,17 +119,21 @@
           width: 180
         },
         {
-          key: 'is_forbid',
+          key: 'status',
           title: $t('page.manage.user.status'),
           align: 'center',
           width: 100,
           render: row => {
+            if (row.status === null || row.status === undefined) {
+              return null;
+            }
+
             const statusMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
               '1': 'success',
-              '0': 'error'
+              '2': 'error'
             };
 
-            const value = row.is_forbid ? 0 : 1;
+            const value = row.status;
             const label = $t(enableStatusRecord[value]);
 
             return <NTag type={statusMap[value]}>{label}</NTag>;

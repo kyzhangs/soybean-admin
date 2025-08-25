@@ -1,5 +1,4 @@
 <script setup lang="tsx">
-  import { reactive } from 'vue';
   import { NButton, NTag, NTooltip } from 'naive-ui';
   import { utils, writeFile } from 'xlsx';
   import { enableStatusRecord, userGenderRecord } from '@/constants/business';
@@ -10,13 +9,13 @@
 
   const appStore = useAppStore();
 
-  const searchParams: Api.SystemManage.UserSearchParams = reactive({
-    page: 1,
-    page_size: 999
-  });
+  // const searchParams: Api.SystemManage.UserSearchParams = reactive({
+  //   page: 1,
+  //   page_size: 999
+  // });
 
   const { columns, data, loading } = useNaiveTable({
-    api: () => fetchGetUserList(searchParams),
+    api: () => fetchGetUserList(),
     transform: response => {
       const { data: list, error } = response;
 
@@ -60,7 +59,8 @@
 
           const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
             1: 'info',
-            2: 'error'
+            2: 'error',
+            3: 'warning'
           };
 
           return <NTag type={tagMap[value]}>{label}</NTag>;
@@ -115,20 +115,24 @@
         width: 180
       },
       {
-        key: 'is_forbid',
+        key: 'status',
         title: $t('page.manage.user.status'),
         align: 'center',
         width: 100,
         render: row => {
-          const value = row.is_forbid ? '0' : '1';
-          const label = $t(enableStatusRecord[value]);
+          if (row.status === null || row.status === undefined) {
+            return null;
+          }
 
-          const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
-            1: 'success',
-            0: 'error'
+          const statusMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
+            '1': 'success',
+            '2': 'error'
           };
 
-          return <NTag type={tagMap[value]}>{label}</NTag>;
+          const value = row.status;
+          const label = $t(enableStatusRecord[value]);
+
+          return <NTag type={statusMap[value]}>{label}</NTag>;
         }
       }
     ]
@@ -162,20 +166,6 @@
     }
 
     const { key } = col;
-
-    // if (key === 'userRoles') {
-    //   return item.userRoles.map(role => role).join(',');
-    // }
-
-    if (key === 'is_forbid') {
-      const value = item.is_forbid ? '0' : '1';
-      return (item.is_forbid && $t(enableStatusRecord[value])) || null;
-    }
-
-    if (key === 'is_active') {
-      const value = item.is_active ? '1' : '0';
-      return (item.is_active && $t(enableStatusRecord[value])) || null;
-    }
 
     if (key === 'gender') {
       const value = item.gender ? item.gender : '3';

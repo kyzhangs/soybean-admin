@@ -1,17 +1,16 @@
 import { transformRecordToOption } from '@/utils/common';
 
 export const enableStatusRecord: Record<Api.Common.EnableStatus, App.I18n.I18nKey> = {
-  '0': 'page.manage.common.status.disable',
-  '1': 'page.manage.common.status.enable'
+  '1': 'page.manage.common.status.enable',
+  '2': 'page.manage.common.status.disable'
 };
 
-export const enableStatusOptions = transformRecordToOption(enableStatusRecord).sort(
-  (a, b) => Number(b.value) - Number(a.value)
-);
+export const enableStatusOptions = transformRecordToOption(enableStatusRecord);
 
 export const userGenderRecord: Record<Api.SystemManage.UserGender, App.I18n.I18nKey> = {
   '1': 'page.manage.user.userGender.male',
-  '2': 'page.manage.user.userGender.female'
+  '2': 'page.manage.user.userGender.female',
+  '3': 'page.manage.user.userGender.unknown'
 };
 
 export const userGenderOptions = transformRecordToOption(userGenderRecord);

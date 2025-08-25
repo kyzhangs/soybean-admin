@@ -20,38 +20,19 @@
 
   const model = defineModel<Api.SystemManage.UserSearchParams>('model', { required: true });
 
+  // 添加计算属性来处理 is_active 的类型转换
   const isActiveComputed = computed({
     get: () => {
-      if (model.value.is_active === null) {
+      if (model.value.is_active === null || model.value.is_active === undefined) {
         return null;
       }
       return model.value.is_active ? 'Y' : 'N';
     },
     set: (value: string | null) => {
-      if (value === 'Y') {
-        model.value.is_active = true;
-      } else if (value === 'N') {
-        model.value.is_active = false;
-      } else {
+      if (value === null) {
         model.value.is_active = null;
-      }
-    }
-  });
-
-  const isForbidComputed = computed({
-    get: () => {
-      if (model.value.is_forbid === null) {
-        return null;
-      }
-      return model.value.is_forbid ? '0' : '1';
-    },
-    set: (value: string | null) => {
-      if (value === '0') {
-        model.value.is_forbid = true;
-      } else if (value === '1') {
-        model.value.is_forbid = false;
       } else {
-        model.value.is_forbid = null;
+        model.value.is_active = value === 'Y';
       }
     }
   });
@@ -64,7 +45,7 @@
       contact: null,
       gender: null,
       is_active: null,
-      is_forbid: null
+      status: null
     };
   }
 
@@ -139,7 +120,7 @@
                   class="pr-24px"
                 >
                   <NSelect
-                    v-model:value="isForbidComputed"
+                    v-model:value="model.status"
                     :placeholder="$t('page.manage.user.form.isForbid')"
                     :options="translateOptions(enableStatusOptions)"
                     clearable

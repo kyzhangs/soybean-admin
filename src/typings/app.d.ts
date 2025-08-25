@@ -726,7 +726,6 @@ declare namespace App {
               isActive: string;
               isForbid: string;
             };
-            advancedSearch: string;
             addUser: string;
             editUser: string;
             userGender: {
