@@ -639,11 +639,22 @@ export const generatedRoutes: GeneratedRoute[] = [
     },
     children: [
       {
+        name: 'system-manage_apis',
+        path: '/system-manage/apis',
+        component: 'view.system-manage_apis',
+        meta: {
+          title: 'system-manage_apis',
+          i18nKey: 'route.system-manage_apis',
+          icon: 'carbon:api',
+          order: 2
+        }
+      },
+      {
         name: 'system-manage_menu',
         path: '/system-manage/menu',
         component: 'view.system-manage_menu',
         meta: {
-          order: 3,
+          order: 4,
           title: 'system-manage_menu',
           i18nKey: 'route.system-manage_menu',
           icon: 'material-symbols:route',
@@ -655,7 +666,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/system-manage/role',
         component: 'view.system-manage_role',
         meta: {
-          order: 2,
+          order: 3,
           title: 'system-manage_role',
           i18nKey: 'route.system-manage_role',
           icon: 'carbon:user-role'
@@ -678,7 +689,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         meta: {
           title: 'system-manage_users',
           i18nKey: 'route.system-manage_users',
-          icon: 'ic:round-manage-accounts'
+          icon: 'ic:round-manage-accounts',
+          order: 1
         }
       }
     ]

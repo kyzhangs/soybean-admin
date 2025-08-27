@@ -49,7 +49,13 @@ const local: App.I18n.Schema = {
     yesOrNo: {
       yes: '是',
       no: '否'
-    }
+    },
+    enable: '启用',
+    disable: '禁用',
+    confirmDisable: '确认禁用吗？',
+    confirmEnable: '确认启用吗？',
+    disableSuccess: '禁用成功',
+    enableSuccess: '启用成功'
   },
   request: {
     logout: '请求失败后登出用户',
@@ -237,6 +243,7 @@ const local: App.I18n.Schema = {
     'function_toggle-auth': '切换权限',
     'function_super-page': '超级管理员可见',
     'system-manage': '系统管理',
+    'system-manage_apis': '接口管理',
     'system-manage_users': '用户管理',
     'system-manage_user-detail': '用户详情',
     'system-manage_role': '角色管理',
@@ -501,6 +508,29 @@ const local: App.I18n.Schema = {
           disable: '禁用'
         }
       },
+      api: {
+        title: '接口列表',
+        name: '名称',
+        summary: '摘要',
+        path: '接口路径',
+        method: '请求方式',
+        apiMethod: {
+          get: 'GET',
+          post: 'POST',
+          put: 'PUT',
+          delete: 'DELETE',
+          patch: 'PATCH'
+        },
+        tags: '标签',
+        status: '接口状态',
+        form: {
+          keyword: '请输入名称、摘要或接口路径',
+          method: '请选择请求方式',
+          tags: '请选择标签',
+          status: '请选择接口状态'
+        },
+        refreshApi: '刷新接口数据'
+      },
       role: {
         title: '角色列表',
         roleName: '角色名称',
@@ -526,7 +556,7 @@ const local: App.I18n.Schema = {
         name: '姓名',
         phone: '手机号',
         email: '邮箱',
-        status: '用户状态',
+        status: '账号状态',
         role: '用户角色',
         avatar: '头像',
         isActive: '是否激活',

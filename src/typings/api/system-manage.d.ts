@@ -56,6 +56,29 @@ declare namespace Api {
       password: string;
     };
 
+    type ApiMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+
+    type Api = Common.CommonRecord<{
+      name: string;
+      summary: string;
+      path: string;
+      method: ApiMethod;
+      tags: string[];
+    }>;
+
+    type ApiSearchParams = PageSearchParams<
+      CommonType.RecordNullable<
+        Pick<Api.SystemManage.Api, 'method' | 'status'> & {
+          keyword: string;
+          tag: string;
+        }
+      >
+    >;
+
+    type ApiUpdateStatusParams = Pick<Api, 'status'>;
+
+    type ApiList = Common.PaginatingQueryRecord<Api>;
+
     /** role */
     type Role = Common.CommonRecord<{
       /** role name */

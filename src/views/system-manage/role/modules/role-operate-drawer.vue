@@ -52,7 +52,7 @@
       roleName: '',
       roleCode: '',
       roleDesc: '',
-      status: null
+      status: '1'
     };
   }
 

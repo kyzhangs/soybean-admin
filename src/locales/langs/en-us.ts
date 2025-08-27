@@ -49,7 +49,13 @@ const local: App.I18n.Schema = {
     yesOrNo: {
       yes: 'Yes',
       no: 'No'
-    }
+    },
+    enable: 'Enable',
+    disable: 'Disable',
+    confirmDisable: 'Are you sure you want to disable?',
+    confirmEnable: 'Are you sure you want to enable?',
+    disableSuccess: 'Disable Success',
+    enableSuccess: 'Enable Success'
   },
   request: {
     logout: 'Logout user after request failed',
@@ -240,6 +246,7 @@ const local: App.I18n.Schema = {
     'function_toggle-auth': 'Toggle Auth',
     'function_super-page': 'Super Admin Visible',
     'system-manage': 'System Manage',
+    'system-manage_apis': 'Api Manage',
     'system-manage_users': 'Users Manage',
     'system-manage_user-detail': 'User Detail',
     'system-manage_role': 'Role Manage',
@@ -503,6 +510,29 @@ const local: App.I18n.Schema = {
           enable: 'Enable',
           disable: 'Disable'
         }
+      },
+      api: {
+        title: 'Api List',
+        name: 'Name',
+        summary: 'Summary',
+        path: 'Path',
+        method: 'Method',
+        apiMethod: {
+          get: 'GET',
+          post: 'POST',
+          put: 'PUT',
+          delete: 'DELETE',
+          patch: 'PATCH'
+        },
+        tags: 'Tags',
+        status: 'Status',
+        form: {
+          keyword: 'Please enter name, summary or path',
+          method: 'Please select method',
+          tags: 'Please select tags',
+          status: 'Please select status'
+        },
+        refreshApi: 'Refresh Apis'
       },
       role: {
         title: 'Role List',

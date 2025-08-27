@@ -28,3 +28,13 @@ export const menuIconTypeRecord: Record<Api.SystemManage.IconType, App.I18n.I18n
 };
 
 export const menuIconTypeOptions = transformRecordToOption(menuIconTypeRecord);
+
+export const apiMethodRecord: Record<Api.SystemManage.ApiMethod, App.I18n.I18nKey> = {
+  GET: 'page.manage.api.apiMethod.get',
+  POST: 'page.manage.api.apiMethod.post',
+  PATCH: 'page.manage.api.apiMethod.patch',
+  PUT: 'page.manage.api.apiMethod.put',
+  DELETE: 'page.manage.api.apiMethod.delete'
+};
+
+export const apiMethodOptions = transformRecordToOption(apiMethodRecord);

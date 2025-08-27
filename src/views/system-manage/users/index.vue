@@ -94,11 +94,10 @@
           align: 'center',
           width: 120,
           render: row => {
-            const tag = (
-              <NTag type={row.is_active ? 'success' : 'warning'}>
-                {row.is_active ? $t('common.yesOrNo.yes') : $t('common.yesOrNo.no')}
-              </NTag>
-            );
+            const type = row.is_active ? 'success' : 'warning';
+            const label = row.is_active ? $t('common.yesOrNo.yes') : $t('common.yesOrNo.no');
+
+            const tag = <NTag type={type}>{label}</NTag>;
             if (row.is_active && row.active_time) {
               return (
                 <NTooltip>
@@ -124,10 +123,6 @@
           align: 'center',
           width: 100,
           render: row => {
-            if (row.status === null || row.status === undefined) {
-              return null;
-            }
-
             const statusMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
               '1': 'success',
               '2': 'error'
@@ -135,8 +130,9 @@
 
             const value = row.status;
             const label = $t(enableStatusRecord[value]);
+            const type = statusMap[value];
 
-            return <NTag type={statusMap[value]}>{label}</NTag>;
+            return <NTag type={type}>{label}</NTag>;
           }
         },
         {

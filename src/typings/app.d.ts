@@ -354,6 +354,12 @@ declare namespace App {
           yes: string;
           no: string;
         };
+        enable: string;
+        disable: string;
+        confirmDisable: string;
+        confirmEnable: string;
+        disableSuccess: string;
+        enableSuccess: string;
       };
       request: {
         logout: string;
@@ -678,6 +684,29 @@ declare namespace App {
               enable: string;
               disable: string;
             };
+          };
+          api: {
+            title: string;
+            name: string;
+            summary: string;
+            path: string;
+            method: string;
+            apiMethod: {
+              get: string;
+              post: string;
+              put: string;
+              delete: string;
+              patch: string;
+            };
+            tags: string;
+            status: string;
+            form: {
+              keyword: string;
+              method: string;
+              tags: string;
+              status: string;
+            };
+            refreshApi: string;
           };
           role: {
             title: string;
