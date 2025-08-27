@@ -249,7 +249,7 @@ const local: App.I18n.Schema = {
     'system-manage_apis': 'Api Manage',
     'system-manage_users': 'Users Manage',
     'system-manage_user-detail': 'User Detail',
-    'system-manage_role': 'Role Manage',
+    'system-manage_roles': 'Role Manage',
     'system-manage_menu': 'Menu Manage',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',

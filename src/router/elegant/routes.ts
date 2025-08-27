@@ -662,13 +662,13 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
-        name: 'system-manage_role',
-        path: '/system-manage/role',
-        component: 'view.system-manage_role',
+        name: 'system-manage_roles',
+        path: '/system-manage/roles',
+        component: 'view.system-manage_roles',
         meta: {
+          title: 'system-manage_roles',
+          i18nKey: 'route.system-manage_roles',
           order: 3,
-          title: 'system-manage_role',
-          i18nKey: 'route.system-manage_role',
           icon: 'carbon:user-role'
         }
       },

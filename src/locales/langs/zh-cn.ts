@@ -246,7 +246,7 @@ const local: App.I18n.Schema = {
     'system-manage_apis': '接口管理',
     'system-manage_users': '用户管理',
     'system-manage_user-detail': '用户详情',
-    'system-manage_role': '角色管理',
+    'system-manage_roles': '角色管理',
     'system-manage_menu': '菜单管理',
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',

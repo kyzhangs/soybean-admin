@@ -239,7 +239,7 @@ const routeMap: RouteMap = {
   "system-manage": "/system-manage",
   "system-manage_apis": "/system-manage/apis",
   "system-manage_menu": "/system-manage/menu",
-  "system-manage_role": "/system-manage/role",
+  "system-manage_roles": "/system-manage/roles",
   "system-manage_user-detail": "/system-manage/user-detail/:id",
   "system-manage_users": "/system-manage/users",
   "user-center": "/user-center"
