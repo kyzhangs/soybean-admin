@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue';
   import { enableStatusOptions, userGenderOptions } from '@/constants/business';
-  import { fetchCreateUser, fetchUpdateUser } from '@/service/api';
+  import { fetchCreateUser, fetchGetAllEnabledRoles, fetchUpdateUser } from '@/service/api';
   import { useFormRules, useNaiveForm } from '@/hooks/common/form';
   import { $t } from '@/locales';
 
@@ -51,7 +51,8 @@
       phone: null,
       email: null,
       is_active: true,
-      status: '1'
+      status: '1',
+      roles: []
     };
   }
 
@@ -91,28 +92,20 @@
   };
 
   /** the enabled role options */
-  // const roleOptions = ref<CommonType.Option<string>[]>([]);
+  const roleOptions = ref<CommonType.Option<string>[]>([]);
 
-  // async function getRoleOptions() {
-  //   const { error, data } = await fetchGetAllRoles();
+  async function getRoleOptions() {
+    const { error, data } = await fetchGetAllEnabledRoles();
 
-  //   if (!error) {
-  //     const options = data.map(item => ({
-  //       label: item.roleName,
-  //       value: item.roleCode
-  //     }));
+    if (!error) {
+      const options = data.map(item => ({
+        label: item.name,
+        value: item.code
+      }));
 
-  //     // the mock data does not have the roleCode, so fill it
-  //     // if the real request, remove the following code
-  //     const userRoleOptions = model.value.userRoles.map(item => ({
-  //       label: item,
-  //       value: item
-  //     }));
-  //     // end
-
-  //     roleOptions.value = [...userRoleOptions, ...options];
-  //   }
-  // }
+      roleOptions.value = [...options];
+    }
+  }
 
   function handleInitModel() {
     model.value = createDefaultModel();
@@ -154,7 +147,7 @@
     if (visible.value) {
       handleInitModel();
       restoreValidation();
-      // getRoleOptions();
+      getRoleOptions();
     }
   });
 </script>
@@ -230,6 +223,10 @@
           <NRadioGroup v-model:value="model.status">
             <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
+        </NFormItemGi>
+
+        <NFormItemGi span="24" :label="$t('page.manage.user.role')" path="roles" class="w-1/2">
+          <NSelect v-model:value="model.roles" :options="roleOptions" multiple />
         </NFormItemGi>
       </NGrid>
     </NForm>

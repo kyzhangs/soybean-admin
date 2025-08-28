@@ -139,7 +139,7 @@
           key: 'operate',
           title: $t('common.operate'),
           align: 'center',
-          width: 180,
+          width: 200,
           render: row => (
             <div class="flex-center gap-8px">
               <NButton type="warning" ghost size="small" onClick={() => handleResetPassword(row.id)}>

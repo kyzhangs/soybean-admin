@@ -49,10 +49,9 @@ export function fetchDeleteRole(role_id: number) {
  *
  * these roles are all enabled
  */
-export function fetchGetAllRoles() {
+export function fetchGetAllEnabledRoles() {
   return request<Api.SystemManage.Role[]>({
-    url: '/system-manage/roles/all',
-    method: 'get'
+    url: '/system-manage/roles/enabled-roles'
   });
 }
 
@@ -66,7 +65,7 @@ export function fetchGetMenuList() {
 
 /** get all pages */
 export function fetchGetAllPages() {
-  return request<string[]>({
+  return request({
     url: '/system-manage/pages',
     method: 'get'
   });

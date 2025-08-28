@@ -2,7 +2,7 @@
   import { computed, ref, watch } from 'vue';
   import type { SelectOption } from 'naive-ui';
   import { enableStatusOptions, menuIconTypeOptions, menuTypeOptions } from '@/constants/business';
-  import { fetchGetAllRoles } from '@/service/api';
+  import { fetchGetAllEnabledRoles } from '@/service/api';
   import { useFormRules, useNaiveForm } from '@/hooks/common/form';
   import { getLocalIcons } from '@/utils/icon';
   import { $t } from '@/locales';
@@ -168,7 +168,7 @@
   const roleOptions = ref<CommonType.Option<string>[]>([]);
 
   async function getRoleOptions() {
-    const { error, data } = await fetchGetAllRoles();
+    const { error, data } = await fetchGetAllEnabledRoles();
 
     if (!error) {
       const options = data.map(item => ({

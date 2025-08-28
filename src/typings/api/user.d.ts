@@ -8,7 +8,7 @@ declare namespace Api {
     /** user info */
     type UserInfo = Pick<Api.SystemManage.User, 'id' | 'username'> &
       CommonType.RecordNullable<
-        Pick<Api.SystemManage.User, 'name' | 'email' | 'phone' | 'avatar' | 'active_time' | 'last_login'>
+        Pick<Api.SystemManage.User, 'name' | 'gender' | 'email' | 'phone' | 'avatar' | 'active_time' | 'last_login'>
       > & {
         roles: string[];
         buttons: string[];

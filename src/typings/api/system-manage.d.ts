@@ -35,13 +35,18 @@ declare namespace Api {
       } & Api.Common.CommonSearchParams
     >;
 
-    type UserCreateParams = CommonType.RecordNullable<Pick<User, 'name' | 'gender' | 'email' | 'phone'>> & {
+    type UserCreateParams = CommonType.RecordNullable<
+      Pick<Api.User.UserInfo, 'name' | 'gender' | 'email' | 'phone' | 'roles'>
+    > & {
       username: string;
       is_active: boolean;
       status: Api.Common.EnableStatus;
     };
 
-    type UserUpdateParams = Pick<UserCreateParams, 'name' | 'gender' | 'email' | 'phone' | 'is_active' | 'status'>;
+    type UserUpdateParams = Pick<
+      UserCreateParams,
+      'name' | 'gender' | 'email' | 'phone' | 'is_active' | 'status' | 'roles'
+    >;
 
     /** user paginating data */
     type UserPaginatingData = Common.PaginatingQueryRecord<User>;
