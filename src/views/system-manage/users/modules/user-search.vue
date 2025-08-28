@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed } from 'vue';
+  import { computed, nextTick } from 'vue';
   import { enableStatusOptions, userGenderOptions } from '@/constants/business';
   import { yesOrNoOptions } from '@/constants/common';
   import { useNaiveForm } from '@/hooks/common/form';
@@ -38,7 +38,7 @@
   });
 
   function resetModel() {
-    model.value = {
+    Object.assign(model.value, {
       page: 1,
       page_size: 10,
       keyword: null,
@@ -46,12 +46,14 @@
       gender: null,
       is_active: null,
       status: null
-    };
+    });
   }
 
   async function reset() {
     await restoreValidation();
     resetModel();
+    await nextTick();
+    emit('search');
   }
 
   async function search() {
@@ -62,7 +64,7 @@
 
 <template>
   <NCard :bordered="false" size="small" class="min-w-940px w-full card-wrapper">
-    <NCollapse class="w-full">
+    <NCollapse class="w-full" :default-expanded-names="['user-search']">
       <NCollapseItem :title="$t('common.search')" name="user-search">
         <NForm ref="formRef" :model="model" label-placement="left" label-align="right" label-width="auto">
           <NGrid responsive="screen" item-responsive>

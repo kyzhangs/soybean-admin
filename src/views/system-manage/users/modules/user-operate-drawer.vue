@@ -47,7 +47,7 @@
     return {
       username: '',
       name: null,
-      gender: null,
+      gender: '3',
       phone: null,
       email: null,
       is_active: true,
@@ -55,12 +55,15 @@
     };
   }
 
-  type RuleKey = Extract<keyof Model, 'username' | 'email' | 'phone'>;
+  type RuleKey = Extract<keyof Model, 'username' | 'email' | 'phone' | 'gender' | 'status' | 'is_active'>;
 
   const rules: Record<RuleKey, App.Global.FormRule[]> = {
     username: [defaultRequiredRule, patternRules.username],
     email: [patternRules.email],
-    phone: [patternRules.phone]
+    phone: [patternRules.phone],
+    gender: [defaultRequiredRule],
+    status: [defaultRequiredRule],
+    is_active: [defaultRequiredRule]
   };
 
   const isEdit = computed(() => props.operateType === 'edit');

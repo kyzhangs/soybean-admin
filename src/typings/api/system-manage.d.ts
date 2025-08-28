@@ -5,9 +5,6 @@ declare namespace Api {
    * backend api module: "systemManage"
    */
   namespace SystemManage {
-    /** page search params */
-    type PageSearchParams<T = any> = Common.CommonSearchParams & T;
-
     /**
      * user gender
      *
@@ -31,13 +28,11 @@ declare namespace Api {
     }>;
 
     /** user search params */
-    type UserSearchParams = PageSearchParams<
-      CommonType.RecordNullable<
-        Pick<User, 'gender' | 'is_active' | 'status'> & {
-          keyword: string;
-          contact: string;
-        }
-      >
+    type UserSearchParams = CommonType.RecordNullable<
+      Pick<User, 'gender' | 'is_active' | 'status'> & {
+        keyword: string;
+        contact: string;
+      } & Api.Common.CommonSearchParams
     >;
 
     type UserCreateParams = CommonType.RecordNullable<Pick<User, 'name' | 'gender' | 'email' | 'phone'>> & {
@@ -48,8 +43,8 @@ declare namespace Api {
 
     type UserUpdateParams = Pick<UserCreateParams, 'name' | 'gender' | 'email' | 'phone' | 'is_active' | 'status'>;
 
-    /** user list */
-    type UserList = Common.PaginatingQueryRecord<User>;
+    /** user paginating data */
+    type UserPaginatingData = Common.PaginatingQueryRecord<User>;
 
     type ResetUserPassword = {
       /** new password */
@@ -66,39 +61,44 @@ declare namespace Api {
       tags: string[];
     }>;
 
-    type ApiSearchParams = PageSearchParams<
-      CommonType.RecordNullable<
-        Pick<Api.SystemManage.Api, 'method' | 'status'> & {
-          keyword: string;
-          tag: string;
-        }
-      >
+    type ApiSearchParams = CommonType.RecordNullable<
+      Pick<Api.SystemManage.Api, 'method' | 'status'> & {
+        keyword: string;
+        tag: string;
+      } & Api.Common.CommonSearchParams
     >;
 
     type ApiUpdateStatusParams = Pick<Api, 'status'>;
 
-    type ApiList = Common.PaginatingQueryRecord<Api>;
+    type ApiPaginatingData = Common.PaginatingQueryRecord<Api>;
 
     /** role */
     type Role = Common.CommonRecord<{
       /** role name */
-      roleName: string;
+      name: string;
       /** role code */
-      roleCode: string;
+      code: string;
       /** role description */
-      roleDesc: string;
+      description: string;
     }>;
 
     /** role search params */
     type RoleSearchParams = CommonType.RecordNullable<
-      Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'status'> & Api.Common.CommonSearchParams
+      Pick<Api.SystemManage.Role, 'code' | 'status'> &
+        Api.Common.CommonSearchParams & {
+          keyword: string;
+        }
     >;
 
-    /** role list */
-    type RoleList = Common.PaginatingQueryRecord<Role>;
+    /** role create params */
+    type RoleCreateParams = Pick<Role, 'name' | 'code' | 'status'> &
+      CommonType.RecordNullable<Pick<Role, 'description'>>;
 
-    /** all role */
-    type AllRole = Pick<Role, 'id' | 'roleName' | 'roleCode'>;
+    /** role update params */
+    type RoleUpdateParams = Pick<Role, 'name' | 'status'> & CommonType.RecordNullable<Pick<Role, 'description'>>;
+
+    /** role paginating data */
+    type RolePaginatingData = Common.PaginatingQueryRecord<Role>;
 
     /**
      * menu type

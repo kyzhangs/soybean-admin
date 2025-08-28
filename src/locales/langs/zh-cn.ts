@@ -55,7 +55,11 @@ const local: App.I18n.Schema = {
     confirmDisable: '确认禁用吗？',
     confirmEnable: '确认启用吗？',
     disableSuccess: '禁用成功',
-    enableSuccess: '启用成功'
+    enableSuccess: '启用成功',
+    createTime: '创建时间',
+    updateTime: '更新时间',
+    createBy: '创建人',
+    updateBy: '更新人'
   },
   request: {
     logout: '请求失败后登出用户',
@@ -551,21 +555,24 @@ const local: App.I18n.Schema = {
           tags: '请选择标签',
           status: '请选择接口状态'
         },
-        refreshApi: '刷新接口数据'
+        refreshApi: '一键同步',
+        confirmRefreshApi: '确认要同步所有API接口吗？'
       },
       role: {
         title: '角色列表',
-        roleName: '角色名称',
-        roleCode: '角色编码',
-        roleStatus: '角色状态',
-        roleDesc: '角色描述',
+        name: '角色名称',
+        code: '角色编码',
+        status: '角色状态',
+        description: '角色描述',
+        keyword: '关键字',
         menuAuth: '菜单权限',
         buttonAuth: '按钮权限',
         form: {
-          roleName: '请输入角色名称',
-          roleCode: '请输入角色编码',
-          roleStatus: '请选择角色状态',
-          roleDesc: '请输入角色描述'
+          keyword: '请输入角色名称或描述',
+          name: '请输入角色名称',
+          code: '请输入角色编码',
+          status: '请选择角色状态',
+          description: '请输入角色描述'
         },
         addRole: '新增角色',
         editRole: '编辑角色'

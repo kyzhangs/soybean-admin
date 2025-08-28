@@ -1,8 +1,8 @@
 import { request } from '@/service/request';
 
-/** get api list */
-export function fetchGetApiList(params?: Api.SystemManage.ApiSearchParams) {
-  return request<Api.SystemManage.ApiList>({
+/** get api paginating data */
+export function fetchGetApiPaginatingData(params?: Api.SystemManage.ApiSearchParams) {
+  return request<Api.SystemManage.ApiPaginatingData>({
     url: '/system-manage/apis',
     params
   });

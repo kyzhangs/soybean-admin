@@ -55,7 +55,11 @@ const local: App.I18n.Schema = {
     confirmDisable: 'Are you sure you want to disable?',
     confirmEnable: 'Are you sure you want to enable?',
     disableSuccess: 'Disable Success',
-    enableSuccess: 'Enable Success'
+    enableSuccess: 'Enable Success',
+    createTime: 'Create Time',
+    updateTime: 'Update Time',
+    createBy: 'Create By',
+    updateBy: 'Update By'
   },
   request: {
     logout: 'Logout user after request failed',
@@ -554,21 +558,24 @@ const local: App.I18n.Schema = {
           tags: 'Please select tags',
           status: 'Please select status'
         },
-        refreshApi: 'Refresh Apis'
+        refreshApi: 'Synchronize Apis',
+        confirmRefreshApi: 'Are you sure you want to synchronize all API interfaces?'
       },
       role: {
         title: 'Role List',
-        roleName: 'Role Name',
-        roleCode: 'Role Code',
-        roleStatus: 'Role Status',
-        roleDesc: 'Role Description',
+        name: 'Role Name',
+        code: 'Role Code',
+        status: 'Role Status',
+        description: 'Role Description',
+        keyword: 'Keyword',
         menuAuth: 'Menu Auth',
         buttonAuth: 'Button Auth',
         form: {
-          roleName: 'Please enter role name',
-          roleCode: 'Please enter role code',
-          roleStatus: 'Please select role status',
-          roleDesc: 'Please enter role description'
+          keyword: 'Please enter role name or description',
+          name: 'Please enter role name',
+          code: 'Please enter role code',
+          status: 'Please select role status',
+          description: 'Please enter role description'
         },
         addRole: 'Add Role',
         editRole: 'Edit Role'

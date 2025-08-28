@@ -2,7 +2,7 @@
   import { NButton, NTag, NTooltip } from 'naive-ui';
   import { utils, writeFile } from 'xlsx';
   import { enableStatusRecord, userGenderRecord } from '@/constants/business';
-  import { fetchGetUserList } from '@/service/api';
+  import { fetchGetUserPaginatingData } from '@/service/api';
   import { useAppStore } from '@/store/modules/app';
   import { isTableColumnHasKey, useNaiveTable } from '@/hooks/common/table';
   import { $t } from '@/locales';
@@ -15,7 +15,7 @@
   // });
 
   const { columns, data, loading } = useNaiveTable({
-    api: () => fetchGetUserList(),
+    api: () => fetchGetUserPaginatingData(),
     transform: response => {
       const { data: list, error } = response;
 
@@ -50,10 +50,6 @@
         align: 'center',
         width: 100,
         render: row => {
-          if (row.gender === null || row.gender === undefined) {
-            return null;
-          }
-
           const value = row.gender;
           const label = $t(userGenderRecord[value]);
 
@@ -120,10 +116,6 @@
         align: 'center',
         width: 100,
         render: row => {
-          if (row.status === null || row.status === undefined) {
-            return null;
-          }
-
           const statusMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
             '1': 'success',
             '2': 'error'

@@ -360,6 +360,10 @@ declare namespace App {
         confirmEnable: string;
         disableSuccess: string;
         enableSuccess: string;
+        createTime: string;
+        updateTime: string;
+        createBy: string;
+        updateBy: string;
       };
       request: {
         logout: string;
@@ -719,18 +723,21 @@ declare namespace App {
               status: string;
             };
             refreshApi: string;
+            confirmRefreshApi: string;
           };
           role: {
             title: string;
-            roleName: string;
-            roleCode: string;
-            roleStatus: string;
-            roleDesc: string;
+            name: string;
+            code: string;
+            status: string;
+            description: string;
+            keyword: string;
             form: {
-              roleName: string;
-              roleCode: string;
-              roleStatus: string;
-              roleDesc: string;
+              keyword: string;
+              name: string;
+              code: string;
+              status: string;
+              description: string;
             };
             addRole: string;
             editRole: string;

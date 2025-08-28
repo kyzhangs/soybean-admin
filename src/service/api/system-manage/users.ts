@@ -1,8 +1,8 @@
 import { request } from '@/service/request';
 
-/** get user list */
-export function fetchGetUserList(params?: Api.SystemManage.UserSearchParams) {
-  return request<Api.SystemManage.UserList>({
+/** get user paginating data */
+export function fetchGetUserPaginatingData(params?: Api.SystemManage.UserSearchParams) {
+  return request<Api.SystemManage.UserPaginatingData>({
     url: '/system-manage/users',
     params
   });
@@ -19,7 +19,7 @@ export function fetchCreateUser(data: Api.SystemManage.UserCreateParams) {
 
 /** batch delete user */
 export function fetchBatchDeleteUser(ids: string[]) {
-  return request<Api.SystemManage.User>({
+  return request({
     url: '/system-manage/users',
     method: 'delete',
     data: { ids }

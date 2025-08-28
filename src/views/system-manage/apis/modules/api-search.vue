@@ -2,6 +2,7 @@
   import { nextTick, ref } from 'vue';
   import { apiMethodOptions, enableStatusOptions } from '@/constants/business';
   import { fetchGetApiTagsList } from '@/service/api';
+  import { useNaiveForm } from '@/hooks/common/form';
   import { translateOptions } from '@/utils/common';
   import { $t } from '@/locales';
 
@@ -18,20 +19,28 @@
   const model = defineModel<Api.SystemManage.ApiSearchParams>('model', { required: true });
 
   function resetModel() {
-    model.value = {
+    Object.assign(model.value, {
       page: 1,
       page_size: 10,
       keyword: null,
       method: null,
       tag: null,
       status: null
-    };
+    });
   }
 
-  function search() {
-    nextTick(() => {
-      emit('search');
-    });
+  async function search() {
+    await nextTick();
+    emit('search');
+  }
+
+  const { formRef, restoreValidation } = useNaiveForm();
+
+  async function reset() {
+    await restoreValidation();
+    resetModel();
+    await nextTick();
+    emit('search');
   }
 
   const tagOptions = ref();
@@ -46,9 +55,9 @@
 
 <template>
   <NCard :bordered="false" size="small" class="card-wrapper">
-    <NCollapse :default-expanded-names="['role-search']">
+    <NCollapse class="w-full" :default-expanded-names="['role-search']">
       <NCollapseItem :title="$t('common.search')" name="role-search">
-        <NForm :model="model" label-placement="left" :label-width="80">
+        <NForm ref="formRef" :model="model" label-placement="left" :label-width="80">
           <NGrid responsive="screen" item-responsive>
             <NFormItemGi span="24 s:12 m:6" :label="$t('common.keyword')" path="keyword" class="pr-24px">
               <NInput
@@ -94,7 +103,7 @@
 
             <NFormItemGi span="24 s:12 m:3">
               <NSpace class="w-full" justify="end">
-                <NButton @click="resetModel">
+                <NButton type="default" @click="reset">
                   <template #icon>
                     <icon-ic-round-refresh class="text-icon" />
                   </template>

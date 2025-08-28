@@ -2,7 +2,7 @@
   import { reactive, ref } from 'vue';
   import { NButton, NPopconfirm, NTag, NTooltip } from 'naive-ui';
   import { enableStatusRecord, userGenderRecord } from '@/constants/business';
-  import { fetchBatchDeleteUser, fetchDeleteUser, fetchGetUserList } from '@/service/api';
+  import { fetchBatchDeleteUser, fetchDeleteUser, fetchGetUserPaginatingData } from '@/service/api';
   import { useAppStore } from '@/store/modules/app';
   import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
   import { $t } from '@/locales';
@@ -24,11 +24,11 @@
 
   const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination, scrollX } =
     useNaivePaginatedTable({
-      api: () => fetchGetUserList(searchParams),
+      api: () => fetchGetUserPaginatingData(searchParams),
       transform: response => defaultTransform(response),
       onPaginationParamsChange: params => {
-        searchParams.page = params.page!;
-        searchParams.page_size = params.pageSize!;
+        searchParams.page = params.page;
+        searchParams.page_size = params.pageSize;
       },
       columns: () => [
         {

@@ -1,7 +1,7 @@
 <script setup lang="tsx">
   import { reactive } from 'vue';
   import { NPopconfirm, NSwitch, NTag, NTooltip } from 'naive-ui';
-  import { fetchGetApiList, fetchRefreshApi, fetchUpdateApiStatus } from '@/service/api';
+  import { fetchGetApiPaginatingData, fetchRefreshApi, fetchUpdateApiStatus } from '@/service/api';
   import { useAppStore } from '@/store/modules/app';
   import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
   import { $t } from '@/locales';
@@ -16,11 +16,11 @@
 
   const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination, scrollX } =
     useNaivePaginatedTable({
-      api: () => fetchGetApiList(searchParams),
+      api: () => fetchGetApiPaginatingData(searchParams),
       transform: response => defaultTransform(response),
       onPaginationParamsChange: params => {
-        searchParams.page = params.page!;
-        searchParams.page_size = params.pageSize!;
+        searchParams.page = params.page;
+        searchParams.page_size = params.pageSize;
       },
       columns: () => [
         {
@@ -156,12 +156,23 @@
           @refresh="getData"
         >
           <template #default>
-            <NButton size="small" ghost type="warning" @click="handleRefreshApi">
-              <template #icon>
-                <icon-mdi-refresh class="text-icon" />
+            <NPopconfirm
+              :positive-text="$t('common.confirm')"
+              :negative-text="$t('common.cancel')"
+              @positive-click="handleRefreshApi"
+            >
+              <template #default>
+                {{ $t('page.manage.api.confirmRefreshApi') }}
               </template>
-              {{ $t('page.manage.api.refreshApi') }}
-            </NButton>
+              <template #trigger>
+                <NButton size="small" type="primary" ghost>
+                  <template #icon>
+                    <icon-mdi-refresh class="text-icon" />
+                  </template>
+                  {{ $t('page.manage.api.refreshApi') }}
+                </NButton>
+              </template>
+            </NPopconfirm>
           </template>
         </TableHeaderOperation>
       </template>
