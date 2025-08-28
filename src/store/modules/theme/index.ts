@@ -73,6 +73,11 @@ export const useThemeStore = defineStore(SetupStoreId.Theme, () => {
   const watermarkContent = computed(() => {
     const { watermark } = settings.value;
 
+    // if the user is not logged in, it does not make sense to watermark the user name
+    if (!authStore.isLogin) {
+      return watermark.text;
+    }
+
     if (watermark.enableUserName && authStore.userInfo.username) {
       return authStore.userInfo.username;
     }
