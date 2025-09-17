@@ -52,7 +52,9 @@ function createCommonRequest<ResponseData = any>(
     async response => {
       const responseType: ResponseType = (response.config?.responseType as ResponseType) || 'json';
 
-      if (responseType !== 'json' || opts.isBackendSuccess(response)) {
+      const isJson = response.headers['content-type']?.includes('application/json') || responseType === 'json';
+
+      if (!isJson || opts.isBackendSuccess(response)) {
         return Promise.resolve(response);
       }
 
