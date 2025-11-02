@@ -12,6 +12,14 @@ const local: App.I18n.Schema = {
     addSuccess: 'Add Success',
     backToHome: 'Back to home',
     batchDelete: 'Batch Delete',
+    batchEnable: 'Batch Enable',
+    batchDisable: 'Batch Disable',
+    batchResetPassword: 'Batch Reset Password',
+    batchAddWhitelist: 'Batch Add Whitelist',
+    batchRemoveWhitelist: 'Batch Remove Whitelist',
+    batchOperateSuccess: '{operate} Success',
+    batchOperateFailed: '{operate} Failed',
+    batchOperateCompleted: '{operate} Compeled, Pass rate: {pass_rate}%',
     cancel: 'Cancel',
     close: 'Close',
     check: 'Check',
@@ -23,6 +31,7 @@ const local: App.I18n.Schema = {
     generateRandom: 'Generate Random',
     deleteSuccess: 'Delete Success',
     confirmDelete: 'Are you sure you want to delete?',
+    confirmOperate: 'Are you sure you want to this operate?',
     edit: 'Edit',
     warning: 'Warning',
     error: 'Error',
@@ -41,6 +50,7 @@ const local: App.I18n.Schema = {
     reset: 'Reset',
     search: 'Search',
     switch: 'Switch',
+    status: 'Status',
     tip: 'Tip',
     trigger: 'Trigger',
     update: 'Update',
@@ -276,7 +286,7 @@ const local: App.I18n.Schema = {
     'system-manage_users': 'Users Manage',
     'system-manage_user-detail': 'User Detail',
     'system-manage_roles': 'Role Manage',
-    'system-manage_menu': 'Menu Manage',
+    'system-manage_menus': 'Menu Manage',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',
     'multi-menu_first_child': 'Menu One Child',
@@ -538,11 +548,14 @@ const local: App.I18n.Schema = {
         }
       },
       api: {
-        title: 'Api List',
         name: 'Name',
         summary: 'Summary',
         path: 'Path',
         method: 'Method',
+        description: 'Description',
+        tags: 'Tags',
+        status: 'Status',
+        in_whitelist: 'Whitelist Api',
         apiMethod: {
           get: 'GET',
           post: 'POST',
@@ -550,72 +563,100 @@ const local: App.I18n.Schema = {
           delete: 'DELETE',
           patch: 'PATCH'
         },
-        tags: 'Tags',
-        status: 'Status',
-        form: {
+        title: {
+          table: 'Api List'
+        },
+        label: {
+          whitelist: 'Whitelist'
+        },
+        placeholder: {
           keyword: 'Please enter name, summary or path',
           method: 'Please select method',
-          tags: 'Please select tags',
-          status: 'Please select status'
+          tag: 'Please select tag',
+          status: 'Please select status',
+          whitelist: 'Please select'
         },
-        refreshApi: 'Synchronize Apis',
-        confirmRefreshApi: 'Are you sure you want to synchronize all API interfaces?'
+        button: { refreshApi: 'Synchronize Apis' },
+        msg: {
+          confirmAddWhitelist: 'Are you sure you want to add whitelist?',
+          confirmRemoveWhitelist: 'Are you sure you want to remove whitelist?',
+          confirmRefreshApi: 'Are you sure you want to synchronize all API interfaces?'
+        }
       },
       role: {
-        title: 'Role List',
         name: 'Role Name',
         code: 'Role Code',
-        status: 'Role Status',
         description: 'Role Description',
-        keyword: 'Keyword',
-        menuAuth: 'Menu Auth',
-        buttonAuth: 'Button Auth',
-        form: {
-          keyword: 'Please enter role name or description',
-          name: 'Please enter role name',
-          code: 'Please enter role code',
-          status: 'Please select role status',
-          description: 'Please enter role description'
+        home: 'Role Default Home Page',
+        status: 'Role Status',
+        title: {
+          table: 'Role list',
+          add: 'Add Role',
+          edit: 'Edit Role'
         },
-        addRole: 'Add Role',
-        editRole: 'Edit Role'
+        button: {
+          menuAuth: 'Menu Auth',
+          buttonAuth: 'Button Auth',
+          apiAuth: 'Api Auth'
+        },
+        label: {
+          keyword: 'Keyword'
+        },
+        placeholder: {
+          keyword: 'Please enter role name or description',
+          name: 'Please enter role name ',
+          code: 'Please enter role code',
+          description: 'Please enter role description',
+          home: 'Please select role home',
+          status: 'Please select role status'
+        }
       },
       user: {
-        title: 'User List',
         username: 'Username',
+        name: 'Name',
         password: 'Password',
         gender: 'Gender',
-        name: 'Name',
-        phone: 'Phone Number',
+        phone: 'Phone',
         email: 'Email',
-        status: 'User Status',
-        role: 'User Role',
-        avatar: 'Avatar',
         isActive: 'Is Active',
-        lastLogin: 'Last Login Time',
         activeTime: 'Active Time: {time}',
-        resetPassword: 'Reset Password',
-        randomPasswordSuccess: 'Random password successfully',
-        resetPasswordSuccess: 'Reset password successfully',
-        contact: 'Contact Information',
-        form: {
-          username: 'Please enter username',
-          password: 'Please enter password',
-          gender: 'Please select gender',
-          name: 'Please enter name',
-          phone: 'Please enter phone number',
-          email: 'Please enter email',
-          keyword: 'Please enter username or name',
-          contact: 'Please enter email or phone number',
-          isActive: 'Is Active',
-          isForbid: 'Is Forbid'
-        },
-        addUser: 'Add User',
-        editUser: 'Edit User',
+        lastLogin: 'Last Login',
+        status: 'Status',
         userGender: {
-          male: 'Male',
-          female: 'Female',
-          unknown: 'Unknown'
+          male: 'male',
+          female: 'female',
+          unknown: 'unknow'
+        },
+        title: {
+          table: 'User List',
+          add: 'Add User',
+          edit: 'Edit User',
+          reset: 'Reset Password'
+        },
+        label: {
+          keyword: 'Keyword',
+          contact: 'Contact',
+          roles: 'Roles'
+        },
+        placeholder: {
+          username: 'Please enter username',
+          name: 'Please enter name',
+          gender: 'Please select gender',
+          email: 'Please enter email',
+          phone: 'Please enter phone',
+          isActive: 'Please select isActive',
+          status: 'Please select status',
+          keyword: 'Please enter user name or username',
+          contact: 'Please enter email or phone',
+          role: 'Please select role',
+          password: 'Please enter password'
+        },
+        button: {
+          resetPassword: 'Reset Password'
+        },
+        msg: {
+          resetPasswordSuccess: 'Reset password success',
+          randomPasswordSuccess: 'Random password success'
         }
       },
       menu: {

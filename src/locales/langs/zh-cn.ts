@@ -12,6 +12,14 @@ const local: App.I18n.Schema = {
     addSuccess: '添加成功',
     backToHome: '返回首页',
     batchDelete: '批量删除',
+    batchEnable: '批量启用',
+    batchDisable: '批量停用',
+    batchResetPassword: '批量重置密码',
+    batchAddWhitelist: '批量添加白名单',
+    batchRemoveWhitelist: '批量移除白名单',
+    batchOperateSuccess: '{operate}成功',
+    batchOperateFailed: '{operate}失败',
+    batchOperateCompleted: '{operate}完成，成功率: {pass_rate}%',
     cancel: '取消',
     close: '关闭',
     check: '勾选',
@@ -23,6 +31,7 @@ const local: App.I18n.Schema = {
     generateRandom: '随机生成',
     deleteSuccess: '删除成功',
     confirmDelete: '确认删除吗？',
+    confirmOperate: '确认操作吗?',
     edit: '编辑',
     warning: '警告',
     error: '错误',
@@ -41,6 +50,7 @@ const local: App.I18n.Schema = {
     reset: '重置',
     search: '搜索',
     switch: '切换',
+    status: '状态',
     tip: '提示',
     trigger: '触发',
     update: '更新',
@@ -273,7 +283,7 @@ const local: App.I18n.Schema = {
     'system-manage_users': '用户管理',
     'system-manage_user-detail': '用户详情',
     'system-manage_roles': '角色管理',
-    'system-manage_menu': '菜单管理',
+    'system-manage_menus': '菜单管理',
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
     'multi-menu_first_child': '菜单一子菜单',
@@ -535,11 +545,14 @@ const local: App.I18n.Schema = {
         }
       },
       api: {
-        title: '接口列表',
-        name: '名称',
+        name: '接口名称',
         summary: '摘要',
-        path: '接口路径',
-        method: '请求方式',
+        method: '请求方法',
+        path: '请求路径',
+        description: '接口描述',
+        tags: '接口标签',
+        status: '接口状态',
+        in_whitelist: '白名单',
         apiMethod: {
           get: 'GET',
           post: 'POST',
@@ -547,72 +560,102 @@ const local: App.I18n.Schema = {
           delete: 'DELETE',
           patch: 'PATCH'
         },
-        tags: '标签',
-        status: '接口状态',
-        form: {
-          keyword: '请输入名称、摘要或接口路径',
-          method: '请选择请求方式',
-          tags: '请选择标签',
+        title: {
+          table: '接口列表'
+        },
+        label: {
+          whitelist: '白名单'
+        },
+        placeholder: {
+          keyword: '请输入接口名称、摘要、描述或路径',
+          method: '请选择请求方法',
+          tag: '请选择接口标签',
+          whitelist: '请选择',
           status: '请选择接口状态'
         },
-        refreshApi: '一键同步',
-        confirmRefreshApi: '确认要同步所有API接口吗？'
+        button: {
+          refreshApi: '一键同步接口'
+        },
+        msg: {
+          confirmRefreshApi: '确认要同步所有API接口吗？',
+          confirmAddWhitelist: '确认添加到白名单吗？',
+          confirmRemoveWhitelist: '确认移出白名单吗？'
+        }
       },
       role: {
-        title: '角色列表',
         name: '角色名称',
         code: '角色编码',
-        status: '角色状态',
         description: '角色描述',
-        keyword: '关键字',
-        menuAuth: '菜单权限',
-        buttonAuth: '按钮权限',
-        form: {
-          keyword: '请输入角色名称或描述',
+        home: '角色默认首页',
+        status: '角色状态',
+        title: {
+          table: '角色列表',
+          add: '新增角色',
+          edit: '编辑角色'
+        },
+        button: {
+          menuAuth: '菜单权限',
+          buttonAuth: '按钮权限',
+          apiAuth: '接口权限'
+        },
+        label: {
+          keyword: '关键字'
+        },
+        placeholder: {
+          keyword: '请输入角色名称、描述',
           name: '请输入角色名称',
           code: '请输入角色编码',
-          status: '请选择角色状态',
-          description: '请输入角色描述'
-        },
-        addRole: '新增角色',
-        editRole: '编辑角色'
+          description: '请输入角色描述',
+          home: '请选择角色默认主页',
+          status: '请选择角色状态'
+        }
       },
       user: {
-        title: '用户列表',
         username: '用户名',
         password: '密码',
-        gender: '性别',
         name: '姓名',
+        gender: '性别',
         phone: '手机号',
         email: '邮箱',
-        status: '账号状态',
-        role: '用户角色',
-        avatar: '头像',
         isActive: '是否激活',
-        lastLogin: '最近登录时间',
         activeTime: '激活时间：{time}',
-        resetPassword: '重置密码',
-        resetPasswordSuccess: '重置密码成功',
-        randomPasswordSuccess: '随机密码生成成功',
-        contact: '联系方式',
-        form: {
-          username: '请输入用户名',
-          password: '请输入密码',
-          gender: '请选择性别',
-          name: '请输入姓名',
-          phone: '请输入手机号',
-          email: '请输入邮箱',
-          keyword: '请输入用户名或姓名',
-          contact: '请输入邮箱或手机号',
-          isActive: '激活状态',
-          isForbid: '账号状态'
-        },
-        addUser: '新增用户',
-        editUser: '编辑用户',
+        lastLogin: '最近登录时间',
+        status: '账号状态',
         userGender: {
           male: '男',
           female: '女',
           unknown: '未知'
+        },
+        title: {
+          table: '用户列表',
+          add: '新增用户',
+          edit: '编辑用户',
+          reset: '重置密码'
+        },
+        label: {
+          keyword: '关键字',
+          contact: '联系方式',
+          roles: '账号角色'
+        },
+        placeholder: {
+          username: '请输入用户名',
+          name: '请输入姓名',
+          gender: '请选择性别',
+          email: '请输入邮箱地址',
+          phone: '请输入手机号码',
+          isActive: '请选择激活状态',
+          status: '请选择账号状态',
+          keyword: '请输入用户名或姓名',
+          contact: '请输入邮箱或手机号',
+          role: '请选择角色',
+          password: '请输入密码'
+        },
+        button: {
+          resetPassword: '重置密码'
+        },
+        msg: {
+          resetPasswordSuccess: '重置密码成功',
+          randomPasswordSuccess: '随机密码生成成功'
         }
       },
       menu: {

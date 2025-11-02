@@ -3,24 +3,24 @@ import { request } from '@/service/request';
 /** get api paginating data */
 export function fetchGetApiPaginatingData(params?: Api.SystemManage.ApiSearchParams) {
   return request<Api.SystemManage.ApiPaginatingData>({
-    url: '/system-manage/apis',
+    url: '/system-manage/apis/list',
     params
   });
 }
 
 /** update api status */
-export function fetchUpdateApiStatus(api_id: number, data: Api.SystemManage.ApiUpdateStatusParams) {
+export function fetchUpdateApi(data: Api.SystemManage.ApiUpdateStatusParams) {
   return request<Api.SystemManage.Api>({
-    url: `/system-manage/apis/${api_id}`,
-    method: 'put',
+    url: '/system-manage/apis/update',
+    method: 'post',
     data
   });
 }
 
-/** refresh apis */
-export function fetchRefreshApi() {
+/** sync apis */
+export function fetchSyncApi() {
   return request({
-    url: '/system-manage/apis/refresh-api',
+    url: '/system-manage/apis/sync',
     method: 'post'
   });
 }

@@ -5,6 +5,7 @@ import { useBoolean, useTable } from '@sa/hooks';
 import type { PaginationData, TableColumnCheck, UseTableOptions } from '@sa/hooks';
 import type { FlatResponseData } from '@sa/axios';
 import { jsonClone } from '@sa/utils';
+import { batchOperateRecord } from '@/constants/business';
 import { useAppStore } from '@/store/modules/app';
 import { $t } from '@/locales';
 
@@ -205,14 +206,22 @@ export function useTableOperate<TableData>(
   }
 
   /** the checked row keys of table */
-  const checkedRowKeys = shallowRef<string[]>([]);
+  const checkedRowKeys = shallowRef<number[]>([]);
 
   /** the hook after the batch delete operation is completed */
-  async function onBatchDeleted() {
-    window.$message?.success($t('common.deleteSuccess'));
+  async function onBatchDeleted(response: App.Service.Response<Api.Common.BatchOperateResult>) {
+    const pass_rate = response.data.pass_rate;
+    const operate = $t(batchOperateRecord[response.data.operate]);
+
+    if (pass_rate === 0) {
+      window.$message?.error($t('common.batchOperateFailed', { operate }));
+    } else if (pass_rate === 100) {
+      window.$message?.success($t('common.batchOperateSuccess', { operate }));
+    } else {
+      window.$message?.warning($t('common.batchOperateCompleted', { operate, pass_rate }));
+    }
 
     checkedRowKeys.value = [];
-
     await getData();
   }
 
@@ -235,6 +244,29 @@ export function useTableOperate<TableData>(
     onBatchDeleted,
     onDeleted
   };
+}
+
+export function defaultTableTransform<ApiData>(
+  response: FlatResponseData<any, ApiData[]>,
+  options?: { withIndex?: boolean; indexKey?: string }
+): ApiData[] {
+  const { data, error } = response;
+  if (error) {
+    return [];
+  }
+
+  const withIndex = options?.withIndex ?? true;
+  const indexKey = options?.indexKey ?? 'index';
+
+  const processedRows = withIndex
+    ? data.map((item, index) => {
+        return {
+          ...item,
+          [indexKey]: index + 1
+        } as ApiData;
+      })
+    : data;
+  return processedRows;
 }
 
 export function defaultTransform<ApiData>(

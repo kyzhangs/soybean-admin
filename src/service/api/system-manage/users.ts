@@ -3,7 +3,7 @@ import { request } from '@/service/request';
 /** get user paginating data */
 export function fetchGetUserPaginatingData(params?: Api.SystemManage.UserSearchParams) {
   return request<Api.SystemManage.UserPaginatingData>({
-    url: '/system-manage/users',
+    url: '/system-manage/users/list',
     params
   });
 }
@@ -18,28 +18,29 @@ export function fetchCreateUser(data: Api.SystemManage.UserCreateParams) {
 }
 
 /** batch delete user */
-export function fetchBatchDeleteUser(ids: string[]) {
-  return request({
-    url: '/system-manage/users',
-    method: 'delete',
-    data: { ids }
+export function fetchBatchOperateUser(data: Api.Common.BatchOperateParams) {
+  return request<Api.Common.BatchOperateResult>({
+    url: '/system-manage/users/batch',
+    method: 'post',
+    data
   });
 }
 
 /** update user */
-export function fetchUpdateUser(user_id: number, data: Api.SystemManage.UserUpdateParams) {
+export function fetchUpdateUser(data: Api.SystemManage.UserUpdateParams) {
   return request<Api.SystemManage.User>({
-    url: `/system-manage/users/${user_id}`,
-    method: 'put',
+    url: `/system-manage/users/update`,
+    method: 'post',
     data
   });
 }
 
 /** delete user */
-export function fetchDeleteUser(user_id: number) {
+export function fetchDeleteUser(id: number) {
   return request<Api.SystemManage.User>({
-    url: `/system-manage/users/${user_id}`,
-    method: 'delete'
+    url: `/system-manage/users/del`,
+    method: 'post',
+    data: { id }
   });
 }
 

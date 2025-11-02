@@ -16,16 +16,18 @@ declare namespace Api {
 
     type User = Common.CommonRecord<{
       username: string;
-      name: string;
       gender: UserGender;
-      email: string;
-      phone: string;
-      avatar: string;
       is_active: boolean;
-      active_time: string;
       status: Api.Common.EnableStatus;
-      last_login: string;
-    }>;
+    }> &
+      CommonType.RecordNullable<{
+        name: string;
+        email: string;
+        phone: string;
+        avatar: string;
+        active_time: string;
+        last_login: string;
+      }>;
 
     /** user search params */
     type UserSearchParams = CommonType.RecordNullable<
@@ -35,9 +37,8 @@ declare namespace Api {
       } & Api.Common.CommonSearchParams
     >;
 
-    type UserCreateParams = CommonType.RecordNullable<
-      Pick<Api.User.UserInfo, 'name' | 'gender' | 'email' | 'phone' | 'roles'>
-    > & {
+    type UserCreateParams = CommonType.RecordNullable<Pick<Api.User.UserInfo, 'name' | 'email' | 'phone' | 'roles'>> & {
+      gender: UserGender;
       username: string;
       is_active: boolean;
       status: Api.Common.EnableStatus;
@@ -60,20 +61,28 @@ declare namespace Api {
 
     type Api = Common.CommonRecord<{
       name: string;
-      summary: string;
       path: string;
       method: ApiMethod;
       tags: string[];
-    }>;
+      in_whitelist: boolean;
+    }> &
+      CommonType.RecordNullable<{
+        summary: string;
+        description: string;
+      }>;
 
     type ApiSearchParams = CommonType.RecordNullable<
       Pick<Api.SystemManage.Api, 'method' | 'status'> & {
         keyword: string;
         tag: string;
+        in_whitelist: boolean;
       } & Api.Common.CommonSearchParams
     >;
 
-    type ApiUpdateStatusParams = Pick<Api, 'status'>;
+    type ApiUpdateStatusParams = Pick<Api, 'id'> & {
+      status?: null | string;
+      in_whitelist?: null | boolean;
+    };
 
     type ApiPaginatingData = Common.PaginatingQueryRecord<Api>;
 
@@ -85,6 +94,8 @@ declare namespace Api {
       code: string;
       /** role description */
       description: string;
+      /** role home */
+      home: string;
     }>;
 
     /** role search params */
@@ -97,10 +108,11 @@ declare namespace Api {
 
     /** role create params */
     type RoleCreateParams = Pick<Role, 'name' | 'code' | 'status'> &
-      CommonType.RecordNullable<Pick<Role, 'description'>>;
+      CommonType.RecordNullable<Pick<Role, 'description' | 'home'>>;
 
     /** role update params */
-    type RoleUpdateParams = Pick<Role, 'name' | 'status'> & CommonType.RecordNullable<Pick<Role, 'description'>>;
+    type RoleUpdateParams = Pick<Role, 'name' | 'status'> &
+      CommonType.RecordNullable<Pick<Role, 'description' | 'home'>>;
 
     /** role paginating data */
     type RolePaginatingData = Common.PaginatingQueryRecord<Role>;
@@ -150,19 +162,19 @@ declare namespace Api {
       /** parent menu id */
       parentId: number;
       /** menu type */
-      menuType: MenuType;
+      type: MenuType;
       /** menu name */
-      menuName: string;
+      title: string;
       /** route name */
-      routeName: string;
+      name: string;
       /** route path */
-      routePath: string;
+      path: string;
       /** component */
       component?: string;
       /** iconify icon name or local icon name */
       icon: string;
       /** icon type */
-      iconType: IconType;
+      iconType: IconType | null;
       /** buttons */
       buttons?: MenuButton[] | null;
       /** children menu */
@@ -171,7 +183,7 @@ declare namespace Api {
       MenuPropsOfRoute;
 
     /** menu list */
-    type MenuList = Common.PaginatingQueryRecord<Menu>;
+    type MenuList = Menu[];
 
     type MenuTree = {
       id: number;

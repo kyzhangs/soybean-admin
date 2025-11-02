@@ -646,17 +646,17 @@ export const generatedRoutes: GeneratedRoute[] = [
           title: 'system-manage_apis',
           i18nKey: 'route.system-manage_apis',
           icon: 'carbon:api',
-          order: 2
+          order: 4
         }
       },
       {
-        name: 'system-manage_menu',
-        path: '/system-manage/menu',
-        component: 'view.system-manage_menu',
+        name: 'system-manage_menus',
+        path: '/system-manage/menus',
+        component: 'view.system-manage_menus',
         meta: {
-          order: 4,
-          title: 'system-manage_menu',
-          i18nKey: 'route.system-manage_menu',
+          order: 3,
+          title: 'system-manage_menus',
+          i18nKey: 'route.system-manage_menus',
           icon: 'material-symbols:route',
           keepAlive: true
         }
@@ -668,7 +668,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         meta: {
           title: 'system-manage_roles',
           i18nKey: 'route.system-manage_roles',
-          order: 3,
+          order: 2,
           icon: 'carbon:user-role'
         }
       },

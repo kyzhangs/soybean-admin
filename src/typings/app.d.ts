@@ -82,14 +82,14 @@ declare namespace App {
         width: number;
         /** Collapsed sider width */
         collapsedWidth: number;
-        /** Sider width when the layout is 'vertical-mix', 'top-hybrid-sidebar-first', or 'top-hybrid-header-first' */
+        /** Sider width when the layout is string, string, or string */
         mixWidth: number;
         /**
-         * Collapsed sider width when the layout is 'vertical-mix', 'top-hybrid-sidebar-first', or
-         * 'top-hybrid-header-first'
+         * Collapsed sider width when the layout is string, string, or
+         * string
          */
         mixCollapsedWidth: number;
-        /** Child menu width when the layout is 'vertical-mix', 'top-hybrid-sidebar-first', or 'top-hybrid-header-first' */
+        /** Child menu width when the layout is string, string, or string */
         mixChildMenuWidth: number;
       };
       /** Footer */
@@ -101,8 +101,8 @@ declare namespace App {
         /** Footer height */
         height: number;
         /**
-         * Whether float the footer to the right when the layout is 'top-hybrid-sidebar-first' or
-         * 'top-hybrid-header-first'
+         * Whether float the footer to the right when the layout is string or
+         * string
          */
         right: boolean;
       };
@@ -288,7 +288,7 @@ declare namespace App {
   namespace I18n {
     type RouteKey = import('@elegant-router/types').RouteKey;
 
-    type LangType = 'en-US' | 'zh-CN';
+    type LangType = 'zh-CN' | 'en-US';
 
     type LangOption = {
       label: string;
@@ -316,6 +316,14 @@ declare namespace App {
         addSuccess: string;
         backToHome: string;
         batchDelete: string;
+        batchEnable: string;
+        batchDisable: string;
+        batchResetPassword: string;
+        batchAddWhitelist: string;
+        batchRemoveWhitelist: string;
+        batchOperateSuccess: string;
+        batchOperateFailed: string;
+        batchOperateCompleted: string;
         cancel: string;
         close: string;
         check: string;
@@ -327,6 +335,7 @@ declare namespace App {
         generateRandom: string;
         deleteSuccess: string;
         confirmDelete: string;
+        confirmOperate: string;
         edit: string;
         warning: string;
         error: string;
@@ -345,6 +354,7 @@ declare namespace App {
         reset: string;
         search: string;
         switch: string;
+        status: string;
         tip: string;
         trigger: string;
         update: string;
@@ -702,11 +712,14 @@ declare namespace App {
             };
           };
           api: {
-            title: string;
             name: string;
             summary: string;
-            path: string;
             method: string;
+            path: string;
+            description: string;
+            tags: string;
+            status: string;
+            in_whitelist: string;
             apiMethod: {
               get: string;
               post: string;
@@ -714,72 +727,102 @@ declare namespace App {
               delete: string;
               patch: string;
             };
-            tags: string;
-            status: string;
-            form: {
+            title: {
+              table: string;
+            };
+            label: {
+              whitelist: string;
+            };
+            placeholder: {
               keyword: string;
               method: string;
-              tags: string;
+              tag: string;
+              whitelist: string;
               status: string;
             };
-            refreshApi: string;
-            confirmRefreshApi: string;
+            button: {
+              refreshApi: string;
+            };
+            msg: {
+              confirmRefreshApi: string;
+              confirmAddWhitelist: string;
+              confirmRemoveWhitelist: string;
+            };
           };
           role: {
-            title: string;
             name: string;
             code: string;
-            status: string;
             description: string;
-            keyword: string;
-            form: {
+            home: string;
+            status: string;
+            title: {
+              table: string;
+              add: string;
+              edit: string;
+            };
+            button: {
+              menuAuth: string;
+              buttonAuth: string;
+              apiAuth: string;
+            };
+            label: {
+              keyword: string;
+            };
+            placeholder: {
               keyword: string;
               name: string;
               code: string;
-              status: string;
               description: string;
+              home: string;
+              status: string;
             };
-            addRole: string;
-            editRole: string;
-            menuAuth: string;
-            buttonAuth: string;
           };
           user: {
-            title: string;
             username: string;
             password: string;
-            gender: string;
             name: string;
+            gender: string;
             phone: string;
             email: string;
-            status: string;
-            role: string;
-            avatar: string;
             isActive: string;
-            lastLogin: string;
             activeTime: string;
-            resetPassword: string;
-            resetPasswordSuccess: string;
-            randomPasswordSuccess: string;
-            contact: string;
-            form: {
-              username: string;
-              password: string;
-              gender: string;
-              name: string;
-              phone: string;
-              email: string;
-              keyword: string;
-              contact: string;
-              isActive: string;
-              isForbid: string;
-            };
-            addUser: string;
-            editUser: string;
+            lastLogin: string;
+            status: string;
             userGender: {
               male: string;
               female: string;
               unknown: string;
+            };
+            title: {
+              table: string;
+              add: string;
+              edit: string;
+              reset: string;
+            };
+            label: {
+              keyword: string;
+              contact: string;
+              roles: string;
+            };
+            placeholder: {
+              username: string;
+              name: string;
+              gender: string;
+              email: string;
+              phone: string;
+              isActive: string;
+              status: string;
+              keyword: string;
+              contact: string;
+              role: string;
+              password: string;
+            };
+            button: {
+              resetPassword: string;
+            };
+            msg: {
+              resetPasswordSuccess: string;
+              randomPasswordSuccess: string;
             };
           };
           menu: {

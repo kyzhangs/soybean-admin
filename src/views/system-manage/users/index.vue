@@ -2,9 +2,11 @@
   import { reactive, ref } from 'vue';
   import { NButton, NPopconfirm, NTag, NTooltip } from 'naive-ui';
   import { enableStatusRecord, userGenderRecord } from '@/constants/business';
-  import { fetchBatchDeleteUser, fetchDeleteUser, fetchGetUserPaginatingData } from '@/service/api';
+  import { yesOrNoRecord } from '@/constants/common';
+  import { fetchBatchOperateUser, fetchDeleteUser, fetchGetUserPaginatingData } from '@/service/api';
   import { useAppStore } from '@/store/modules/app';
   import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+  import { BatchOperateEnum } from '@/enum/business';
   import { $t } from '@/locales';
   import UserOperateDrawer from './modules/user-operate-drawer.vue';
   import UserSearch from './modules/user-search.vue';
@@ -60,10 +62,6 @@
           align: 'center',
           width: 100,
           render: row => {
-            if (row.gender === null) {
-              return null;
-            }
-
             const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
               1: 'primary',
               2: 'error',
@@ -94,10 +92,16 @@
           align: 'center',
           width: 120,
           render: row => {
-            const type = row.is_active ? 'success' : 'warning';
-            const label = row.is_active ? $t('common.yesOrNo.yes') : $t('common.yesOrNo.no');
+            const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
+              Y: 'primary',
+              N: 'error'
+            };
 
-            const tag = <NTag type={type}>{label}</NTag>;
+            const value = row.is_active ? 'Y' : 'N';
+            const label = $t(yesOrNoRecord[value]);
+
+            const tag = <NTag type={tagMap[value]}>{label}</NTag>;
+
             if (row.is_active && row.active_time) {
               return (
                 <NTooltip>
@@ -130,9 +134,8 @@
 
             const value = row.status;
             const label = $t(enableStatusRecord[value]);
-            const type = statusMap[value];
 
-            return <NTag type={type}>{label}</NTag>;
+            return <NTag type={statusMap[value]}>{label}</NTag>;
           }
         },
         {
@@ -143,7 +146,7 @@
           render: row => (
             <div class="flex-center gap-8px">
               <NButton type="warning" ghost size="small" onClick={() => handleResetPassword(row.id)}>
-                {$t('page.manage.user.resetPassword')}
+                {$t('page.manage.user.button.resetPassword')}
               </NButton>
               <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
                 {$t('common.edit')}
@@ -185,10 +188,14 @@
     resetPasswordModalVisible.value = true;
   }
 
-  async function handleBatchDelete() {
-    const { error } = await fetchBatchDeleteUser(checkedRowKeys.value);
+  async function handleBatchOperate(operate: Api.Common.BatchOperateType) {
+    const batch_data: Api.Common.BatchOperateParams = {
+      operate,
+      ids: checkedRowKeys.value
+    };
+    const { error, response } = await fetchBatchOperateUser(batch_data);
     if (!error) {
-      onBatchDeleted();
+      onBatchDeleted(response.data);
     }
   }
 
@@ -207,14 +214,19 @@
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <UserSearch v-model:model="searchParams" @search="getDataByPage" />
-    <NCard :title="$t('page.manage.user.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
+    <NCard
+      :title="$t('page.manage.user.title.table')"
+      :bordered="false"
+      size="small"
+      class="card-wrapper sm:flex-1-hidden"
+    >
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
           @add="handleAdd"
-          @delete="handleBatchDelete"
+          @delete="handleBatchOperate(BatchOperateEnum.DELETE)"
           @refresh="getData"
         />
       </template>

@@ -48,7 +48,7 @@
       password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     model.password = password;
-    window.$message?.success($t('page.manage.user.randomPasswordSuccess'));
+    window.$message?.success($t('page.manage.user.msg.randomPasswordSuccess'));
   }
 
   const rules = computed<Record<keyof FormModel, App.Global.FormRule[]>>(() => {
@@ -56,8 +56,6 @@
       password: formRules.pwd
     };
   });
-
-  const title = computed(() => $t('page.manage.user.resetPassword'));
 
   function closeModal() {
     visible.value = false;
@@ -71,7 +69,7 @@
     const { error } = await fetchResetUserPassword(props.userId, { password: model.password });
 
     if (!error) {
-      window.$message?.success($t('page.manage.user.resetPasswordSuccess'));
+      window.$message?.success($t('page.manage.user.msg.resetPasswordSuccess'));
       emit('submitted');
       closeModal();
     }
@@ -79,7 +77,13 @@
 </script>
 
 <template>
-  <NModal v-model:show="visible" :title="title" preset="dialog" class="w-400px" :mask-closable="false">
+  <NModal
+    v-model:show="visible"
+    :title="$t('page.manage.user.title.reset')"
+    preset="dialog"
+    class="w-400px"
+    :mask-closable="false"
+  >
     <NDivider />
     <NForm
       ref="formRef"
@@ -97,7 +101,7 @@
           show-count
           :maxlength="16"
           show-password-on="click"
-          :placeholder="$t('page.manage.user.form.password')"
+          :placeholder="$t('page.manage.user.placeholder.password')"
         >
           <template #suffix>
             <NButton

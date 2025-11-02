@@ -1,7 +1,8 @@
 <script setup lang="tsx">
   import { reactive } from 'vue';
-  import { NPopconfirm, NSwitch, NTag, NTooltip } from 'naive-ui';
-  import { fetchGetApiPaginatingData, fetchRefreshApi, fetchUpdateApiStatus } from '@/service/api';
+  import { NButton, NPopconfirm, NSwitch, NTag, NTooltip } from 'naive-ui';
+  import { enableStatusRecord } from '@/constants/business';
+  import { fetchGetApiPaginatingData, fetchSyncApi, fetchUpdateApi } from '@/service/api';
   import { useAppStore } from '@/store/modules/app';
   import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
   import { $t } from '@/locales';
@@ -39,11 +40,12 @@
           title: $t('page.manage.api.summary'),
           align: 'center',
           width: 120,
+          ellipsis: {},
           render: row => {
             return (
               <NTooltip placement="left-start">
                 {{
-                  trigger: () => <span>{row.summary}</span>,
+                  trigger: () => <span>{row.summary ? row.summary : row.name}</span>,
                   default: () => <span>{row.name}</span>
                 }}
               </NTooltip>
@@ -70,8 +72,22 @@
         {
           key: 'path',
           title: $t('page.manage.api.path'),
+          align: 'left',
+          width: 240,
+          ellipsis: {
+            tooltip: true
+          }
+        },
+        {
+          key: 'description',
+          title: $t('page.manage.api.description'),
           align: 'center',
-          width: 240
+          width: 120,
+          ellipsis: {
+            tooltip: {
+              maxWidth: 800
+            }
+          }
         },
         {
           key: 'tags',
@@ -91,32 +107,62 @@
           key: 'status',
           title: $t('page.manage.api.status'),
           align: 'center',
+          width: 100,
+          render: row => {
+            const statusMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
+              '1': 'success',
+              '2': 'error'
+            };
+
+            const value = row.status;
+            const label = $t(enableStatusRecord[value]);
+
+            return <NTag type={statusMap[value]}>{label}</NTag>;
+          }
+        },
+        {
+          key: 'in_whitelist',
+          title: $t('page.manage.api.in_whitelist'),
+          align: 'center',
           width: 120,
           render: row => {
-            const value = row.status === '1';
-            const switchValue = row.status === '1' ? '2' : '1';
-
             return (
-              <NPopconfirm
-                onPositiveClick={() => handleUpdate(row.id, switchValue)}
-                positive-text={$t('common.confirm')}
-                negative-text={$t('common.cancel')}
-                v-slots={{
-                  default: () => (value ? $t('common.confirmDisable') : $t('common.confirmEnable')),
+              <NPopconfirm onPositiveClick={() => handleUpdateWhitelist(row)}>
+                {{
+                  default: () =>
+                    row.in_whitelist
+                      ? $t('page.manage.api.msg.confirmRemoveWhitelist')
+                      : $t('page.manage.api.msg.confirmAddWhitelist'),
                   trigger: () => (
                     <NSwitch
-                      value={value}
+                      value={row.in_whitelist}
                       size="small"
-                      checked-children={$t('common.enable')}
-                      unchecked-children={$t('common.disable')}
                       // 阻止直接切换，必须通过二次确认
                       onUpdateValue={() => {}}
                     />
                   )
                 }}
-              />
+              </NPopconfirm>
             );
           }
+        },
+        {
+          key: 'operate',
+          title: $t('common.operate'),
+          align: 'center',
+          width: 100,
+          render: row => (
+            <NPopconfirm onPositiveClick={() => handleUpdateStatus(row)}>
+              {{
+                default: () => (row.status === '1' ? $t('common.confirmDisable') : $t('common.confirmEnable')),
+                trigger: () => (
+                  <NButton type={row.status === '1' ? 'warning' : 'info'} ghost size="small">
+                    {row.status === '1' ? $t('common.disable') : $t('common.enable')}
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          )
         }
       ]
     });
@@ -126,19 +172,37 @@
     // closeDrawer
   } = useTableOperate(data, 'id', getData);
 
-  async function handleUpdate(api_id: number, status: Api.Common.EnableStatus) {
-    const { error } = await fetchUpdateApiStatus(api_id, { status });
+  async function handleUpdateStatus(row: any) {
+    const updateData = {
+      id: row.id,
+      status: row.status === '1' ? '2' : '1'
+    };
+
+    const { error } = await fetchUpdateApi(updateData);
     if (!error) {
-      const message = status === '1' ? $t('common.enableSuccess') : $t('common.disableSuccess');
+      const message = row.status === '1' ? $t('common.disableSuccess') : $t('common.enableSuccess');
       window.$message?.success(message);
       getData();
     }
   }
 
-  async function handleRefreshApi() {
-    const { error } = await fetchRefreshApi();
+  async function handleUpdateWhitelist(row: any) {
+    const updateData = {
+      id: row.id,
+      in_whitelist: !row.in_whitelist
+    };
+
+    const { error } = await fetchUpdateApi(updateData);
     if (!error) {
-      window.$message?.success('接口同步成功');
+      window.$message?.success($t('common.updateSuccess'));
+      getData();
+    }
+  }
+
+  async function handleSyncApi() {
+    const { error, response } = await fetchSyncApi();
+    if (!error) {
+      window.$message?.success(response.data.message);
       getData();
     }
   }
@@ -147,7 +211,12 @@
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <ApiSearch v-model:model="searchParams" @search="getDataByPage" />
-    <NCard :title="$t('page.manage.api.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
+    <NCard
+      :title="$t('page.manage.api.title.table')"
+      :bordered="false"
+      size="small"
+      class="card-wrapper sm:flex-1-hidden"
+    >
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
@@ -159,17 +228,17 @@
             <NPopconfirm
               :positive-text="$t('common.confirm')"
               :negative-text="$t('common.cancel')"
-              @positive-click="handleRefreshApi"
+              @positive-click="handleSyncApi"
             >
               <template #default>
-                {{ $t('page.manage.api.confirmRefreshApi') }}
+                {{ $t('page.manage.api.msg.confirmRefreshApi') }}
               </template>
               <template #trigger>
-                <NButton size="small" type="primary" ghost>
+                <NButton size="small" type="warning" ghost>
                   <template #icon>
                     <icon-mdi-refresh class="text-icon" />
                   </template>
-                  {{ $t('page.manage.api.refreshApi') }}
+                  {{ $t('page.manage.api.button.refreshApi') }}
                 </NButton>
               </template>
             </NPopconfirm>

@@ -38,3 +38,14 @@ export const apiMethodRecord: Record<Api.SystemManage.ApiMethod, App.I18n.I18nKe
 };
 
 export const apiMethodOptions = transformRecordToOption(apiMethodRecord);
+
+export const batchOperateRecord: Record<Api.Common.BatchOperateType, App.I18n.I18nKey> = {
+  DELETE: 'common.batchDelete',
+  ENABLE: 'common.batchEnable',
+  DISABLE: 'common.batchDisable',
+  RESET_PASSWORD: 'common.batchResetPassword',
+  ADD_WHITELIST: 'common.batchAddWhitelist',
+  REMOVE_WHITELIST: 'common.batchRemoveWhitelist'
+};
+
+export const batchOperateOptions = transformRecordToOption(batchOperateRecord);

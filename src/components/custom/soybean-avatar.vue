@@ -1,10 +1,13 @@
 <script setup lang="ts">
+  import { computed } from 'vue';
   import { useAuthStore } from '@/store/modules/auth';
-  import { useThemeStore } from '@/store/modules/theme';
+  import soybeanImg from '@/assets/imgs/soybean.jpg';
 
   const authStore = useAuthStore();
 
-  const themeStore = useThemeStore();
+  const avatar = computed(() => {
+    return authStore.userInfo?.avatar || soybeanImg;
+  });
 
   defineOptions({
     name: 'SoybeanAvatar'
@@ -13,10 +16,7 @@
 
 <template>
   <div class="size-72px flex-y-center justify-center overflow-hidden border rd-1/2">
-    <NAvatar v-if="authStore.userInfo?.avatar" :size="72" round :src="authStore.userInfo?.avatar" />
-    <NAvatar v-else :size="72" round class="text-32px" :color="themeStore.themeColors.primary">
-      {{ authStore.userDisplayName.slice(0, 1) }}
-    </NAvatar>
+    <NAvatar :size="72" round :src="avatar" />
   </div>
 </template>
 

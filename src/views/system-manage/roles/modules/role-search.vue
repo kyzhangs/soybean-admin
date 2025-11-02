@@ -48,19 +48,24 @@
       <NCollapseItem :title="$t('common.search')" name="role-search">
         <NForm ref="formRef" :model="model" label-placement="left" :label-width="80">
           <NGrid responsive="screen" item-responsive>
-            <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.role.keyword')" path="keyword" class="pr-24px">
+            <NFormItemGi
+              span="24 s:12 m:6"
+              :label="$t('page.manage.role.label.keyword')"
+              path="keyword"
+              class="pr-24px"
+            >
               <NInput
                 v-model:value="model.keyword"
-                :placeholder="$t('page.manage.role.form.keyword')"
+                :placeholder="$t('page.manage.role.placeholder.keyword')"
                 clearable
                 @clear="search"
                 @keyup.enter="search"
               />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.role.code')" path="code" class="pr-24px">
+            <NFormItemGi span="0 s:12 m:6" :label="$t('page.manage.role.code')" path="code" class="pr-24px">
               <NInput
                 v-model:value="model.code"
-                :placeholder="$t('page.manage.role.form.code')"
+                :placeholder="$t('page.manage.role.placeholder.code')"
                 clearable
                 @clear="search"
                 @keyup.enter="search"
@@ -69,14 +74,14 @@
             <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.role.status')" path="status" class="pr-24px">
               <NSelect
                 v-model:value="model.status"
-                :placeholder="$t('page.manage.role.form.status')"
+                :placeholder="$t('page.manage.role.placeholder.status')"
                 :options="translateOptions(enableStatusOptions)"
                 clearable
                 @clear="search"
                 @update:value="search"
               />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:6">
+            <NFormItemGi span="24 s:12 m:6" class="pr-24px">
               <NSpace class="w-full" justify="end">
                 <NButton type="default" @click="reset">
                   <template #icon>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed, shallowRef, watch } from 'vue';
-  import { fetchGetAllPages, fetchGetMenuTree } from '@/service/api';
+  import { fetchGetFirstLevelMenus, fetchGetMenuTree } from '@/service/api';
   import { $t } from '@/locales';
 
   defineOptions({
@@ -22,41 +22,40 @@
     visible.value = false;
   }
 
-  const title = computed(() => $t('common.edit') + $t('page.manage.role.menuAuth'));
+  const title = computed(() => $t('common.edit') + $t('page.manage.role.button.menuAuth'));
 
-  const home = shallowRef('');
+  // const home = shallowRef('');
 
-  async function getHome() {
-    // eslint-disable-next-line no-console
-    console.log(props.roleId);
+  // async function getHome() {
+  //   // eslint-disable-next-line no-console
+  //   console.log(props.roleId);
 
-    home.value = 'home';
-  }
+  //   home.value = 'home';
+  // }
 
-  async function updateHome(val: string) {
-    // request
+  // async function updateHome(val: string) {
+  //   // request
 
-    home.value = val;
-  }
+  //   home.value = val;
+  // }
 
-  const pages = shallowRef<string[]>([]);
+  const firstLevelMenus = shallowRef<string[]>([]);
 
-  async function getPages() {
-    const { error, data } = await fetchGetAllPages();
+  async function getFirstLevelMenus() {
+    const { error, data } = await fetchGetFirstLevelMenus();
 
     if (!error) {
-      pages.value = data;
+      firstLevelMenus.value = data;
     }
   }
 
-  const pageSelectOptions = computed(() => {
-    const opts: CommonType.Option[] = pages.value.map(page => ({
-      label: page,
-      value: page
-    }));
-
-    return opts;
-  });
+  // const pageSelectOptions = computed(() => {
+  //   const opts: CommonType.Option[] = firstLevelMenus.value.map(menu => ({
+  //     label: menu.label,
+  //     value: menu.value
+  //   }));
+  //   return opts;
+  // });
 
   const tree = shallowRef<Api.SystemManage.MenuTree[]>([]);
 
@@ -88,8 +87,8 @@
   }
 
   function init() {
-    getHome();
-    getPages();
+    // getHome();
+    getFirstLevelMenus();
     getTree();
     getChecks();
   }
@@ -103,10 +102,12 @@
 
 <template>
   <NModal v-model:show="visible" :title="title" preset="card" class="w-480px">
-    <div class="flex-y-center gap-16px pb-12px">
+    <!--
+ <div class="flex-y-center gap-16px pb-12px">
       <div>{{ $t('page.manage.menu.home') }}</div>
       <NSelect :value="home" :options="pageSelectOptions" size="small" class="w-160px" @update:value="updateHome" />
-    </div>
+    </div> 
+-->
     <NTree
       v-model:checked-keys="checks"
       :data="tree"

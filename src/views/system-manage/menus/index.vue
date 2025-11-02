@@ -5,9 +5,9 @@
   import { useBoolean } from '@sa/hooks';
   import { yesOrNoRecord } from '@/constants/common';
   import { enableStatusRecord, menuTypeRecord } from '@/constants/business';
-  import { fetchGetAllPages, fetchGetMenuList } from '@/service/api';
+  import { fetchBatchOperateMenu, fetchGetFirstLevelMenus, fetchGetMenuList } from '@/service/api';
   import { useAppStore } from '@/store/modules/app';
-  import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+  import { defaultTableTransform, useNaiveTable, useTableOperate } from '@/hooks/common/table';
   import { $t } from '@/locales';
   import SvgIcon from '@/components/custom/svg-icon.vue';
   import MenuOperateModal, { type OperateType } from './modules/menu-operate-modal.vue';
@@ -18,9 +18,9 @@
 
   const wrapperRef = ref<HTMLElement | null>(null);
 
-  const { columns, columnChecks, data, loading, pagination, getData, getDataByPage } = useNaivePaginatedTable({
+  const { columns, columnChecks, scrollX, data, loading, getData } = useNaiveTable({
     api: () => fetchGetMenuList(),
-    transform: response => defaultTransform(response),
+    transform: response => defaultTableTransform(response),
     columns: () => [
       {
         type: 'selection',
@@ -28,35 +28,41 @@
         width: 48
       },
       {
-        key: 'id',
-        title: $t('page.manage.menu.id'),
-        align: 'center'
+        key: 'x',
+        align: 'center',
+        width: 30
       },
       {
-        key: 'menuType',
+        key: 'index',
+        title: $t('common.index'),
+        align: 'center',
+        width: 62
+      },
+      {
+        key: 'type',
         title: $t('page.manage.menu.menuType'),
         align: 'center',
         width: 80,
         render: row => {
           const tagMap: Record<Api.SystemManage.MenuType, NaiveUI.ThemeColor> = {
-            1: 'default',
-            2: 'primary'
+            '1': 'primary',
+            '2': 'default'
           };
 
-          const label = $t(menuTypeRecord[row.menuType]);
+          const label = $t(menuTypeRecord[row.type]);
 
-          return <NTag type={tagMap[row.menuType]}>{label}</NTag>;
+          return <NTag type={tagMap[row.type]}>{label}</NTag>;
         }
       },
       {
-        key: 'menuName',
+        key: 'name',
         title: $t('page.manage.menu.menuName'),
         align: 'center',
-        minWidth: 120,
+        width: 120,
         render: row => {
-          const { i18nKey, menuName } = row;
+          const { i18nKey, name } = row;
 
-          const label = i18nKey ? $t(i18nKey) : menuName;
+          const label = i18nKey ? $t(i18nKey as App.I18n.I18nKey) : name;
 
           return <span>{label}</span>;
         }
@@ -79,22 +85,69 @@
         }
       },
       {
-        key: 'routeName',
+        key: 'name',
         title: $t('page.manage.menu.routeName'),
         align: 'center',
-        minWidth: 120
+        width: 120
       },
       {
-        key: 'routePath',
+        key: 'path',
         title: $t('page.manage.menu.routePath'),
         align: 'center',
-        minWidth: 120
+        width: 200,
+        ellipsis: {
+          tooltip: true
+        }
       },
+
+      {
+        key: 'hideInMenu',
+        title: $t('page.manage.menu.hideInMenu'),
+        align: 'center',
+        width: 100,
+        render: row => {
+          const hide: CommonType.YesOrNo = row.hideInMenu ? 'Y' : 'N';
+
+          const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
+            Y: 'error',
+            N: 'default'
+          };
+
+          const label = $t(yesOrNoRecord[hide]);
+
+          return <NTag type={tagMap[hide]}>{label}</NTag>;
+        }
+      },
+      {
+        key: 'constant',
+        title: '常量路由',
+        align: 'center',
+        width: 80,
+        render: row => {
+          const constant: CommonType.YesOrNo = row.constant ? 'Y' : 'N';
+
+          const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
+            Y: 'primary',
+            N: 'default'
+          };
+
+          const label = $t(yesOrNoRecord[constant]);
+
+          return <NTag type={tagMap[constant]}>{label}</NTag>;
+        }
+      },
+      {
+        key: 'order',
+        title: $t('page.manage.menu.order'),
+        align: 'center',
+        width: 60
+      },
+
       {
         key: 'status',
         title: $t('page.manage.menu.menuStatus'),
         align: 'center',
-        width: 80,
+        width: 100,
         render: row => {
           if (row.status === null || row.status === undefined) {
             return null;
@@ -112,43 +165,13 @@
         }
       },
       {
-        key: 'hideInMenu',
-        title: $t('page.manage.menu.hideInMenu'),
-        align: 'center',
-        width: 80,
-        render: row => {
-          const hide: CommonType.YesOrNo = row.hideInMenu ? 'Y' : 'N';
-
-          const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
-            Y: 'error',
-            N: 'default'
-          };
-
-          const label = $t(yesOrNoRecord[hide]);
-
-          return <NTag type={tagMap[hide]}>{label}</NTag>;
-        }
-      },
-      {
-        key: 'parentId',
-        title: $t('page.manage.menu.parentId'),
-        width: 90,
-        align: 'center'
-      },
-      {
-        key: 'order',
-        title: $t('page.manage.menu.order'),
-        align: 'center',
-        width: 60
-      },
-      {
         key: 'operate',
         title: $t('common.operate'),
         align: 'center',
-        width: 230,
+        width: 180,
         render: row => (
           <div class="flex-center justify-end gap-8px">
-            {row.menuType === '1' && (
+            {row.type === '1' && (
               <NButton type="primary" ghost size="small" onClick={() => handleAddChildMenu(row)}>
                 {$t('page.manage.menu.addChildMenu')}
               </NButton>
@@ -183,11 +206,14 @@
 
   async function handleBatchDelete() {
     // request
-
-    // eslint-disable-next-line no-console
-    console.log(checkedRowKeys.value);
-
-    onBatchDeleted();
+    const batch_data: Api.Common.BatchOperateParams = {
+      operate: 'DELETE',
+      ids: checkedRowKeys.value
+    };
+    const { error, response } = await fetchBatchOperateMenu(batch_data);
+    if (!error) {
+      onBatchDeleted(response.data);
+    }
   }
 
   function handleDelete(id: number) {
@@ -220,7 +246,7 @@
   const allPages = ref<string[]>([]);
 
   async function getAllPages() {
-    const { data: pages } = await fetchGetAllPages();
+    const { data: pages } = await fetchGetFirstLevelMenus();
     allPages.value = pages || [];
   }
 
@@ -251,11 +277,9 @@
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="1088"
+        :scroll-x="scrollX"
         :loading="loading"
         :row-key="row => row.id"
-        remote
-        :pagination="pagination"
         class="sm:h-full"
       />
       <MenuOperateModal
@@ -263,7 +287,7 @@
         :operate-type="operateType"
         :row-data="editingData"
         :all-pages="allPages"
-        @submitted="getDataByPage"
+        @submitted="getData"
       />
     </NCard>
   </div>

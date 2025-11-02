@@ -1,6 +1,7 @@
 <script setup lang="ts">
-  import { nextTick, ref } from 'vue';
+  import { computed, nextTick, ref } from 'vue';
   import { apiMethodOptions, enableStatusOptions } from '@/constants/business';
+  import { yesOrNoOptions } from '@/constants/common';
   import { fetchGetApiTagsList } from '@/service/api';
   import { useNaiveForm } from '@/hooks/common/form';
   import { translateOptions } from '@/utils/common';
@@ -25,7 +26,8 @@
       keyword: null,
       method: null,
       tag: null,
-      status: null
+      status: null,
+      in_whitelist: null
     });
   }
 
@@ -51,6 +53,23 @@
       tagOptions.value = data;
     }
   }
+
+  // 添加计算属性来处理 is_active 的类型转换
+  const isInWhitelistComputed = computed({
+    get: () => {
+      if (model.value.in_whitelist === null || model.value.in_whitelist === undefined) {
+        return null;
+      }
+      return model.value.in_whitelist ? 'Y' : 'N';
+    },
+    set: (value: string | null) => {
+      if (value === null) {
+        model.value.in_whitelist = null;
+      } else {
+        model.value.in_whitelist = value === 'Y';
+      }
+    }
+  });
 </script>
 
 <template>
@@ -59,49 +78,75 @@
       <NCollapseItem :title="$t('common.search')" name="role-search">
         <NForm ref="formRef" :model="model" label-placement="left" :label-width="80">
           <NGrid responsive="screen" item-responsive>
-            <NFormItemGi span="24 s:12 m:6" :label="$t('common.keyword')" path="keyword" class="pr-24px">
-              <NInput
-                v-model:value="model.keyword"
-                :placeholder="$t('page.manage.api.form.keyword')"
-                clearable
-                @keyup.enter="search"
-                @clear="search"
-              />
-            </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:5" :label="$t('page.manage.api.method')" path="method">
-              <NSelect
-                v-model:value="model.method"
-                :placeholder="$t('page.manage.api.form.method')"
-                :options="translateOptions(apiMethodOptions)"
-                clearable
-                @update:value="search"
-              />
+            <NFormItemGi span="24 s:18 m:18 l:19 xl:20" :show-feedback="false">
+              <NGrid responsive="screen" item-responsive>
+                <NFormItemGi span="24 s:12 m:8 l:8 xl:5" :label="$t('common.keyword')" path="keyword" class="pr-24px">
+                  <NInput
+                    v-model:value="model.keyword"
+                    :placeholder="$t('page.manage.api.placeholder.keyword')"
+                    clearable
+                    @keyup.enter="search"
+                    @clear="search"
+                  />
+                </NFormItemGi>
+                <NFormItemGi
+                  span="0 s:12 m:8 l:8 xl:5"
+                  :label="$t('page.manage.api.method')"
+                  path="method"
+                  class="pr-24px"
+                >
+                  <NSelect
+                    v-model:value="model.method"
+                    :placeholder="$t('page.manage.api.placeholder.method')"
+                    :options="translateOptions(apiMethodOptions)"
+                    clearable
+                    @update:value="search"
+                  />
+                </NFormItemGi>
+                <NFormItemGi span="0 s:8 m:8 l:8 xl:5" :label="$t('page.manage.api.tags')" path="tag" class="pr-24px">
+                  <NCascader
+                    v-model:value="model.tag"
+                    :options="tagOptions"
+                    :placeholder="$t('page.manage.api.placeholder.tag')"
+                    filterable
+                    clearable
+                    @update:value="search"
+                    @clear="search"
+                    @click.once="handleGetTagOptions"
+                  />
+                </NFormItemGi>
+                <NFormItemGi
+                  span="0 s:8 m:8 l:8 xl:5"
+                  :label="$t('page.manage.api.label.whitelist')"
+                  path="in_whitelist"
+                  class="pr-24px"
+                >
+                  <NSelect
+                    v-model:value="isInWhitelistComputed"
+                    :placeholder="$t('page.manage.api.placeholder.whitelist')"
+                    :options="translateOptions(yesOrNoOptions)"
+                    clearable
+                    @update:value="search"
+                  />
+                </NFormItemGi>
+                <NFormItemGi
+                  span="24 s:8 m:8 l:8 xl:4"
+                  :label="$t('page.manage.api.status')"
+                  path="status"
+                  class="pr-24px"
+                >
+                  <NSelect
+                    v-model:value="model.status"
+                    :placeholder="$t('page.manage.api.placeholder.status')"
+                    :options="translateOptions(enableStatusOptions)"
+                    clearable
+                    @update:value="search"
+                  />
+                </NFormItemGi>
+              </NGrid>
             </NFormItemGi>
 
-            <NFormItemGi span="24 s:12 m:5" :label="$t('page.manage.api.tags')" path="tag" class="pr-24px">
-              <NCascader
-                v-model:value="model.tag"
-                :options="tagOptions"
-                :placeholder="$t('page.manage.api.form.tags')"
-                filterable
-                clearable
-                @update:value="search"
-                @clear="search"
-                @click.once="handleGetTagOptions"
-              />
-            </NFormItemGi>
-
-            <NFormItemGi span="24 s:12 m:5" :label="$t('page.manage.api.status')" path="status" class="pr-24px">
-              <NSelect
-                v-model:value="model.status"
-                :placeholder="$t('page.manage.api.form.status')"
-                :options="translateOptions(enableStatusOptions)"
-                clearable
-                @update:value="search"
-              />
-            </NFormItemGi>
-
-            <NFormItemGi span="24 s:12 m:3">
+            <NFormItemGi span="24 s:6 m:6 l:5 xl:4">
               <NSpace class="w-full" justify="end">
                 <NButton type="default" @click="reset">
                   <template #icon>

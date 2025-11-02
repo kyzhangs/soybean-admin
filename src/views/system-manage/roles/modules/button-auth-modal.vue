@@ -21,7 +21,7 @@
     visible.value = false;
   }
 
-  const title = computed(() => $t('common.edit') + $t('page.manage.role.buttonAuth'));
+  const title = computed(() => $t('common.edit') + $t('page.manage.role.button.buttonAuth'));
 
   type ButtonConfig = {
     id: number;

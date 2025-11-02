@@ -20,6 +20,20 @@ declare namespace Api {
       rows: T[];
     }
 
+    type BatchOperateType = 'DELETE' | 'ENABLE' | 'DISABLE' | 'RESET_PASSWORD' | 'ADD_WHITELIST' | 'REMOVE_WHITELIST';
+
+    interface BatchOperateParams {
+      operate: BatchOperateType;
+      ids: number[];
+    }
+
+    interface BatchOperateResult {
+      success: number[];
+      errors: object[];
+      pass_rate: number;
+      operate: BatchOperateType;
+    }
+
     /** common search params of table */
     type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'page' | 'page_size'>;
 
@@ -43,9 +57,9 @@ declare namespace Api {
       update_time: string;
     } & CommonType.RecordNullable<{
       /** creator */
-      create_by: string | number;
+      create_by?: string | number;
       /** update user */
-      update_by: string | number;
+      update_by?: string | number;
     }> &
       T;
   }

@@ -16,10 +16,14 @@
     /** the type of operation */
     operateType: NaiveUI.TableOperateType;
     /** the edit row data */
-    rowData?: Api.SystemManage.Role | null;
+    rowData: Api.SystemManage.Role | null;
+    /** 角色首页可选的一级菜单列表 */
+    firstLevelMenusOptions?: CommonType.Option<string>[];
   }
 
-  const props = defineProps<Props>();
+  const props = withDefaults(defineProps<Props>(), {
+    firstLevelMenusOptions: () => []
+  });
 
   interface Emits {
     (e: 'submitted'): void;
@@ -38,8 +42,8 @@
 
   const title = computed(() => {
     const titles: Record<NaiveUI.TableOperateType, string> = {
-      add: $t('page.manage.role.addRole'),
-      edit: $t('page.manage.role.editRole')
+      add: $t('page.manage.role.title.add'),
+      edit: $t('page.manage.role.title.edit')
     };
     return titles[props.operateType];
   });
@@ -53,11 +57,12 @@
       name: '',
       code: '',
       description: null,
+      home: 'home',
       status: '1'
     };
   }
 
-  type RuleKey = Exclude<keyof Model, 'description'>;
+  type RuleKey = Exclude<keyof Model, 'description' | 'home'>;
 
   const rules: Record<RuleKey, App.Global.FormRule> = {
     name: defaultRequiredRule,
@@ -91,7 +96,7 @@
         emit('submitted');
       }
     } else {
-      const { error } = await fetchUpdateRole(roleId.value, model.value);
+      const { error } = await fetchUpdateRole(model.value);
       if (!error) {
         window.$message?.success($t('common.updateSuccess'));
         closeDrawer();
@@ -112,40 +117,59 @@
   <NModal v-model:show="visible" :title="title" preset="dialog" :mask-closable="false" class="min-w-450px w-500px">
     <NDivider />
     <NForm ref="formRef" :model="model" :rules="rules">
-      <NFormItem :label="$t('page.manage.role.name')" path="name">
-        <NInput v-model:value="model.name" :placeholder="$t('page.manage.role.form.name')" show-count :maxlength="16" />
-      </NFormItem>
-      <NFormItem :label="$t('page.manage.role.code')" path="code">
-        <NInput
-          v-model:value="model.code"
-          :placeholder="$t('page.manage.role.form.code')"
-          :disabled="isEdit"
-          show-count
-          :maxlength="16"
-        />
-      </NFormItem>
-      <NFormItem :label="$t('page.manage.role.status')" path="status">
-        <NRadioGroup v-model:value="model.status">
-          <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
-        </NRadioGroup>
-      </NFormItem>
-      <NFormItem :label="$t('page.manage.role.description')" path="description">
-        <NInput
-          v-model:value="model.description"
-          :placeholder="$t('page.manage.role.form.description')"
-          type="textarea"
-          :autosize="{ minRows: 2, maxRows: 3 }"
-          maxlength="255"
-          show-count
-        />
-      </NFormItem>
+      <NGrid responsive="screen" item-responsive>
+        <NFormItemGi span="24" :label="$t('page.manage.role.name')" path="name">
+          <NInput
+            v-model:value="model.name"
+            :placeholder="$t('page.manage.role.placeholder.name')"
+            show-count
+            :maxlength="16"
+          />
+        </NFormItemGi>
+        <NFormItemGi span="24" :label="$t('page.manage.role.code')" path="code">
+          <NInput
+            v-model:value="model.code"
+            :placeholder="$t('page.manage.role.placeholder.code')"
+            :disabled="isEdit"
+            show-count
+            :maxlength="16"
+          />
+        </NFormItemGi>
+        <NFormItemGi span="12" :label="$t('page.manage.role.home')" path="home">
+          <NSelect
+            v-model:value="model.home"
+            :options="props.firstLevelMenusOptions"
+            :placeholder="$t('page.manage.role.placeholder.home')"
+            size="small"
+            class="pr-24px"
+            clearable
+          />
+        </NFormItemGi>
+        <NFormItemGi span="12" :label="$t('page.manage.role.status')" path="status" justify="end">
+          <NRadioGroup v-model:value="model.status">
+            <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
+          </NRadioGroup>
+        </NFormItemGi>
+        <NFormItemGi span="24" :label="$t('page.manage.role.description')" path="description">
+          <NInput
+            v-model:value="model.description"
+            :placeholder="$t('page.manage.role.placeholder.description')"
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 3 }"
+            maxlength="255"
+            show-count
+          />
+        </NFormItemGi>
+      </NGrid>
     </NForm>
+
     <NSpace v-if="isEdit">
-      <NButton @click="openMenuAuthModal">{{ $t('page.manage.role.menuAuth') }}</NButton>
+      <NButton @click="openMenuAuthModal">{{ $t('page.manage.role.button.menuAuth') }}</NButton>
       <MenuAuthModal v-model:visible="menuAuthVisible" :role-id="roleId" />
-      <NButton @click="openButtonAuthModal">{{ $t('page.manage.role.buttonAuth') }}</NButton>
+      <NButton @click="openButtonAuthModal">{{ $t('page.manage.role.button.buttonAuth') }}</NButton>
       <ButtonAuthModal v-model:visible="buttonAuthVisible" :role-id="roleId" />
     </NSpace>
+
     <template #action>
       <NSpace :size="16">
         <NButton @click="closeDrawer">{{ $t('common.cancel') }}</NButton>

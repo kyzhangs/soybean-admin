@@ -3,8 +3,7 @@ import { request } from '@/service/request';
 /** get role paginating data */
 export function fetchGetRolePaginatingData(params?: Api.SystemManage.RoleSearchParams) {
   return request<Api.SystemManage.RolePaginatingData>({
-    url: '/system-manage/roles',
-    method: 'get',
+    url: '/system-manage/roles/list',
     params
   });
 }
@@ -19,28 +18,29 @@ export function fetchAddRole(data: Api.SystemManage.RoleCreateParams) {
 }
 
 /** batch delete roles  */
-export function fetchBatchDeleteRoles(ids: string[]) {
+export function fetchBatchOperateRoles(data: Api.Common.BatchOperateParams) {
   return request({
-    url: '/system-manage/roles',
-    method: 'delete',
-    data: { ids }
+    url: '/system-manage/roles/batch',
+    method: 'post',
+    data
   });
 }
 
 /** update role */
-export function fetchUpdateRole(role_id: number, data: Api.SystemManage.RoleUpdateParams) {
+export function fetchUpdateRole(data: Api.SystemManage.RoleUpdateParams) {
   return request<Api.SystemManage.Role>({
-    url: `/system-manage/roles/${role_id}`,
-    method: 'put',
+    url: `/system-manage/roles/update`,
+    method: 'post',
     data
   });
 }
 
 /** delete role */
-export function fetchDeleteRole(role_id: number) {
+export function fetchDeleteRole(id: number) {
   return request<Api.SystemManage.Role>({
-    url: `/system-manage/roles/${role_id}`,
-    method: 'delete'
+    url: `/system-manage/roles/del`,
+    method: 'post',
+    data: { id }
   });
 }
 
@@ -51,22 +51,13 @@ export function fetchDeleteRole(role_id: number) {
  */
 export function fetchGetAllEnabledRoles() {
   return request<Api.SystemManage.Role[]>({
-    url: '/system-manage/roles/enabled-roles'
+    url: '/system-manage/roles/enabled'
   });
 }
 
-/** get menu list */
-export function fetchGetMenuList() {
+/** get role menu list */
+export function fetchGetRoleMenuList(role_id: number) {
   return request<Api.SystemManage.MenuList>({
-    url: '/system-manage/menus',
-    method: 'get'
-  });
-}
-
-/** get all pages */
-export function fetchGetAllPages() {
-  return request({
-    url: '/system-manage/pages',
-    method: 'get'
+    url: `/system-manage/roles/${role_id}/menus`
   });
 }

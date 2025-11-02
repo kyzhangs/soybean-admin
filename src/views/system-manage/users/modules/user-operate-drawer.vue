@@ -33,8 +33,8 @@
 
   const title = computed(() => {
     const titles: Record<NaiveUI.TableOperateType, string> = {
-      add: $t('page.manage.user.addUser'),
-      edit: $t('page.manage.user.editUser')
+      add: $t('page.manage.user.title.add'),
+      edit: $t('page.manage.user.title.edit')
     };
     return titles[props.operateType];
   });
@@ -52,11 +52,11 @@
       email: null,
       is_active: true,
       status: '1',
-      roles: []
+      roles: ['R_USER']
     };
   }
 
-  type RuleKey = Extract<keyof Model, 'username' | 'email' | 'phone' | 'gender' | 'status' | 'is_active'>;
+  type RuleKey = Extract<keyof Model, 'username' | 'email' | 'phone' | 'gender' | 'status' | 'roles'>;
 
   const rules: Record<RuleKey, App.Global.FormRule[]> = {
     username: [defaultRequiredRule, patternRules.username],
@@ -64,11 +64,10 @@
     phone: [patternRules.phone],
     gender: [defaultRequiredRule],
     status: [defaultRequiredRule],
-    is_active: [defaultRequiredRule]
+    roles: [defaultRequiredRule]
   };
 
   const isEdit = computed(() => props.operateType === 'edit');
-  const userId = computed(() => props.rowData?.id || -1);
 
   const isNameManual = ref({
     is_edit: false,
@@ -134,7 +133,7 @@
         emit('submitted');
       }
     } else {
-      const { error } = await fetchUpdateUser(userId.value, model.value);
+      const { error } = await fetchUpdateUser(model.value);
       if (!error) {
         window.$message?.success($t('common.updateSuccess'));
         closeModal();
@@ -168,7 +167,7 @@
         <NFormItemGi span="12" :label="$t('page.manage.user.username')" path="username">
           <NInput
             v-model:value="model.username"
-            :placeholder="$t('page.manage.user.form.username')"
+            :placeholder="$t('page.manage.user.placeholder.username')"
             show-count
             :maxlength="16"
             clearable
@@ -180,7 +179,7 @@
         <NFormItemGi span="12" :label="$t('page.manage.user.name')" path="name">
           <NInput
             v-model:value="model.name"
-            :placeholder="$t('page.manage.user.form.name')"
+            :placeholder="$t('page.manage.user.placeholder.name')"
             show-count
             :maxlength="16"
             clearable
@@ -192,7 +191,7 @@
         <NFormItemGi span="12" :label="$t('page.manage.user.phone')" path="phone">
           <NInput
             v-model:value="model.phone"
-            :placeholder="$t('page.manage.user.form.phone')"
+            :placeholder="$t('page.manage.user.placeholder.phone')"
             clearable
             show-count
             :maxlength="11"
@@ -202,7 +201,7 @@
         <NFormItemGi span="12" :label="$t('page.manage.user.email')" path="email">
           <NInput
             v-model:value="model.email"
-            :placeholder="$t('page.manage.user.form.email')"
+            :placeholder="$t('page.manage.user.placeholder.email')"
             clearable
             show-count
             :maxlength="64"
@@ -219,14 +218,14 @@
           </NRadioGroup>
         </NFormItemGi>
 
-        <NFormItemGi :span="12" :label="$t('page.manage.user.form.isForbid')" path="status">
+        <NFormItemGi :span="12" :label="$t('page.manage.user.status')" path="status">
           <NRadioGroup v-model:value="model.status">
             <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
         </NFormItemGi>
 
-        <NFormItemGi span="24" :label="$t('page.manage.user.role')" path="roles" class="w-1/2">
-          <NSelect v-model:value="model.roles" :options="roleOptions" multiple />
+        <NFormItemGi span="24" :label="$t('page.manage.user.label.roles')" path="roles" class="w-1/2">
+          <NSelect v-model:value="model.roles" :options="roleOptions" />
         </NFormItemGi>
       </NGrid>
     </NForm>

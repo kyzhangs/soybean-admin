@@ -1,11 +1,17 @@
 <script setup lang="tsx">
-  import { reactive } from 'vue';
+  import { onMounted, reactive, ref } from 'vue';
   import { NButton, NPopconfirm, NTag } from 'naive-ui';
   import { enableStatusRecord } from '@/constants/business';
-  import { fetchBatchDeleteRoles, fetchDeleteRole, fetchGetRolePaginatingData } from '@/service/api';
+  import {
+    fetchBatchOperateRoles,
+    fetchDeleteRole,
+    fetchGetFirstLevelMenus,
+    fetchGetRolePaginatingData
+  } from '@/service/api';
   import { useAppStore } from '@/store/modules/app';
   import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
   import { $t } from '@/locales';
+  import { BatchOperateEnum } from '@/enum/business';
   import RoleOperateDrawer from './modules/role-operate-drawer.vue';
   import RoleSearch from './modules/role-search.vue';
 
@@ -18,6 +24,15 @@
     code: null,
     status: null
   });
+
+  const firstLevelMenusOptions = ref<CommonType.Option<string>[]>([]);
+
+  async function getFirstLevelMenus() {
+    const { error, response } = await fetchGetFirstLevelMenus();
+    if (!error) {
+      firstLevelMenusOptions.value = response.data.data;
+    }
+  }
 
   const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination, scrollX } =
     useNaivePaginatedTable({
@@ -49,7 +64,10 @@
           key: 'code',
           title: $t('page.manage.role.code'),
           align: 'center',
-          width: 120
+          width: 120,
+          render: row => {
+            return <NTag type="default">{row.code}</NTag>;
+          }
         },
         {
           key: 'description',
@@ -57,16 +75,23 @@
           align: 'center',
           ellipsis: {
             tooltip: {
-              width: 800
+              maxWidth: 800
             }
           },
           width: 200
         },
         {
-          key: 'create_time',
-          title: $t('common.createTime'),
+          key: 'home',
+          title: $t('page.manage.role.home'),
           align: 'center',
-          width: 180
+          width: 180,
+          render: row => {
+            if (!row.home) {
+              return '';
+            }
+            const matched = firstLevelMenusOptions.value.find(option => option.value === row.home);
+            return <NTag type="primary">{matched?.label}</NTag>;
+          }
         },
         {
           key: 'update_time',
@@ -80,15 +105,15 @@
           align: 'center',
           width: 100,
           render: row => {
-            const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
-              1: 'success',
-              2: 'error'
+            const statusMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
+              '1': 'success',
+              '2': 'error'
             };
 
             const value = row.status;
             const label = $t(enableStatusRecord[value]);
 
-            return <NTag type={tagMap[value]}>{label}</NTag>;
+            return <NTag type={statusMap[value]}>{label}</NTag>;
           }
         },
         {
@@ -129,10 +154,14 @@
     // closeDrawer
   } = useTableOperate(data, 'id', getData);
 
-  async function handleBatchDelete() {
-    const { error } = await fetchBatchDeleteRoles(checkedRowKeys.value);
+  async function handleBatchOperate(operate: Api.Common.BatchOperateType) {
+    const batch_data: Api.Common.BatchOperateParams = {
+      operate,
+      ids: checkedRowKeys.value
+    };
+    const { error, response } = await fetchBatchOperateRoles(batch_data);
     if (!error) {
-      onBatchDeleted();
+      onBatchDeleted(response.data);
     }
   }
 
@@ -146,19 +175,28 @@
   function edit(id: number) {
     handleEdit(id);
   }
+
+  onMounted(async () => {
+    await getFirstLevelMenus();
+  });
 </script>
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <RoleSearch v-model:model="searchParams" @search="getDataByPage" />
-    <NCard :title="$t('page.manage.role.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
+    <NCard
+      :title="$t('page.manage.role.title.table')"
+      :bordered="false"
+      size="small"
+      class="card-wrapper sm:flex-1-hidden"
+    >
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
           @add="handleAdd"
-          @delete="handleBatchDelete"
+          @delete="handleBatchOperate(BatchOperateEnum.DELETE)"
           @refresh="getData"
         />
       </template>
@@ -179,6 +217,7 @@
         v-model:visible="drawerVisible"
         :operate-type="operateType"
         :row-data="editingData"
+        :first-level-menus-options="firstLevelMenusOptions"
         @submitted="getData"
       />
     </NCard>

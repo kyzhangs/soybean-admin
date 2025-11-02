@@ -63,37 +63,47 @@
 </script>
 
 <template>
-  <NCard :bordered="false" size="small" class="min-w-940px w-full card-wrapper">
+  <NCard :bordered="false" size="small" class="w-full card-wrapper">
     <NCollapse class="w-full" :default-expanded-names="['user-search']">
       <NCollapseItem :title="$t('common.search')" name="user-search">
         <NForm ref="formRef" :model="model" label-placement="left" label-align="right" label-width="auto">
           <NGrid responsive="screen" item-responsive>
-            <NFormItemGi span="24 s:18 m:18" :show-feedback="false">
+            <NFormItemGi span="24 s:18 m:20 l:18 xl:20" :show-feedback="false">
               <NGrid responsive="screen" item-responsive>
-                <NFormItemGi span="24 s:8 m:8" :label="$t('common.keyword')" path="keyword" class="pr-24px">
+                <NFormItemGi span="24 s:12 m:8 l:8 xl:5" :label="$t('common.keyword')" path="keyword" class="pr-24px">
                   <NInput
                     v-model:value="model.keyword"
-                    :placeholder="$t('page.manage.user.form.keyword')"
+                    :placeholder="$t('page.manage.user.placeholder.keyword')"
                     clearable
                     @clear="search"
                     @keyup.enter="search"
                   />
                 </NFormItemGi>
 
-                <NFormItemGi span="24 s:8 m:8" :label="$t('page.manage.user.contact')" path="contact" class="pr-24px">
+                <NFormItemGi
+                  span="0 s:12 m:8 l:8 xl:5"
+                  :label="$t('page.manage.user.label.contact')"
+                  path="contact"
+                  class="pr-24px"
+                >
                   <NInput
                     v-model:value="model.contact"
-                    :placeholder="$t('page.manage.user.form.contact')"
+                    :placeholder="$t('page.manage.user.placeholder.contact')"
                     clearable
                     @clear="search"
                     @keyup.enter="search"
                   />
                 </NFormItemGi>
 
-                <NFormItemGi span="24 s:8 m:8" :label="$t('page.manage.user.gender')" path="gender" class="pr-24px">
+                <NFormItemGi
+                  span="0 s:8 m:8 l:8 xl:4"
+                  :label="$t('page.manage.user.gender')"
+                  path="gender"
+                  class="pr-24px"
+                >
                   <NSelect
                     v-model:value="model.gender"
-                    :placeholder="$t('page.manage.user.form.gender')"
+                    :placeholder="$t('page.manage.user.placeholder.gender')"
                     :options="translateOptions(userGenderOptions)"
                     clearable
                     @update:value="search"
@@ -101,14 +111,14 @@
                 </NFormItemGi>
 
                 <NFormItemGi
-                  span="24 s:8 m:8"
+                  span="0 s:8 m:8 l:8 xl:5"
                   :label="$t('page.manage.user.isActive')"
                   path="is_active"
                   class="pr-24px"
                 >
                   <NSelect
                     v-model:value="isActiveComputed"
-                    :placeholder="$t('page.manage.user.form.isActive')"
+                    :placeholder="$t('page.manage.user.placeholder.isActive')"
                     :options="translateOptions(yesOrNoOptions)"
                     clearable
                     @update:value="search"
@@ -116,14 +126,14 @@
                 </NFormItemGi>
 
                 <NFormItemGi
-                  span="24 s:8 m:8"
-                  :label="$t('page.manage.user.form.isForbid')"
+                  span="24 s:8 m:8 l:8 xl:5"
+                  :label="$t('page.manage.user.status')"
                   path="is_forbid"
                   class="pr-24px"
                 >
                   <NSelect
                     v-model:value="model.status"
-                    :placeholder="$t('page.manage.user.form.isForbid')"
+                    :placeholder="$t('page.manage.user.placeholder.status')"
                     :options="translateOptions(enableStatusOptions)"
                     clearable
                     @clear="search"
@@ -133,7 +143,7 @@
               </NGrid>
             </NFormItemGi>
 
-            <NFormItemGi span="24 s:6 m:6" class="pr-24px">
+            <NFormItemGi span="24 s:6 m:4 l:6 xl:4">
               <NSpace class="w-full" justify="end">
                 <NButton type="default" @click="reset">
                   <template #icon>
