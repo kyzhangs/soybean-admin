@@ -15,5 +15,7 @@ declare namespace Api {
       routes: MenuRoute[];
       home: import('@elegant-router/types').LastLevelRouteKey;
     }
+
+    type RouteExistParams = Pick<MenuRoute, 'name'>;
   }
 }

@@ -1,6 +1,6 @@
 import { request } from '../request';
 
-/** Login */
+/** Get token */
 export function fetchLogin(data: Api.Auth.LoginForm) {
   return request<Api.Auth.Token>({
     url: '/auth/token',
@@ -10,16 +10,7 @@ export function fetchLogin(data: Api.Auth.LoginForm) {
   });
 }
 
-/** Get user profile */
-export function fetchGetUserInfo() {
-  return request<Api.UC.UserInfo>({ url: '/uc/profile' });
-}
-
-/**
- * Refresh token
- *
- * @param refreshToken Refresh token
- */
+/** Refresh token */
 export function fetchRefreshToken(data: Api.Auth.RefreshTokenParams) {
   return request<Api.Auth.Token>({
     url: '/auth/refresh-token',

@@ -303,7 +303,7 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
       return isRouteExistByRouteName(routeName, staticAuthRoutes);
     }
 
-    const { data } = await fetchIsRouteExist(routeName);
+    const { data } = await fetchIsRouteExist({ name: routeName });
 
     return data;
   }
