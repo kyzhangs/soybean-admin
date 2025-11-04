@@ -1,25 +1,18 @@
 import { request } from '../request';
 
-/**
- * Login
- *
- * @param userName User name
- * @param password Password
- */
-export function fetchLogin(userName: string, password: string) {
-  return request<Api.Auth.LoginToken>({
-    url: '/auth/login',
+/** Login */
+export function fetchLogin(data: Api.Auth.LoginForm) {
+  return request<Api.Auth.Token>({
+    url: '/auth/token',
     method: 'post',
-    data: {
-      userName,
-      password
-    }
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    data
   });
 }
 
-/** Get user info */
+/** Get user profile */
 export function fetchGetUserInfo() {
-  return request<Api.Auth.UserInfo>({ url: '/auth/getUserInfo' });
+  return request<Api.UC.UserInfo>({ url: '/uc/profile' });
 }
 
 /**
@@ -27,13 +20,11 @@ export function fetchGetUserInfo() {
  *
  * @param refreshToken Refresh token
  */
-export function fetchRefreshToken(refreshToken: string) {
-  return request<Api.Auth.LoginToken>({
-    url: '/auth/refreshToken',
+export function fetchRefreshToken(data: Api.Auth.RefreshTokenParams) {
+  return request<Api.Auth.Token>({
+    url: '/auth/refresh-token',
     method: 'post',
-    data: {
-      refreshToken
-    }
+    data
   });
 }
 

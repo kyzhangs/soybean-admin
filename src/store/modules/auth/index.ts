@@ -21,9 +21,15 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   const token = ref(getToken());
 
-  const userInfo: Api.Auth.UserInfo = reactive({
-    userId: '',
-    userName: '',
+  const userInfo: Api.UC.UserInfo = reactive({
+    userId: 0,
+    username: '',
+    name: null,
+    gender: '3',
+    phone: null,
+    email: null,
+    active_time: null,
+    last_login: null,
     roles: [],
     buttons: []
   });
@@ -37,6 +43,11 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   /** Is login */
   const isLogin = computed(() => Boolean(token.value));
+
+  /** user display name */
+  const userDisplayName = computed(() => {
+    return userInfo.name || userInfo.username;
+  });
 
   /** Reset auth store */
   async function resetStore() {
@@ -61,7 +72,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     }
 
     // Store current user ID locally for next login comparison
-    localStg.set('lastLoginUserId', userInfo.userId);
+    localStg.set('lastLoginUserId', userInfo.userId.toString());
   }
 
   /**
@@ -77,7 +88,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     const lastLoginUserId = localStg.get('lastLoginUserId');
 
     // Clear all tabs if current user is different from previous user
-    if (!lastLoginUserId || lastLoginUserId !== userInfo.userId) {
+    if (!lastLoginUserId || lastLoginUserId !== userInfo.userId.toString()) {
       localStg.remove('globalTabs');
       tabStore.clearTabs();
 
@@ -92,14 +103,15 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   /**
    * Login
    *
-   * @param userName User name
+   * @param username Username
    * @param password Password
    * @param [redirect=true] Whether to redirect after login. Default is `true`
    */
-  async function login(userName: string, password: string, redirect = true) {
+  async function login(username: string, password: string, redirect = true) {
     startLoading();
 
-    const { data: loginToken, error } = await fetchLogin(userName, password);
+    const form_data: Api.Auth.LoginForm = { username, password };
+    const { data: loginToken, error } = await fetchLogin(form_data);
 
     if (!error) {
       const pass = await loginByToken(loginToken);
@@ -117,7 +129,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
         window.$notification?.success({
           title: $t('page.login.common.loginSuccess'),
-          content: $t('page.login.common.welcomeBack', { userName: userInfo.userName }),
+          content: $t('page.login.common.welcomeBack', { username: authStore.userDisplayName }),
           duration: 4500
         });
       }
@@ -128,16 +140,16 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     endLoading();
   }
 
-  async function loginByToken(loginToken: Api.Auth.LoginToken) {
+  async function loginByToken(loginToken: Api.Auth.Token) {
     // 1. stored in the localStorage, the later requests need it in headers
-    localStg.set('token', loginToken.token);
-    localStg.set('refreshToken', loginToken.refreshToken);
+    localStg.set('token', loginToken.access_token);
+    localStg.set('refreshToken', loginToken.refresh_token);
 
     // 2. get user info
     const pass = await getUserInfo();
 
     if (pass) {
-      token.value = loginToken.token;
+      token.value = loginToken.access_token;
 
       return true;
     }
@@ -175,6 +187,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     userInfo,
     isStaticSuper,
     isLogin,
+    userDisplayName,
     loginLoading,
     resetStore,
     login,
