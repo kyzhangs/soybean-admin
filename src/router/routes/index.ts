@@ -8,7 +8,56 @@ import { transformElegantRoutesToVueRoutes } from '../elegant/transform';
  *
  * @link https://github.com/soybeanjs/elegant-router?tab=readme-ov-file#custom-route
  */
-const customRoutes: CustomRoute[] = [];
+const customRoutes: CustomRoute[] = [
+  {
+    name: 'document',
+    path: '/document',
+    component: 'layout.base',
+    meta: {
+      title: 'document',
+      i18nKey: 'route.document',
+      order: 900,
+      icon: 'mdi:file-document-multiple-outline'
+    },
+    children: [
+      {
+        name: 'document_api',
+        path: '/document/api',
+        component: 'view.iframe-page',
+        props: { url: 'http://localhost:9038' },
+        meta: {
+          title: 'document_api',
+          i18nKey: 'route.document_api',
+          order: 901
+        }
+      },
+      {
+        name: 'document_project',
+        path: '/document/project',
+        component: 'view.iframe-page',
+        props: { url: 'https://docs.soybeanjs.cn/zh' },
+        meta: {
+          title: 'document_project',
+          i18nKey: 'route.document_project',
+          order: 902,
+          localIcon: 'logo'
+        }
+      },
+      {
+        name: 'document_naive',
+        path: '/document/naive',
+        component: 'view.iframe-page',
+        props: { url: 'https://www.naiveui.com/zh-CN/os-theme' },
+        meta: {
+          title: 'Naive UI',
+          i18nKey: 'route.document_naive',
+          order: 903,
+          icon: 'logos:naiveui'
+        }
+      }
+    ]
+  }
+];
 
 /** create routes when the auth route mode is static */
 export function createStaticRoutes() {

@@ -226,7 +226,11 @@ const local: App.I18n.Schema = {
     500: 'Server Error',
     'iframe-page': 'Iframe',
     home: 'Home',
-    about: 'About'
+    about: 'About',
+    document: 'Document',
+    document_api: 'Api Document',
+    document_project: 'Soybean Admin',
+    document_naive: 'Naive UI'
   },
   page: {
     login: {

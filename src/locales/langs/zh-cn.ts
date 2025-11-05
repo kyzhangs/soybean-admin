@@ -223,7 +223,11 @@ const local: App.I18n.Schema = {
     500: '服务器错误',
     'iframe-page': '外链页面',
     home: '首页',
-    about: '关于'
+    about: '关于',
+    document: '文档',
+    document_api: '接口文档',
+    document_project: 'Soybean Admin',
+    document_naive: 'Naive UI'
   },
   page: {
     login: {

@@ -45,7 +45,9 @@ export const generatedRoutes: GeneratedRoute[] = [
     component: 'layout.base$view.about',
     meta: {
       title: 'about',
-      i18nKey: 'route.about'
+      i18nKey: 'route.about',
+      order: 999,
+      icon: 'fluent:book-information-24-regular'
     }
   },
   {

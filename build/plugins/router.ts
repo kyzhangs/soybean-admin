@@ -8,6 +8,9 @@ export function setupElegantRouter() {
       base: 'src/layouts/base-layout/index.vue',
       blank: 'src/layouts/blank-layout/index.vue'
     },
+    customRoutes: {
+      names: ['document_api', 'document_project', 'document_naive']
+    },
     routePathTransformer(routeName, routePath) {
       const key = routeName as RouteKey;
 

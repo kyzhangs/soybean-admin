@@ -17,6 +17,10 @@ declare module "@elegant-router/types" {
   export type RouteMap = {
     "root": "/";
     "not-found": "/:pathMatch(.*)*";
+    "document": "/document";
+    "document_api": "/document/api";
+    "document_project": "/document/project";
+    "document_naive": "/document/naive";
     "403": "/403";
     "404": "/404";
     "500": "/500";
@@ -43,6 +47,10 @@ declare module "@elegant-router/types" {
     RouteKey,
     | "root"
     | "not-found"
+    | "document"
+    | "document_api"
+    | "document_project"
+    | "document_naive"
   >;
 
   /**
@@ -71,6 +79,7 @@ declare module "@elegant-router/types" {
     CustomRouteKey,
     | "root"
     | "not-found"
+    | "document"
   >;
 
   /**
@@ -94,6 +103,9 @@ declare module "@elegant-router/types" {
     CustomRouteKey,
     | "root"
     | "not-found"
+    | "document_api"
+    | "document_project"
+    | "document_naive"
   >;
 
   /**

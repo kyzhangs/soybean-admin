@@ -163,6 +163,10 @@ function transformElegantRouteToVueRoute(
 const routeMap: RouteMap = {
   "root": "/",
   "not-found": "/:pathMatch(.*)*",
+  "document": "/document",
+  "document_api": "/document/api",
+  "document_project": "/document/project",
+  "document_naive": "/document/naive",
   "403": "/403",
   "404": "/404",
   "500": "/500",
