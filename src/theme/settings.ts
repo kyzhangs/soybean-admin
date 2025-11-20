@@ -4,17 +4,17 @@ export const themeSettings: App.Theme.ThemeSetting = {
   grayscale: false,
   colourWeakness: false,
   recommendColor: false,
-  themeColor: '#646cff',
-  themeRadius: 6,
+  themeColor: '#1296db',
+  themeRadius: 5,
   otherColor: {
-    info: '#2080f0',
+    info: '#80cef9',
     success: '#52c41a',
     warning: '#faad14',
     error: '#f5222d'
   },
-  isInfoFollowPrimary: true,
+  isInfoFollowPrimary: false,
   layout: {
-    mode: 'vertical',
+    mode: 'horizontal',
     scrollMode: 'content'
   },
   page: {
@@ -22,7 +22,7 @@ export const themeSettings: App.Theme.ThemeSetting = {
     animateMode: 'fade-slide'
   },
   header: {
-    height: 56,
+    height: 40,
     breadcrumb: {
       visible: true,
       showIcon: true
@@ -37,7 +37,7 @@ export const themeSettings: App.Theme.ThemeSetting = {
   tab: {
     visible: true,
     cache: true,
-    height: 44,
+    height: 32,
     mode: 'chrome',
     closeTabByMiddleClick: false
   },
@@ -53,13 +53,13 @@ export const themeSettings: App.Theme.ThemeSetting = {
   footer: {
     visible: true,
     fixed: false,
-    height: 48,
+    height: 32,
     right: true
   },
   watermark: {
-    visible: false,
-    text: 'SoybeanAdmin',
-    enableUserName: false,
+    visible: true,
+    text: 'dtp-runner-dev',
+    enableUserName: true,
     enableTime: false,
     timeFormat: 'YYYY-MM-DD HH:mm'
   },
