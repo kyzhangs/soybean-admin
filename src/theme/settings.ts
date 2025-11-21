@@ -3,7 +3,7 @@ export const themeSettings: App.Theme.ThemeSetting = {
   themeScheme: 'light',
   grayscale: false,
   colourWeakness: false,
-  recommendColor: false,
+  recommendColor: true,
   themeColor: '#1296db',
   themeRadius: 5,
   otherColor: {
@@ -12,7 +12,7 @@ export const themeSettings: App.Theme.ThemeSetting = {
     warning: '#faad14',
     error: '#f5222d'
   },
-  isInfoFollowPrimary: false,
+  isInfoFollowPrimary: true,
   layout: {
     mode: 'horizontal',
     scrollMode: 'content'
