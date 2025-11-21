@@ -47,7 +47,7 @@ export const generatedRoutes: GeneratedRoute[] = [
       title: 'about',
       i18nKey: 'route.about',
       icon: 'fluent:book-information-24-regular',
-      order: 10
+      order: 99
     }
   },
   {
@@ -239,24 +239,24 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
-    name: 'manage',
-    path: '/manage',
+    name: 'system-manage',
+    path: '/system-manage',
     component: 'layout.base',
     meta: {
       title: 'manage',
-      i18nKey: 'route.manage',
+      i18nKey: 'route.system-manage',
       icon: 'carbon:cloud-service-management',
-      order: 9,
+      order: 2,
       roles: ['R_ADMIN']
     },
     children: [
       {
-        name: 'manage_menu',
-        path: '/manage/menu',
-        component: 'view.manage_menu',
+        name: 'system-manage_menus',
+        path: '/system-manage/menus',
+        component: 'view.system-manage_menus',
         meta: {
-          title: 'manage_menu',
-          i18nKey: 'route.manage_menu',
+          title: 'system-manage_menus',
+          i18nKey: 'route.system-manage_menus',
           icon: 'material-symbols:route',
           order: 3,
           roles: ['R_ADMIN'],
@@ -264,40 +264,40 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
-        name: 'manage_role',
-        path: '/manage/role',
-        component: 'view.manage_role',
+        name: 'system-manage_roles',
+        path: '/system-manage/roles',
+        component: 'view.system-manage_roles',
         meta: {
-          title: 'manage_role',
-          i18nKey: 'route.manage_role',
+          title: 'system-manage_roles',
+          i18nKey: 'route.system-manage_roles',
           icon: 'carbon:user-role',
           order: 2,
           roles: ['R_SUPER']
         }
       },
       {
-        name: 'manage_user',
-        path: '/manage/user',
-        component: 'view.manage_user',
+        name: 'system-manage_users',
+        path: '/system-manage/users',
+        component: 'view.system-manage_users',
         meta: {
-          title: 'manage_user',
-          i18nKey: 'route.manage_user',
+          title: 'system-manage_users',
+          i18nKey: 'route.system-manage_users',
           icon: 'ic:round-manage-accounts',
           order: 1,
           roles: ['R_ADMIN']
         }
       },
       {
-        name: 'manage_user-detail',
-        path: '/manage/user-detail/:id',
-        component: 'view.manage_user-detail',
+        name: 'system-manage_user-detail',
+        path: '/system-manage/user-detail/:id',
+        component: 'view.system-manage_user-detail',
         props: true,
         meta: {
-          title: 'manage_user-detail',
-          i18nKey: 'route.manage_user-detail',
+          title: 'system-manage_user-detail',
+          i18nKey: 'route.system-manage_user-detail',
           hideInMenu: true,
           roles: ['R_ADMIN'],
-          activeMenu: 'manage_user'
+          activeMenu: 'system-manage_users'
         }
       }
     ]
