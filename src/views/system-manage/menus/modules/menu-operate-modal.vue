@@ -47,9 +47,9 @@ const { defaultRequiredRule } = useFormRules();
 
 const title = computed(() => {
   const titles: Record<OperateType, string> = {
-    add: $t('page.manage.menu.addMenu'),
-    addChild: $t('page.manage.menu.addChildMenu'),
-    edit: $t('page.manage.menu.editMenu')
+    add: $t('page.system-manage.menus.addMenu'),
+    addChild: $t('page.system-manage.menus.addChildMenu'),
+    edit: $t('page.system-manage.menus.editMenu')
   };
   return titles[props.operateType];
 });
@@ -284,44 +284,52 @@ watch(
     <NScrollbar class="h-480px pr-20px">
       <NForm ref="formRef" :model="model" :rules="rules" label-placement="left" :label-width="100">
         <NGrid responsive="screen" item-responsive>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.menuType')" path="menuType">
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.menuType')" path="menuType">
             <NRadioGroup v-model:value="model.menuType" :disabled="disabledMenuType">
               <NRadio v-for="item in menuTypeOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
             </NRadioGroup>
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.menuName')" path="menuName">
-            <NInput v-model:value="model.menuName" :placeholder="$t('page.manage.menu.form.menuName')" />
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.menuName')" path="menuName">
+            <NInput v-model:value="model.menuName" :placeholder="$t('page.system-manage.menus.form.menuName')" />
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.routeName')" path="routeName">
-            <NInput v-model:value="model.routeName" :placeholder="$t('page.manage.menu.form.routeName')" />
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.routeName')" path="routeName">
+            <NInput v-model:value="model.routeName" :placeholder="$t('page.system-manage.menus.form.routeName')" />
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.routePath')" path="routePath">
-            <NInput v-model:value="model.routePath" disabled :placeholder="$t('page.manage.menu.form.routePath')" />
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.routePath')" path="routePath">
+            <NInput
+              v-model:value="model.routePath"
+              disabled
+              :placeholder="$t('page.system-manage.menus.form.routePath')"
+            />
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.pathParam')" path="pathParam">
-            <NInput v-model:value="model.pathParam" :placeholder="$t('page.manage.menu.form.pathParam')" />
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.pathParam')" path="pathParam">
+            <NInput v-model:value="model.pathParam" :placeholder="$t('page.system-manage.menus.form.pathParam')" />
           </NFormItemGi>
-          <NFormItemGi v-if="showLayout" span="24 m:12" :label="$t('page.manage.menu.layout')" path="layout">
+          <NFormItemGi v-if="showLayout" span="24 m:12" :label="$t('page.system-manage.menus.layout')" path="layout">
             <NSelect
               v-model:value="model.layout"
               :options="layoutOptions"
-              :placeholder="$t('page.manage.menu.form.layout')"
+              :placeholder="$t('page.system-manage.menus.form.layout')"
             />
           </NFormItemGi>
-          <NFormItemGi v-if="showPage" span="24 m:12" :label="$t('page.manage.menu.page')" path="page">
+          <NFormItemGi v-if="showPage" span="24 m:12" :label="$t('page.system-manage.menus.page')" path="page">
             <NSelect
               v-model:value="model.page"
               :options="pageOptions"
-              :placeholder="$t('page.manage.menu.form.page')"
+              :placeholder="$t('page.system-manage.menus.form.page')"
             />
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.i18nKey')" path="i18nKey">
-            <NInput v-model:value="model.i18nKey" :placeholder="$t('page.manage.menu.form.i18nKey')" />
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.i18nKey')" path="i18nKey">
+            <NInput v-model:value="model.i18nKey" :placeholder="$t('page.system-manage.menus.form.i18nKey')" />
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.order')" path="order">
-            <NInputNumber v-model:value="model.order" class="w-full" :placeholder="$t('page.manage.menu.form.order')" />
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.order')" path="order">
+            <NInputNumber
+              v-model:value="model.order"
+              class="w-full"
+              :placeholder="$t('page.system-manage.menus.form.order')"
+            />
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.iconTypeTitle')" path="iconType">
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.iconTypeTitle')" path="iconType">
             <NRadioGroup v-model:value="model.iconType">
               <NRadio
                 v-for="item in menuIconTypeOptions"
@@ -331,9 +339,9 @@ watch(
               />
             </NRadioGroup>
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.icon')" path="icon">
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.icon')" path="icon">
             <template v-if="model.iconType === '1'">
-              <NInput v-model:value="model.icon" :placeholder="$t('page.manage.menu.form.icon')" class="flex-1">
+              <NInput v-model:value="model.icon" :placeholder="$t('page.system-manage.menus.form.icon')" class="flex-1">
                 <template #suffix>
                   <SvgIcon v-if="model.icon" :icon="model.icon" class="text-icon" />
                 </template>
@@ -342,12 +350,12 @@ watch(
             <template v-if="model.iconType === '2'">
               <NSelect
                 v-model:value="model.icon"
-                :placeholder="$t('page.manage.menu.form.localIcon')"
+                :placeholder="$t('page.system-manage.menus.form.localIcon')"
                 :options="localIconOptions"
               />
             </template>
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.menuStatus')" path="status">
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.menuStatus')" path="status">
             <NRadioGroup v-model:value="model.status">
               <NRadio
                 v-for="item in enableStatusOptions"
@@ -357,22 +365,22 @@ watch(
               />
             </NRadioGroup>
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.keepAlive')" path="keepAlive">
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.keepAlive')" path="keepAlive">
             <NRadioGroup v-model:value="model.keepAlive">
               <NRadio :value="true" :label="$t('common.yesOrNo.yes')" />
               <NRadio :value="false" :label="$t('common.yesOrNo.no')" />
             </NRadioGroup>
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.constant')" path="constant">
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.constant')" path="constant">
             <NRadioGroup v-model:value="model.constant">
               <NRadio :value="true" :label="$t('common.yesOrNo.yes')" />
               <NRadio :value="false" :label="$t('common.yesOrNo.no')" />
             </NRadioGroup>
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.href')" path="href">
-            <NInput v-model:value="model.href" :placeholder="$t('page.manage.menu.form.href')" />
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.href')" path="href">
+            <NInput v-model:value="model.href" :placeholder="$t('page.system-manage.menus.form.href')" />
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.hideInMenu')" path="hideInMenu">
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.hideInMenu')" path="hideInMenu">
             <NRadioGroup v-model:value="model.hideInMenu">
               <NRadio :value="true" :label="$t('common.yesOrNo.yes')" />
               <NRadio :value="false" :label="$t('common.yesOrNo.no')" />
@@ -381,36 +389,36 @@ watch(
           <NFormItemGi
             v-if="model.hideInMenu"
             span="24 m:12"
-            :label="$t('page.manage.menu.activeMenu')"
+            :label="$t('page.system-manage.menus.activeMenu')"
             path="activeMenu"
           >
             <NSelect
               v-model:value="model.activeMenu"
               :options="pageOptions"
               clearable
-              :placeholder="$t('page.manage.menu.form.activeMenu')"
+              :placeholder="$t('page.system-manage.menus.form.activeMenu')"
             />
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.multiTab')" path="multiTab">
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.multiTab')" path="multiTab">
             <NRadioGroup v-model:value="model.multiTab">
               <NRadio :value="true" :label="$t('common.yesOrNo.yes')" />
               <NRadio :value="false" :label="$t('common.yesOrNo.no')" />
             </NRadioGroup>
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.fixedIndexInTab')" path="fixedIndexInTab">
+          <NFormItemGi span="24 m:12" :label="$t('page.system-manage.menus.fixedIndexInTab')" path="fixedIndexInTab">
             <NInputNumber
               v-model:value="model.fixedIndexInTab"
               class="w-full"
               clearable
-              :placeholder="$t('page.manage.menu.form.fixedIndexInTab')"
+              :placeholder="$t('page.system-manage.menus.form.fixedIndexInTab')"
             />
           </NFormItemGi>
-          <NFormItemGi span="24" :label="$t('page.manage.menu.query')">
+          <NFormItemGi span="24" :label="$t('page.system-manage.menus.query')">
             <NDynamicInput
               v-model:value="model.query"
               preset="pair"
-              :key-placeholder="$t('page.manage.menu.form.queryKey')"
-              :value-placeholder="$t('page.manage.menu.form.queryValue')"
+              :key-placeholder="$t('page.system-manage.menus.form.queryKey')"
+              :value-placeholder="$t('page.system-manage.menus.form.queryValue')"
             >
               <template #action="{ index, create, remove }">
                 <NSpace class="ml-12px">
@@ -424,18 +432,18 @@ watch(
               </template>
             </NDynamicInput>
           </NFormItemGi>
-          <NFormItemGi span="24" :label="$t('page.manage.menu.button')">
+          <NFormItemGi span="24" :label="$t('page.system-manage.menus.button')">
             <NDynamicInput v-model:value="model.buttons" :on-create="handleCreateButton">
               <template #default="{ value }">
                 <div class="ml-8px flex-y-center flex-1 gap-12px">
                   <NInput
                     v-model:value="value.code"
-                    :placeholder="$t('page.manage.menu.form.buttonCode')"
+                    :placeholder="$t('page.system-manage.menus.form.buttonCode')"
                     class="flex-1"
                   />
                   <NInput
                     v-model:value="value.desc"
-                    :placeholder="$t('page.manage.menu.form.buttonDesc')"
+                    :placeholder="$t('page.system-manage.menus.form.buttonDesc')"
                     class="flex-1"
                   />
                 </div>

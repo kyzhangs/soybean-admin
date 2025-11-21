@@ -47,13 +47,13 @@ const { columns, data, loading } = useNaiveTable({
     },
     {
       key: 'userName',
-      title: $t('page.manage.user.userName'),
+      title: $t('page.system-manage.users.userName'),
       align: 'center',
       minWidth: 100
     },
     {
       key: 'userGender',
-      title: $t('page.manage.user.userGender'),
+      title: $t('page.system-manage.users.userGender'),
       align: 'center',
       width: 100,
       render: row => {
@@ -73,25 +73,25 @@ const { columns, data, loading } = useNaiveTable({
     },
     {
       key: 'nickName',
-      title: $t('page.manage.user.nickName'),
+      title: $t('page.system-manage.users.nickName'),
       align: 'center',
       minWidth: 100
     },
     {
       key: 'userPhone',
-      title: $t('page.manage.user.userPhone'),
+      title: $t('page.system-manage.users.userPhone'),
       align: 'center',
       width: 120
     },
     {
       key: 'userEmail',
-      title: $t('page.manage.user.userEmail'),
+      title: $t('page.system-manage.users.userEmail'),
       align: 'center',
       minWidth: 200
     },
     {
       key: 'status',
-      title: $t('page.manage.user.userStatus'),
+      title: $t('page.system-manage.users.userStatus'),
       align: 'center',
       width: 100,
       render: row => {

@@ -21,7 +21,7 @@ function closeModal() {
   visible.value = false;
 }
 
-const title = computed(() => $t('common.edit') + $t('page.manage.role.buttonAuth'));
+const title = computed(() => $t('common.edit') + $t('page.system-manage.roles.buttonAuth'));
 
 type ButtonConfig = {
   id: number;

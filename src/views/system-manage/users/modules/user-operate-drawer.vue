@@ -34,8 +34,8 @@ const { defaultRequiredRule } = useFormRules();
 
 const title = computed(() => {
   const titles: Record<NaiveUI.TableOperateType, string> = {
-    add: $t('page.manage.user.addUser'),
-    edit: $t('page.manage.user.editUser')
+    add: $t('page.system-manage.users.addUser'),
+    edit: $t('page.system-manage.users.editUser')
   };
   return titles[props.operateType];
 });
@@ -123,34 +123,34 @@ watch(visible, () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="360">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <NForm ref="formRef" :model="model" :rules="rules">
-        <NFormItem :label="$t('page.manage.user.userName')" path="userName">
-          <NInput v-model:value="model.userName" :placeholder="$t('page.manage.user.form.userName')" />
+        <NFormItem :label="$t('page.system-manage.users.userName')" path="userName">
+          <NInput v-model:value="model.userName" :placeholder="$t('page.system-manage.users.form.userName')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userGender')" path="userGender">
+        <NFormItem :label="$t('page.system-manage.users.userGender')" path="userGender">
           <NRadioGroup v-model:value="model.userGender">
             <NRadio v-for="item in userGenderOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.nickName')" path="nickName">
-          <NInput v-model:value="model.nickName" :placeholder="$t('page.manage.user.form.nickName')" />
+        <NFormItem :label="$t('page.system-manage.users.nickName')" path="nickName">
+          <NInput v-model:value="model.nickName" :placeholder="$t('page.system-manage.users.form.nickName')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userPhone')" path="userPhone">
-          <NInput v-model:value="model.userPhone" :placeholder="$t('page.manage.user.form.userPhone')" />
+        <NFormItem :label="$t('page.system-manage.users.userPhone')" path="userPhone">
+          <NInput v-model:value="model.userPhone" :placeholder="$t('page.system-manage.users.form.userPhone')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userEmail')" path="email">
-          <NInput v-model:value="model.userEmail" :placeholder="$t('page.manage.user.form.userEmail')" />
+        <NFormItem :label="$t('page.system-manage.users.userEmail')" path="email">
+          <NInput v-model:value="model.userEmail" :placeholder="$t('page.system-manage.users.form.userEmail')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userStatus')" path="status">
+        <NFormItem :label="$t('page.system-manage.users.userStatus')" path="status">
           <NRadioGroup v-model:value="model.status">
             <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userRole')" path="roles">
+        <NFormItem :label="$t('page.system-manage.users.userRole')" path="roles">
           <NSelect
             v-model:value="model.userRoles"
             multiple
             :options="roleOptions"
-            :placeholder="$t('page.manage.user.form.userRole')"
+            :placeholder="$t('page.system-manage.users.form.userRole')"
           />
         </NFormItem>
       </NForm>

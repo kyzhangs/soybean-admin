@@ -518,14 +518,14 @@ const local: App.I18n.Schema = {
         }
       }
     },
-    manage: {
+    'system-manage': {
       common: {
         status: {
           enable: 'Enable',
           disable: 'Disable'
         }
       },
-      role: {
+      roles: {
         title: 'Role List',
         roleName: 'Role Name',
         roleCode: 'Role Code',
@@ -542,7 +542,7 @@ const local: App.I18n.Schema = {
         addRole: 'Add Role',
         editRole: 'Edit Role'
       },
-      user: {
+      users: {
         title: 'User List',
         userName: 'User Name',
         userGender: 'Gender',
@@ -567,7 +567,7 @@ const local: App.I18n.Schema = {
           female: 'Female'
         }
       },
-      menu: {
+      menus: {
         home: 'Home',
         title: 'Menu List',
         id: 'ID',

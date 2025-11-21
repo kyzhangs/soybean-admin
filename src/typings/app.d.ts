@@ -688,14 +688,14 @@ declare namespace App {
             };
           };
         };
-        manage: {
+        'system-manage': {
           common: {
             status: {
               enable: string;
               disable: string;
             };
           };
-          role: {
+          roles: {
             title: string;
             roleName: string;
             roleCode: string;
@@ -712,7 +712,7 @@ declare namespace App {
             menuAuth: string;
             buttonAuth: string;
           };
-          user: {
+          users: {
             title: string;
             userName: string;
             userGender: string;
@@ -737,7 +737,7 @@ declare namespace App {
               female: string;
             };
           };
-          menu: {
+          menus: {
             home: string;
             title: string;
             id: string;

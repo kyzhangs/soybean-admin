@@ -515,14 +515,14 @@ const local: App.I18n.Schema = {
         }
       }
     },
-    manage: {
+    'system-manage': {
       common: {
         status: {
           enable: '启用',
           disable: '禁用'
         }
       },
-      role: {
+      roles: {
         title: '角色列表',
         roleName: '角色名称',
         roleCode: '角色编码',
@@ -539,7 +539,7 @@ const local: App.I18n.Schema = {
         addRole: '新增角色',
         editRole: '编辑角色'
       },
-      user: {
+      users: {
         title: '用户列表',
         userName: '用户名',
         userGender: '性别',
@@ -564,7 +564,7 @@ const local: App.I18n.Schema = {
           female: '女'
         }
       },
-      menu: {
+      menus: {
         home: '首页',
         title: '菜单列表',
         id: 'ID',
