@@ -35,16 +35,18 @@ declare namespace Api {
     type CommonRecord<T = any> = {
       /** record id */
       id: number;
-      /** record creator */
-      createBy: string;
       /** record create time */
-      createTime: string;
-      /** record updater */
-      updateBy: string;
+      create_time: string;
       /** record update time */
-      updateTime: string;
+      update_time: string;
       /** record status */
-      status: EnableStatus | null;
-    } & T;
+      status: EnableStatus;
+    } & T &
+      CommonType.RecordNullable<{
+        /** record creator */
+        create_by: string;
+        /** record updater */
+        update_by: string;
+      }>;
   }
 }

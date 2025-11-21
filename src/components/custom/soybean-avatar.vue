@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import defaultAvatar from '@/assets/imgs/soybean.jpg';
 
 interface Props {
-  url?: string;
+  url?: string | null;
 }
 
 const props = defineProps<Props>();

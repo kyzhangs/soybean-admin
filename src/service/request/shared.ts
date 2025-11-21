@@ -14,11 +14,12 @@ export function getAuthorization() {
 async function handleRefreshToken() {
   const { resetStore } = useAuthStore();
 
-  const rToken = localStg.get('refreshToken') || '';
-  const { error, data } = await fetchRefreshToken(rToken);
+  const refresh_token = localStg.get('refreshToken') || '';
+  const form_data: Api.Auth.RefreshTokenParams = { refresh_token };
+  const { error, data } = await fetchRefreshToken(form_data);
   if (!error) {
-    localStg.set('token', data.token);
-    localStg.set('refreshToken', data.refreshToken);
+    localStg.set('token', data.access_token);
+    localStg.set('refreshToken', data.refresh_token);
     return true;
   }
 

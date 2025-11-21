@@ -2,7 +2,7 @@ import { computed, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useLoading } from '@sa/hooks';
-import { fetchGetUserInfo, fetchLogin } from '@/service/api';
+import { fetchAuthToken, fetchGetUserProfile } from '@/service/api';
 import { useRouterPush } from '@/hooks/common/router';
 import { localStg } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
@@ -21,10 +21,20 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   const token = ref(getToken());
 
-  const userInfo: Api.Auth.UserInfo = reactive({
+  const userInfo: Api.Auth.Profile = reactive({
+    id: 0,
     userId: '',
-    userName: '',
-    avatar: '',
+    username: '',
+    name: null,
+    email: null,
+    phone: null,
+    gender: '3',
+    is_active: false,
+    active_time: null,
+    avatar: null,
+    status: '2',
+    create_time: '',
+    update_time: '',
     roles: [],
     buttons: []
   });
@@ -93,17 +103,19 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   /**
    * Login
    *
-   * @param userName User name
+   * @param username Username
    * @param password Password
    * @param [redirect=true] Whether to redirect after login. Default is `true`
    */
-  async function login(userName: string, password: string, redirect = true) {
+  async function login(username: string, password: string, redirect = true) {
     startLoading();
 
-    const { data: loginToken, error } = await fetchLogin(userName, password);
+    const form_data: Api.Auth.AuthTokenParams = { username, password };
+
+    const { data: Token, error } = await fetchAuthToken(form_data);
 
     if (!error) {
-      const pass = await loginByToken(loginToken);
+      const pass = await loginByToken(Token);
 
       if (pass) {
         // Check if the tab needs to be cleared
@@ -118,7 +130,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
         window.$notification?.success({
           title: $t('page.login.common.loginSuccess'),
-          content: $t('page.login.common.welcomeBack', { userName: userInfo.userName }),
+          content: $t('page.login.common.welcomeBack', { username: userInfo.username }),
           duration: 4500
         });
       }
@@ -129,16 +141,16 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     endLoading();
   }
 
-  async function loginByToken(loginToken: Api.Auth.LoginToken) {
+  async function loginByToken(loginToken: Api.Auth.Token) {
     // 1. stored in the localStorage, the later requests need it in headers
-    localStg.set('token', loginToken.token);
-    localStg.set('refreshToken', loginToken.refreshToken);
+    localStg.set('token', loginToken.access_token);
+    localStg.set('refreshToken', loginToken.refresh_token);
 
     // 2. get user info
     const pass = await getUserInfo();
 
     if (pass) {
-      token.value = loginToken.token;
+      token.value = loginToken.access_token;
 
       return true;
     }
@@ -147,7 +159,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   }
 
   async function getUserInfo() {
-    const { data: info, error } = await fetchGetUserInfo();
+    const { data: info, error } = await fetchGetUserProfile();
 
     if (!error) {
       // update store

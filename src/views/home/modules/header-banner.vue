@@ -11,6 +11,8 @@ defineOptions({
 const appStore = useAppStore();
 const authStore = useAuthStore();
 
+const userDisplayName = computed(() => authStore.userInfo.name || authStore.userInfo.username);
+
 const gap = computed(() => (appStore.isMobile ? 0 : 16));
 
 interface StatisticData {
@@ -46,7 +48,7 @@ const statisticData = computed<StatisticData[]>(() => [
           <SoybeanAvatar :url="authStore.userInfo.avatar" />
           <div class="pl-12px">
             <h3 class="text-18px font-semibold">
-              {{ $t('page.home.greeting', { userName: authStore.userInfo.userName }) }}
+              {{ $t('page.home.greeting', { username: userDisplayName }) }}
             </h3>
             <p class="text-#999 leading-30px">{{ $t('page.home.weatherDesc') }}</p>
           </div>

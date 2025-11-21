@@ -1,39 +1,21 @@
 import { request } from '../request';
 
-/**
- * Login
- *
- * @param userName User name
- * @param password Password
- */
-export function fetchLogin(userName: string, password: string) {
-  return request<Api.Auth.LoginToken>({
-    url: '/auth/login',
+/** Fetch auth token */
+export function fetchAuthToken(data: Api.Auth.AuthTokenParams) {
+  return request<Api.Auth.Token>({
+    url: '/auth/token',
     method: 'post',
-    data: {
-      userName,
-      password
-    }
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    data
   });
 }
 
-/** Get user info */
-export function fetchGetUserInfo() {
-  return request<Api.Auth.UserInfo>({ url: '/auth/getUserInfo' });
-}
-
-/**
- * Refresh token
- *
- * @param refreshToken Refresh token
- */
-export function fetchRefreshToken(refreshToken: string) {
-  return request<Api.Auth.LoginToken>({
-    url: '/auth/refreshToken',
+/** Fetch refresh token */
+export function fetchRefreshToken(data: Api.Auth.RefreshTokenParams) {
+  return request<Api.Auth.Token>({
+    url: '/auth/refresh-token',
     method: 'post',
-    data: {
-      refreshToken
-    }
+    data
   });
 }
 

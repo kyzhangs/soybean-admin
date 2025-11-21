@@ -53,7 +53,7 @@ function createDefaultModel(): Model {
     roleName: '',
     roleCode: '',
     roleDesc: '',
-    status: null
+    status: '1'
   };
 }
 
