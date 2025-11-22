@@ -38,6 +38,15 @@ declare namespace Api {
         Pick<Api.SystemManage.User, 'gender' | 'is_active' | 'status'> & { keyword: string; contact: string }
       >;
 
+    type UserCreateParams = Pick<
+      User,
+      'username' | 'name' | 'email' | 'phone' | 'gender' | 'is_active' | 'status' | 'roles'
+    >;
+
+    type UserUpdateParams = Pick<User, 'name' | 'email' | 'phone' | 'gender' | 'is_active' | 'status' | 'roles'>;
+
+    type UserDeleteParams = Pick<User, 'id'>;
+
     /** user list */
     type UserList = Common.PaginatingQueryRecord<User>;
 
@@ -60,7 +69,11 @@ declare namespace Api {
     type RoleList = Common.PaginatingQueryRecord<Role>;
 
     /** all role */
-    type AllRole = Pick<Role, 'id' | 'roleName' | 'roleCode'>;
+    type AllRole = Common.CommonRecord<{
+      name: string;
+      code: string;
+      description: string;
+    }>;
 
     /**
      * menu type

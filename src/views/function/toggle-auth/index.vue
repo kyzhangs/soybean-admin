@@ -62,7 +62,7 @@ async function handleToggleAccount(account: Account) {
   <NSpace vertical :size="16">
     <NCard :title="$t('route.function_toggle-auth')" :bordered="false" size="small" segmented class="card-wrapper">
       <NDescriptions bordered :column="1">
-        <NDescriptionsItem :label="$t('page.system-manage.users.userRole')">
+        <NDescriptionsItem :label="$t('page.system-manage.users.roles')">
           <NSpace>
             <NTag v-for="role in authStore.userInfo.roles" :key="role">{{ role }}</NTag>
           </NSpace>

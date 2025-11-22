@@ -2,7 +2,8 @@
 import { reactive } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
-import { fetchGetUserList } from '@/service/api';
+import { yesOrNoRecord } from '@/constants/common';
+import { fetchDeteleUser, fetchGetUserList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -39,24 +40,30 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       title: $t('common.index'),
       align: 'center',
       width: 64,
-      render: (_, index) => index + 1
+      render: (_, index) => index + 1 + ((searchParams.page || 1) - 1) * (searchParams.page_size || 10)
     },
     {
       key: 'username',
-      title: $t('page.system-manage.users.userName'),
+      title: $t('page.system-manage.users.username'),
+      align: 'center',
+      minWidth: 100
+    },
+    {
+      key: 'name',
+      title: $t('page.system-manage.users.name'),
       align: 'center',
       minWidth: 100
     },
     {
       key: 'gender',
-      title: $t('page.system-manage.users.userGender'),
+      title: $t('page.system-manage.users.gender'),
       align: 'center',
       width: 100,
       render: row => {
         const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
           1: 'primary',
           2: 'error',
-          3: 'warning'
+          3: 'default'
         };
 
         const label = $t(userGenderRecord[row.gender]);
@@ -65,26 +72,54 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       }
     },
     {
-      key: 'name',
-      title: $t('page.system-manage.users.nickName'),
-      align: 'center',
-      minWidth: 100
-    },
-    {
       key: 'phone',
-      title: $t('page.system-manage.users.userPhone'),
+      title: $t('page.system-manage.users.phone'),
       align: 'center',
       width: 120
     },
     {
       key: 'email',
-      title: $t('page.system-manage.users.userEmail'),
+      title: $t('page.system-manage.users.email'),
+      align: 'center',
+      minWidth: 200
+    },
+    {
+      key: 'is_active',
+      title: $t('page.system-manage.users.is_active'),
+      align: 'center',
+      render: row => {
+        const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
+          Y: 'primary',
+          N: 'error'
+        };
+
+        const value = row.is_active ? 'Y' : 'N';
+        const label = $t(yesOrNoRecord[value]);
+
+        const tag = <NTag type={tagMap[value]}>{label}</NTag>;
+
+        if (row.is_active && row.active_time) {
+          return (
+            <NTooltip>
+              {{
+                default: () => $t('page.system-manage.users.active_time', { active_time: row.active_time }),
+                trigger: () => tag
+              }}
+            </NTooltip>
+          );
+        }
+        return tag;
+      }
+    },
+    {
+      key: 'last_login',
+      title: $t('page.system-manage.users.last_login'),
       align: 'center',
       minWidth: 200
     },
     {
       key: 'status',
-      title: $t('page.system-manage.users.userStatus'),
+      title: $t('page.system-manage.users.status'),
       align: 'center',
       width: 100,
       render: row => {
@@ -143,10 +178,10 @@ async function handleBatchDelete() {
   onBatchDeleted();
 }
 
-function handleDelete(id: number) {
+async function handleDelete(id: number) {
   // request
-  console.log(id);
-
+  const form_data = { id };
+  await fetchDeteleUser(form_data);
   onDeleted();
 }
 
@@ -180,7 +215,6 @@ function edit(id: number) {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="962"
         :loading="loading"
         remote
         :row-key="row => row.id"
