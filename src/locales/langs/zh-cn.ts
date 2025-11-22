@@ -561,7 +561,8 @@ const local: App.I18n.Schema = {
         editUser: '编辑用户',
         gender: {
           male: '男',
-          female: '女'
+          female: '女',
+          unknown: '未知'
         }
       },
       menus: {

@@ -234,12 +234,12 @@ export function defaultTransform<ApiData>(
   const { data, error } = response;
 
   if (!error) {
-    const { records, current, size, total } = data;
+    const { rows, page, page_size, total } = data;
 
     return {
-      data: records,
-      pageNum: current,
-      pageSize: size,
+      data: rows,
+      pageNum: page,
+      pageSize: page_size,
       total
     };
   }

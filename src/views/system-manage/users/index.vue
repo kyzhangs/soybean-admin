@@ -11,23 +11,22 @@ import UserSearch from './modules/user-search.vue';
 
 const appStore = useAppStore();
 
-const searchParams: Api.SystemManage.UserSearchParams = reactive({
-  current: 1,
-  size: 10,
-  status: null,
-  userName: null,
-  userGender: null,
-  nickName: null,
-  userPhone: null,
-  userEmail: null
+const searchParams = reactive<Api.SystemManage.UserSearchParams>({
+  page: 1,
+  page_size: 10,
+  keyword: null,
+  contact: null,
+  gender: null,
+  is_active: null,
+  status: null
 });
 
 const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination } = useNaivePaginatedTable({
   api: () => fetchGetUserList(searchParams),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
-    searchParams.current = params.page;
-    searchParams.size = params.pageSize;
+    searchParams.page = params.page;
+    searchParams.page_size = params.pageSize;
   },
   columns: () => [
     {
@@ -43,45 +42,42 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       render: (_, index) => index + 1
     },
     {
-      key: 'userName',
+      key: 'username',
       title: $t('page.system-manage.users.userName'),
       align: 'center',
       minWidth: 100
     },
     {
-      key: 'userGender',
+      key: 'gender',
       title: $t('page.system-manage.users.userGender'),
       align: 'center',
       width: 100,
       render: row => {
-        if (row.userGender === null) {
-          return null;
-        }
-
         const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
           1: 'primary',
-          2: 'error'
+          2: 'error',
+          3: 'warning'
         };
 
-        const label = $t(userGenderRecord[row.userGender]);
+        const label = $t(userGenderRecord[row.gender]);
 
-        return <NTag type={tagMap[row.userGender]}>{label}</NTag>;
+        return <NTag type={tagMap[row.gender]}>{label}</NTag>;
       }
     },
     {
-      key: 'nickName',
+      key: 'name',
       title: $t('page.system-manage.users.nickName'),
       align: 'center',
       minWidth: 100
     },
     {
-      key: 'userPhone',
+      key: 'phone',
       title: $t('page.system-manage.users.userPhone'),
       align: 'center',
       width: 120
     },
     {
-      key: 'userEmail',
+      key: 'email',
       title: $t('page.system-manage.users.userEmail'),
       align: 'center',
       minWidth: 200
@@ -92,10 +88,6 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       align: 'center',
       width: 100,
       render: row => {
-        if (row.status === null) {
-          return null;
-        }
-
         const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
           1: 'success',
           2: 'warning'

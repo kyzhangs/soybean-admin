@@ -60,7 +60,7 @@ async function search() {
               path="userName"
               class="pr-24px"
             >
-              <NInput v-model:value="model.userName" :placeholder="$t('page.system-manage.users.form.userName')" />
+              <NInput v-model:value="model.keyword" :placeholder="$t('page.system-manage.users.form.userName')" />
             </NFormItemGi>
             <NFormItemGi
               span="24 s:12 m:6"
@@ -69,7 +69,7 @@ async function search() {
               class="pr-24px"
             >
               <NSelect
-                v-model:value="model.userGender"
+                v-model:value="model.contact"
                 :placeholder="$t('page.system-manage.users.form.userGender')"
                 :options="translateOptions(userGenderOptions)"
                 clearable
@@ -81,7 +81,7 @@ async function search() {
               path="nickName"
               class="pr-24px"
             >
-              <NInput v-model:value="model.nickName" :placeholder="$t('page.system-manage.users.form.nickName')" />
+              <NInput v-model:value="model.gender" :placeholder="$t('page.system-manage.users.form.nickName')" />
             </NFormItemGi>
             <NFormItemGi
               span="24 s:12 m:6"
@@ -89,7 +89,7 @@ async function search() {
               path="userPhone"
               class="pr-24px"
             >
-              <NInput v-model:value="model.userPhone" :placeholder="$t('page.system-manage.users.form.userPhone')" />
+              <NInput v-model:value="model.keyword" :placeholder="$t('page.system-manage.users.form.userPhone')" />
             </NFormItemGi>
             <NFormItemGi
               span="24 s:12 m:6"
@@ -97,7 +97,7 @@ async function search() {
               path="userEmail"
               class="pr-24px"
             >
-              <NInput v-model:value="model.userEmail" :placeholder="$t('page.system-manage.users.form.userEmail')" />
+              <NInput v-model:value="model.status" :placeholder="$t('page.system-manage.users.form.userEmail')" />
             </NFormItemGi>
             <NFormItemGi
               span="24 s:12 m:6"

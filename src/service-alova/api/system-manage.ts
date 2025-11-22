@@ -21,7 +21,7 @@ export function fetchGetUserList(params?: Api.SystemManage.UserSearchParams) {
 
 export type UserModel = Pick<
   Api.SystemManage.User,
-  'userName' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'userRoles' | 'status'
+  'username' | 'gender' | 'name' | 'phone' | 'email' | 'roles' | 'status'
 >;
 /** add user */
 export function addUser(data: UserModel) {

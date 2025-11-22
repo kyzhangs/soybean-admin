@@ -12,7 +12,7 @@ export function fetchLogin(userName: string, password: string) {
 
 /** Get user info */
 export function fetchGetUserInfo() {
-  return alova.Get<Api.Auth.Profile>('/auth/getUserInfo');
+  return alova.Get<Api.UC.UserInfo>('/auth/getUserInfo');
 }
 
 /** Send captcha to target phone */

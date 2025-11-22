@@ -1,6 +1,6 @@
 import { request } from '../request';
 
-/** Fetch user profile */
-export function fetchGetUserProfile() {
-  return request<Api.Auth.Profile>({ url: '/uc/profile' });
+/** Fetch user info */
+export function fetchGetUserInfo() {
+  return request<Api.UC.UserInfo>({ url: '/uc/profile' });
 }

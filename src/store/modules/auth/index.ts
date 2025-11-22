@@ -2,7 +2,7 @@ import { computed, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useLoading } from '@sa/hooks';
-import { fetchAuthToken, fetchGetUserProfile } from '@/service/api';
+import { fetchAuthToken, fetchGetUserInfo } from '@/service/api';
 import { useRouterPush } from '@/hooks/common/router';
 import { localStg } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
@@ -21,20 +21,15 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   const token = ref(getToken());
 
-  const userInfo: Api.Auth.Profile = reactive({
-    id: 0,
+  const userInfo: Api.UC.UserInfo = reactive({
     userId: '',
     username: '',
     name: null,
     email: null,
     phone: null,
     gender: '3',
-    is_active: false,
     active_time: null,
     avatar: null,
-    status: '2',
-    create_time: '',
-    update_time: '',
     roles: [],
     buttons: []
   });
@@ -159,7 +154,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   }
 
   async function getUserInfo() {
-    const { data: info, error } = await fetchGetUserProfile();
+    const { data: info, error } = await fetchGetUserInfo();
 
     if (!error) {
       // update store

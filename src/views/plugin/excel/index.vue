@@ -14,11 +14,10 @@ const searchParams: Api.SystemManage.UserSearchParams = reactive({
   current: 1,
   size: 999,
   status: null,
-  userName: null,
-  userGender: null,
-  nickName: null,
-  userPhone: null,
-  userEmail: null
+  keyword: null,
+  contact: null,
+  gender: null,
+  is_active: null
 });
 
 const { columns, data, loading } = useNaiveTable({
@@ -27,7 +26,7 @@ const { columns, data, loading } = useNaiveTable({
     const { data: list, error } = response;
 
     if (!error) {
-      return list.records;
+      return list.rows;
     }
 
     return [];
@@ -57,34 +56,31 @@ const { columns, data, loading } = useNaiveTable({
       align: 'center',
       width: 100,
       render: row => {
-        if (row.userGender === null) {
-          return null;
-        }
-
         const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
           1: 'primary',
-          2: 'error'
+          2: 'error',
+          3: 'warning'
         };
 
-        const label = $t(userGenderRecord[row.userGender]);
+        const label = $t(userGenderRecord[row.gender]);
 
-        return <NTag type={tagMap[row.userGender]}>{label}</NTag>;
+        return <NTag type={tagMap[row.gender]}>{label}</NTag>;
       }
     },
     {
-      key: 'nickName',
+      key: 'name',
       title: $t('page.system-manage.users.nickName'),
       align: 'center',
       minWidth: 100
     },
     {
-      key: 'userPhone',
+      key: 'phone',
       title: $t('page.system-manage.users.userPhone'),
       align: 'center',
       width: 120
     },
     {
-      key: 'userEmail',
+      key: 'email',
       title: $t('page.system-manage.users.userEmail'),
       align: 'center',
       minWidth: 200
@@ -95,10 +91,6 @@ const { columns, data, loading } = useNaiveTable({
       align: 'center',
       width: 100,
       render: row => {
-        if (row.status === null) {
-          return null;
-        }
-
         const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
           1: 'success',
           2: 'warning'
@@ -141,16 +133,16 @@ function getTableValue(col: NaiveUI.TableColumn<Api.SystemManage.User>, item: Ap
 
   const { key } = col;
 
-  if (key === 'userRoles') {
-    return item.userRoles.map(role => role).join(',');
+  if (key === 'roles') {
+    return item.roles.map(role => role).join(',');
   }
 
   if (key === 'status') {
     return (item.status && $t(enableStatusRecord[item.status])) || null;
   }
 
-  if (key === 'userGender') {
-    return (item.userGender && $t(userGenderRecord[item.userGender])) || null;
+  if (key === 'gender') {
+    return (item.gender && $t(userGenderRecord[item.gender])) || null;
   }
 
   // @ts-expect-error the key is not in the type of Api.SystemManage.User
