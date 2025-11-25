@@ -120,8 +120,17 @@ export function useNaivePaginatedTable<ResponseData, ApiData>(
     };
   });
 
+  const columnsOption = options.columns;
+  const columnsWithIndex = columnsOption
+    ? () => {
+        const cols = typeof columnsOption === 'function' ? columnsOption() : columnsOption;
+        return withIndexColumnRender(cols, pagination);
+      }
+    : undefined;
+
   const result = useTable<ResponseData, ApiData, NaiveUI.TableColumn<ApiData>, true>({
     ...options,
+    columns: columnsWithIndex ?? options.columns,
     pagination: true,
     getColumnChecks: cols => getColumnChecks(cols, options.getColumnVisible),
     getColumns,
@@ -312,4 +321,25 @@ function getScrollX<T>(columns: NaiveUI.TableColumn<T>[], minWidth: number = 120
   return columns.reduce((acc, column) => {
     return acc + Number(column.width ?? column.minWidth ?? minWidth);
   }, 0);
+}
+
+function withIndexColumnRender<Column extends NaiveUI.TableColumn<any>>(
+  columns: Column[],
+  pagination: PaginationProps
+) {
+  return columns.map(column => {
+    const columnRecord = column as Record<string, any>;
+
+    if (isTableColumnHasKey(column) && column.key === 'index' && !columnRecord.render) {
+      const page = pagination.page ?? 1;
+      const pageSize = pagination.pageSize ?? 10;
+
+      const nextColumn = { ...columnRecord };
+      nextColumn.render = (_row: any, index: number) => index + 1 + (page - 1) * pageSize;
+
+      return nextColumn as Column;
+    }
+
+    return column;
+  });
 }

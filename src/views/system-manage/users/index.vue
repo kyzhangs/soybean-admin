@@ -39,8 +39,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'index',
       title: $t('common.index'),
       align: 'center',
-      width: 64,
-      render: (_, index) => index + 1 + ((searchParams.page || 1) - 1) * (searchParams.page_size || 10)
+      width: 64
     },
     {
       key: 'username',
@@ -125,7 +124,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       render: row => {
         const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
           1: 'success',
-          2: 'warning'
+          2: 'error'
         };
 
         const label = $t(enableStatusRecord[row.status]);

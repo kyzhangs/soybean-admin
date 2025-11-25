@@ -2,11 +2,9 @@ declare namespace Api {
   /**
    * namespace SystemManage
    *
-   * backend api module: "systemManage"
+   * backend api module: "system-manage"
    */
   namespace SystemManage {
-    type PageSearchParams = CommonType.RecordNullable<Api.Common.CommonSearchParams>;
-
     /**
      * user gender
      *
@@ -33,7 +31,7 @@ declare namespace Api {
       }>;
 
     /** user search params */
-    type UserSearchParams = PageSearchParams &
+    type UserSearchParams = Common.PageSearchParams &
       CommonType.RecordNullable<
         Pick<Api.SystemManage.User, 'gender' | 'is_active' | 'status'> & { keyword: string; contact: string }
       >;
@@ -62,7 +60,7 @@ declare namespace Api {
 
     /** role search params */
     type RoleSearchParams = CommonType.RecordNullable<
-      Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'status'> & PageSearchParams
+      Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'status'> & Common.PageSearchParams
     >;
 
     /** role list */
