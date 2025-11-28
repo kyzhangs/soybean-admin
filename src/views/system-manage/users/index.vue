@@ -1,13 +1,13 @@
 <script setup lang="tsx">
 import { reactive } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { enableStatusRecord, userGenderRecord } from '@/constants/business';
+import { userGenderRecord } from '@/constants/business';
 import { yesOrNoRecord } from '@/constants/common';
-import { fetchDeteleUser, fetchGetUserList } from '@/service/api';
+import { fetchDeteleUser, fetchGetUserPageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
-import UserOperateDrawer from './modules/user-operate-drawer.vue';
+import UserOperateModal from './modules/user-operate-modal.vue';
 import UserSearch from './modules/user-search.vue';
 
 const appStore = useAppStore();
@@ -23,7 +23,7 @@ const searchParams = reactive<Api.SystemManage.UserSearchParams>({
 });
 
 const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination } = useNaivePaginatedTable({
-  api: () => fetchGetUserList(searchParams),
+  api: () => fetchGetUserPageList(searchParams),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
     searchParams.page = params.page;
@@ -120,17 +120,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'status',
       title: $t('page.system-manage.users.status'),
       align: 'center',
-      width: 100,
-      render: row => {
-        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
-          1: 'success',
-          2: 'error'
-        };
-
-        const label = $t(enableStatusRecord[row.status]);
-
-        return <NTag type={tagMap[row.status]}>{label}</NTag>;
-      }
+      width: 100
     },
     {
       key: 'operate',
@@ -138,7 +128,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       align: 'center',
       width: 130,
       render: row => (
-        <div class="flex-center gap-8px">
+        <div class="flex-center gap-10px">
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
@@ -158,17 +148,8 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
   ]
 });
 
-const {
-  drawerVisible,
-  operateType,
-  editingData,
-  handleAdd,
-  handleEdit,
-  checkedRowKeys,
-  onBatchDeleted,
-  onDeleted
-  // closeDrawer
-} = useTableOperate(data, 'id', getData);
+const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onBatchDeleted, onDeleted } =
+  useTableOperate(data, 'id', getData);
 
 async function handleBatchDelete() {
   // request
@@ -179,9 +160,10 @@ async function handleBatchDelete() {
 
 async function handleDelete(id: number) {
   // request
-  const form_data = { id };
-  await fetchDeteleUser(form_data);
-  onDeleted();
+  const { error } = await fetchDeteleUser({ id });
+  if (!error) {
+    onDeleted();
+  }
 }
 
 function edit(id: number) {
@@ -220,7 +202,7 @@ function edit(id: number) {
         :pagination="mobilePagination"
         class="sm:h-full"
       />
-      <UserOperateDrawer
+      <UserOperateModal
         v-model:visible="drawerVisible"
         :operate-type="operateType"
         :row-data="editingData"

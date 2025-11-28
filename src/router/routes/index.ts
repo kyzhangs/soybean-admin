@@ -190,7 +190,7 @@ const customRoutes: CustomRoute[] = [
         path: '/document/vue',
         component: 'view.iframe-page',
         props: {
-          url: 'https://cn.vuejs.org/'
+          url: 'http://localhost:9038'
         },
         meta: {
           title: 'document_vue',

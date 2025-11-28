@@ -1,21 +1,44 @@
 import { request } from '@/service/request';
 
 /** get role list */
-export function fetchGetRoleList(params?: Api.SystemManage.RoleSearchParams) {
-  return request<Api.SystemManage.RoleList>({
-    url: '/systemManage/getRoleList',
-    method: 'get',
-    params
+export function fetchGetRolePageList(data: Api.SystemManage.RoleSearchParams) {
+  return request<Api.SystemManage.RolePageList>({
+    url: '/system-manage/roles/list',
+    method: 'post',
+    data
   });
 }
 
-/**
- * get all roles
- *
- * these roles are all enabled
- */
-export function fetchGetAllEnabledRoles() {
-  return request<Api.SystemManage.AllRole[]>({
-    url: '/system-manage/roles/enabled'
+/** create role */
+export function fetchCreateRole(data: Api.SystemManage.RoleCreateParams) {
+  return request<Api.SystemManage.Role>({
+    url: '/system-manage/roles',
+    method: 'post',
+    data
+  });
+}
+
+/** update role */
+export function fetchUpdateRole(data: Api.SystemManage.RoleUpdateParams) {
+  return request<Api.SystemManage.Role>({
+    url: '/system-manage/roles/update',
+    method: 'post',
+    data
+  });
+}
+
+/** delete role */
+export function fetchDeleteRole(data: Api.Common.DeleteParams) {
+  return request({
+    url: '/system-manage/roles/del',
+    method: 'post',
+    data
+  });
+}
+
+/** get role options */
+export function fetchGetRoleOptions() {
+  return request<CommonType.Option<string, string>>({
+    url: '/system-manage/roles/role-options'
   });
 }

@@ -46,7 +46,7 @@ function resetModel() {
 
 async function reset() {
   resetModel();
-  search();
+  await search();
 }
 
 async function search() {
@@ -63,12 +63,7 @@ async function search() {
           <NGrid responsive="screen" item-responsive>
             <NFormItemGi span="24 s:18 m:20 l:18 xl:20" :show-feedback="false">
               <NGrid responsive="screen" item-responsive>
-                <NFormItemGi
-                  span="24 s:12 m:8 l:8 xl:5"
-                  :label="$t('page.system-manage.users.keyword')"
-                  path="keyword"
-                  class="pr-24px"
-                >
+                <NFormItemGi span="24 s:12 m:8 l:8 xl:5" :label="$t('common.keyword')" path="keyword" class="pr-24px">
                   <NInput
                     v-model:value="model.keyword"
                     :placeholder="$t('page.system-manage.users.form.keyword')"

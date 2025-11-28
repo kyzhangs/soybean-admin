@@ -47,7 +47,10 @@ const local: App.I18n.Schema = {
     yesOrNo: {
       yes: '是',
       no: '否'
-    }
+    },
+    keyword: '关键字',
+    create_time: '创建时间',
+    update_time: '更新时间'
   },
   request: {
     logout: '请求失败后登出用户',
@@ -522,27 +525,15 @@ const local: App.I18n.Schema = {
           disable: '禁用'
         }
       },
-      roles: {
-        title: '角色列表',
-        roleName: '角色名称',
-        roleCode: '角色编码',
-        roleStatus: '角色状态',
-        roleDesc: '角色描述',
-        menuAuth: '菜单权限',
-        buttonAuth: '按钮权限',
-        form: {
-          roleName: '请输入角色名称',
-          roleCode: '请输入角色编码',
-          roleStatus: '请选择角色状态',
-          roleDesc: '请输入角色描述'
-        },
-        addRole: '新增角色',
-        editRole: '编辑角色'
-      },
       users: {
         title: '用户列表',
         add: '新增用户',
         edit: '编辑用户',
+        genderType: {
+          male: '男',
+          female: '女',
+          unknown: '未知'
+        },
         username: '用户名',
         gender: '性别',
         name: '姓名',
@@ -553,7 +544,6 @@ const local: App.I18n.Schema = {
         last_login: '最近登录时间',
         status: '用户状态',
         roles: '用户角色',
-        keyword: '关键字',
         contact: '联系方式',
         form: {
           username: '请输入用户名',
@@ -566,11 +556,26 @@ const local: App.I18n.Schema = {
           roles: '请选择用户角色',
           keyword: '请输入用户名或姓名',
           contact: '请输入邮箱或手机号'
-        },
-        genderType: {
-          male: '男',
-          female: '女',
-          unknown: '未知'
+        }
+      },
+      roles: {
+        title: '角色列表',
+        add: '添加角色',
+        edit: '编辑角色',
+        name: '角色名称',
+        code: '角色编码',
+        status: '角色状态',
+        home: '角色主页',
+        description: '角色描述',
+        menuAuth: '菜单权限',
+        buttonAuth: '按钮权限',
+        form: {
+          keyword: '请输入角色名称或描述',
+          name: '请输入角色名称',
+          code: '请输入角色编码',
+          home: '请选择角色主页',
+          status: '请选择角色状态',
+          description: '请输入角色描述'
         }
       },
       menus: {

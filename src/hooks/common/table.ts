@@ -1,10 +1,12 @@
-import { computed, effectScope, onScopeDispose, reactive, shallowRef, watch } from 'vue';
+import { computed, effectScope, h, onScopeDispose, reactive, shallowRef, watch } from 'vue';
 import type { Ref } from 'vue';
 import type { PaginationProps } from 'naive-ui';
+import { NTag } from 'naive-ui';
 import { useBoolean, useTable } from '@sa/hooks';
 import type { PaginationData, TableColumnCheck, UseTableOptions } from '@sa/hooks';
 import type { FlatResponseData } from '@sa/axios';
 import { jsonClone } from '@sa/utils';
+import { enableStatusRecord } from '@/constants/business';
 import { useAppStore } from '@/store/modules/app';
 import { $t } from '@/locales';
 
@@ -121,16 +123,16 @@ export function useNaivePaginatedTable<ResponseData, ApiData>(
   });
 
   const columnsOption = options.columns;
-  const columnsWithIndex = columnsOption
+  const columnsWithBusiness = columnsOption
     ? () => {
         const cols = typeof columnsOption === 'function' ? columnsOption() : columnsOption;
-        return withIndexColumnRender(cols, pagination);
+        return withBusinessColumnRender(cols, pagination);
       }
     : undefined;
 
   const result = useTable<ResponseData, ApiData, NaiveUI.TableColumn<ApiData>, true>({
     ...options,
-    columns: columnsWithIndex ?? options.columns,
+    columns: columnsWithBusiness ?? options.columns,
     pagination: true,
     getColumnChecks: cols => getColumnChecks(cols, options.getColumnVisible),
     getColumns,
@@ -323,7 +325,7 @@ function getScrollX<T>(columns: NaiveUI.TableColumn<T>[], minWidth: number = 120
   }, 0);
 }
 
-function withIndexColumnRender<Column extends NaiveUI.TableColumn<any>>(
+function withBusinessColumnRender<Column extends NaiveUI.TableColumn<any>>(
   columns: Column[],
   pagination: PaginationProps
 ) {
@@ -336,6 +338,32 @@ function withIndexColumnRender<Column extends NaiveUI.TableColumn<any>>(
 
       const nextColumn = { ...columnRecord };
       nextColumn.render = (_row: any, index: number) => index + 1 + (page - 1) * pageSize;
+
+      return nextColumn as Column;
+    }
+
+    if (isTableColumnHasKey(column) && column.key === 'status' && !columnRecord.render) {
+      const nextColumn = { ...columnRecord };
+      nextColumn.render = (row: Record<string, any>) => {
+        const status = row.status as Api.Common.EnableStatus;
+
+        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
+          1: 'success',
+          2: 'error'
+        };
+
+        const label = $t(enableStatusRecord[status]);
+
+        return h(
+          NTag,
+          {
+            type: tagMap[status]
+          },
+          {
+            default: () => label
+          }
+        );
+      };
 
       return nextColumn as Column;
     }

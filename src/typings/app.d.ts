@@ -354,6 +354,9 @@ declare namespace App {
           yes: string;
           no: string;
         };
+        keyword: string;
+        create_time: string;
+        update_time: string;
       };
       request: {
         logout: string;
@@ -695,27 +698,15 @@ declare namespace App {
               disable: string;
             };
           };
-          roles: {
-            title: string;
-            roleName: string;
-            roleCode: string;
-            roleStatus: string;
-            roleDesc: string;
-            form: {
-              roleName: string;
-              roleCode: string;
-              roleStatus: string;
-              roleDesc: string;
-            };
-            addRole: string;
-            editRole: string;
-            menuAuth: string;
-            buttonAuth: string;
-          };
           users: {
             title: string;
             add: string;
             edit: string;
+            genderType: {
+              male: string;
+              female: string;
+              unknown: string;
+            };
             username: string;
             gender: string;
             name: string;
@@ -726,7 +717,6 @@ declare namespace App {
             last_login: string;
             status: string;
             roles: string;
-            keyword: string;
             contact: string;
             form: {
               username: string;
@@ -740,10 +730,25 @@ declare namespace App {
               keyword: string;
               contact: string;
             };
-            genderType: {
-              male: string;
-              female: string;
-              unknown: string;
+          };
+          roles: {
+            title: string;
+            add: string;
+            edit: string;
+            menuAuth: string;
+            buttonAuth: string;
+            name: string;
+            code: string;
+            status: string;
+            home: string;
+            description: string;
+            form: {
+              keyword: string;
+              name: string;
+              code: string;
+              home: string;
+              status: string;
+              description: string;
             };
           };
           menus: {

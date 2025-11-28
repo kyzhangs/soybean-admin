@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRaw } from 'vue';
+import { nextTick, toRaw } from 'vue';
 import { jsonClone } from '@sa/utils';
 import { enableStatusOptions } from '@/constants/business';
 import { translateOptions } from '@/utils/common';
@@ -23,7 +23,13 @@ function resetModel() {
   Object.assign(model.value, defaultModel);
 }
 
-function search() {
+async function reset() {
+  resetModel();
+  await search();
+}
+
+async function search() {
+  await nextTick();
   emit('search');
 }
 </script>
@@ -34,38 +40,42 @@ function search() {
       <NCollapseItem :title="$t('common.search')" name="role-search">
         <NForm :model="model" label-placement="left" :label-width="80">
           <NGrid responsive="screen" item-responsive>
-            <NFormItemGi
-              span="24 s:12 m:6"
-              :label="$t('page.system-manage.roles.roleName')"
-              path="roleName"
-              class="pr-24px"
-            >
-              <NInput v-model:value="model.roleName" :placeholder="$t('page.system-manage.roles.form.roleName')" />
+            <NFormItemGi span="24 s:12 m:6" :label="$t('common.keyword')" path="keyword" class="pr-24px">
+              <NInput
+                v-model:value="model.keyword"
+                :placeholder="$t('page.system-manage.roles.form.keyword')"
+                clearable
+                @clear="search"
+                @keyup.enter="search"
+              />
+            </NFormItemGi>
+            <NFormItemGi span="24 s:12 m:6" :label="$t('page.system-manage.roles.code')" path="code" class="pr-24px">
+              <NInput
+                v-model:value="model.code"
+                :placeholder="$t('page.system-manage.roles.form.code')"
+                clearable
+                @clear="search"
+                @keyup.enter="search"
+              />
             </NFormItemGi>
             <NFormItemGi
               span="24 s:12 m:6"
-              :label="$t('page.system-manage.roles.roleCode')"
-              path="roleCode"
-              class="pr-24px"
-            >
-              <NInput v-model:value="model.roleCode" :placeholder="$t('page.system-manage.roles.form.roleCode')" />
-            </NFormItemGi>
-            <NFormItemGi
-              span="24 s:12 m:6"
-              :label="$t('page.system-manage.roles.roleStatus')"
+              :label="$t('page.system-manage.roles.status')"
               path="status"
               class="pr-24px"
             >
               <NSelect
                 v-model:value="model.status"
-                :placeholder="$t('page.system-manage.roles.form.roleStatus')"
+                :placeholder="$t('page.system-manage.roles.form.status')"
                 :options="translateOptions(enableStatusOptions)"
                 clearable
+                @clear="search"
+                @update:value="search"
               />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:6">
               <NSpace class="w-full" justify="end">
-                <NButton @click="resetModel">
+                <NButton @click="reset">
                   <template #icon>
                     <icon-ic-round-refresh class="text-icon" />
                   </template>

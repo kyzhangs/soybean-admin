@@ -23,3 +23,10 @@ export function fetchGetAllPages() {
     method: 'get'
   });
 }
+
+/** get menu options */
+export function fetchGetMenuOptions() {
+  return request<CommonType.Option<string, string>>({
+    url: '/system-manage/menus/menu-options'
+  });
+}

@@ -36,42 +36,40 @@ declare namespace Api {
         Pick<Api.SystemManage.User, 'gender' | 'is_active' | 'status'> & { keyword: string; contact: string }
       >;
 
+    /** user create params */
     type UserCreateParams = Pick<
       User,
       'username' | 'name' | 'email' | 'phone' | 'gender' | 'is_active' | 'status' | 'roles'
     >;
 
+    /** user update params */
     type UserUpdateParams = Pick<User, 'name' | 'email' | 'phone' | 'gender' | 'is_active' | 'status' | 'roles'>;
 
-    type UserDeleteParams = Pick<User, 'id'>;
-
-    /** user list */
-    type UserList = Common.PaginatingQueryRecord<User>;
+    /** user page list */
+    type UserPageList = Common.PaginatingQueryRecord<User>;
 
     /** role */
     type Role = Common.CommonRecord<{
-      /** role name */
-      roleName: string;
-      /** role code */
-      roleCode: string;
-      /** role description */
-      roleDesc: string;
-    }>;
-
-    /** role search params */
-    type RoleSearchParams = CommonType.RecordNullable<
-      Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'status'> & Common.PageSearchParams
-    >;
-
-    /** role list */
-    type RoleList = Common.PaginatingQueryRecord<Role>;
-
-    /** all role */
-    type AllRole = Common.CommonRecord<{
       name: string;
       code: string;
-      description: string;
-    }>;
+    }> &
+      CommonType.RecordNullable<{
+        description: string;
+        home: string;
+      }>;
+
+    /** role search params */
+    type RoleSearchParams = Common.PageSearchParams &
+      CommonType.RecordNullable<Pick<Api.SystemManage.Role, 'code' | 'status'> & { keyword: string }>;
+
+    /** role create params */
+    type RoleCreateParams = Pick<Role, 'name' | 'code' | 'description' | 'status' | 'home'>;
+
+    /** role update params */
+    type RoleUpdateParams = Exclude<RoleCreateParams, 'code'>;
+
+    /** role page list */
+    type RolePageList = Common.PaginatingQueryRecord<Role>;
 
     /**
      * menu type

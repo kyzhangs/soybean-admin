@@ -26,6 +26,33 @@ export function transformRecordToOption<T extends Record<string, string>>(record
 }
 
 /**
+ * Transform option list to record
+ *
+ * @example
+ *   ```ts
+ *   const options = [
+ *     { value: 'key1', label: 'label1' },
+ *     { value: 'key2', label: 'label2' }
+ *   ];
+ *   const record = transformOptionToRecord(options);
+ *   // {
+ *   //   key1: 'label1',
+ *   //   key2: 'label2'
+ *   // }
+ *   ```
+ *
+ * @param options
+ */
+export function transformOptionToRecord(options: CommonType.Option<string, string>[]) {
+  return options.reduce<Record<string, string>>((record, option) => {
+    if (option.value !== undefined && option.label !== undefined) {
+      record[String(option.value)] = option.label;
+    }
+    return record;
+  }, {});
+}
+
+/**
  * Translate options
  *
  * @param options

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { enableStatusOptions, userGenderOptions } from '@/constants/business';
-import { fetchCreateUser, fetchGetAllEnabledRoles, fetchUpdateUser } from '@/service/api';
+import { fetchCreateUser, fetchGetRoleOptions, fetchUpdateUser } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 
 defineOptions({
-  name: 'UserOperateDrawer'
+  name: 'UserOperateModal'
 });
 
 interface Props {
@@ -56,13 +56,15 @@ function createDefaultModel(): Model {
   };
 }
 
-type RuleKey = Extract<keyof Model, 'username' | 'email' | 'phone' | 'roles'>;
+type RuleKey = Extract<keyof Model, 'username' | 'email' | 'phone' | 'roles' | 'status' | 'gender'>;
 
 const rules: Record<RuleKey, App.Global.FormRule[]> = {
   username: [patternRules.username, defaultRequiredRule],
   email: [patternRules.email],
   phone: [patternRules.phone],
-  roles: [defaultRequiredRule]
+  roles: [defaultRequiredRule],
+  status: [defaultRequiredRule],
+  gender: [defaultRequiredRule]
 };
 
 // 添加计算属性来处理 is_active 的类型转换
@@ -106,18 +108,12 @@ const handleNameUpdate = (value: string) => {
 };
 
 /** the enabled role options */
-const roleOptions = ref<CommonType.Option<string>[]>([]);
+const roleOptions = ref<CommonType.Option<string, string>[]>([]);
 
 async function getRoleOptions() {
-  const { error, data } = await fetchGetAllEnabledRoles();
-
+  const { error, response } = await fetchGetRoleOptions();
   if (!error) {
-    const options = data.map(item => ({
-      label: item.name,
-      value: item.code
-    }));
-
-    roleOptions.value = [...options];
+    roleOptions.value = response.data.data;
   }
 }
 
@@ -156,11 +152,11 @@ async function handleSubmit() {
   }
 }
 
-watch(visible, () => {
+watch(visible, async () => {
   if (visible.value) {
     handleInitModel();
     restoreValidation();
-    getRoleOptions();
+    await getRoleOptions();
   }
 });
 </script>

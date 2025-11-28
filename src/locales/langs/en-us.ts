@@ -47,7 +47,10 @@ const local: App.I18n.Schema = {
     yesOrNo: {
       yes: 'Yes',
       no: 'No'
-    }
+    },
+    keyword: 'Keyword',
+    create_time: 'Created At',
+    update_time: 'Updated At'
   },
   request: {
     logout: 'Logout user after request failed',
@@ -525,27 +528,15 @@ const local: App.I18n.Schema = {
           disable: 'Disable'
         }
       },
-      roles: {
-        title: 'Role List',
-        roleName: 'Role Name',
-        roleCode: 'Role Code',
-        roleStatus: 'Role Status',
-        roleDesc: 'Role Description',
-        menuAuth: 'Menu Auth',
-        buttonAuth: 'Button Auth',
-        form: {
-          roleName: 'Please enter role name',
-          roleCode: 'Please enter role code',
-          roleStatus: 'Please select role status',
-          roleDesc: 'Please enter role description'
-        },
-        addRole: 'Add Role',
-        editRole: 'Edit Role'
-      },
       users: {
         title: 'User List',
         add: 'Add User',
         edit: 'Edit User',
+        genderType: {
+          male: 'Male',
+          female: 'Female',
+          unknown: 'Unknown'
+        },
         username: 'Username',
         gender: 'Gender',
         name: 'Name',
@@ -556,7 +547,6 @@ const local: App.I18n.Schema = {
         last_login: 'Last Login At',
         status: 'User Status',
         roles: 'User Role',
-        keyword: 'Keyword',
         contact: 'Contact',
         form: {
           username: 'Please enter username',
@@ -569,11 +559,26 @@ const local: App.I18n.Schema = {
           roles: 'Please select user role',
           keyword: 'Please enter username or name',
           contact: 'Please enter phone or email'
-        },
-        genderType: {
-          male: 'Male',
-          female: 'Female',
-          unknown: 'Unknown'
+        }
+      },
+      roles: {
+        title: 'Role List',
+        add: 'Add Role',
+        edit: 'Edit Role',
+        name: 'Role Name',
+        code: 'Role Code',
+        status: 'Role Status',
+        home: 'Role Home',
+        description: 'Role Description',
+        menuAuth: 'Menu Auth',
+        buttonAuth: 'Button Auth',
+        form: {
+          keyword: 'Paease enter role name or description',
+          name: 'Please enter role name',
+          code: 'Please enter role code',
+          home: 'Please select role home',
+          status: 'Please select role status',
+          description: 'Please enter role description'
         }
       },
       menus: {

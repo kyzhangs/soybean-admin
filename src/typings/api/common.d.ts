@@ -23,6 +23,12 @@ declare namespace Api {
     /** common search params of table */
     type PageSearchParams = CommonType.RecordNullable<Pick<Common.PaginatingCommonParams, 'page' | 'page_size'>>;
 
+    /** delete params */
+    type DeleteParams = Pick<Common.CommonRecord, 'id'>;
+
+    /** batch operate params */
+    type BatchOperateParams = { ids: number[] };
+
     /**
      * enable status
      *

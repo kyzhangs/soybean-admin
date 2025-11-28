@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import type { SelectOption } from 'naive-ui';
 import { enableStatusOptions, menuIconTypeOptions, menuTypeOptions } from '@/constants/business';
-import { fetchGetAllEnabledRoles } from '@/service/api';
+import { fetchGetRoleOptions } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { getLocalIcons } from '@/utils/icon';
 import { $t } from '@/locales';
@@ -168,15 +168,10 @@ const layoutOptions: CommonType.Option[] = [
 const roleOptions = ref<CommonType.Option<string>[]>([]);
 
 async function getRoleOptions() {
-  const { error, data } = await fetchGetAllEnabledRoles();
+  const { error, response } = await fetchGetRoleOptions();
 
   if (!error) {
-    const options = data.map(item => ({
-      label: item.name,
-      value: item.code
-    }));
-
-    roleOptions.value = [...options];
+    roleOptions.value = response.data.data;
   }
 }
 

@@ -1,26 +1,36 @@
 <script setup lang="tsx">
-import { reactive } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { enableStatusRecord } from '@/constants/business';
-import { fetchGetRoleList } from '@/service/api';
+import { fetchDeleteRole, fetchGetMenuOptions, fetchGetRolePageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+import { transformOptionToRecord } from '@/utils/common';
 import { $t } from '@/locales';
-import RoleOperateDrawer from './modules/role-operate-drawer.vue';
+import RoleOperateModal from './modules/role-operate-modal.vue';
 import RoleSearch from './modules/role-search.vue';
 
 const appStore = useAppStore();
 
 const searchParams: Api.SystemManage.RoleSearchParams = reactive({
-  current: 1,
-  size: 10,
-  roleName: null,
-  roleCode: null,
+  page: 1,
+  page_size: 10,
+  keyword: null,
+  code: null,
   status: null
 });
 
+const menuOptions = ref<CommonType.Option<string>[]>([]);
+const menuRecords = computed(() => transformOptionToRecord(menuOptions.value));
+
+async function getMenuOptions() {
+  const { error, response } = await fetchGetMenuOptions();
+  if (!error) {
+    menuOptions.value = response.data.data;
+  }
+}
+
 const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
-  api: () => fetchGetRoleList(searchParams),
+  api: () => fetchGetRolePageList(searchParams),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
     searchParams.page = params.page;
@@ -36,45 +46,56 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       key: 'index',
       title: $t('common.index'),
       width: 64,
-      align: 'center',
-      render: (_, index) => index + 1
+      align: 'center'
     },
     {
-      key: 'roleName',
-      title: $t('page.system-manage.roles.roleName'),
+      key: 'name',
+      title: $t('page.system-manage.roles.name'),
       align: 'center',
-      minWidth: 120
+      width: 120
     },
     {
-      key: 'roleCode',
-      title: $t('page.system-manage.roles.roleCode'),
+      key: 'code',
+      title: $t('page.system-manage.roles.code'),
       align: 'center',
-      minWidth: 120
+      width: 120,
+      render: row => <NTag type="default">{row.code}</NTag>
     },
     {
-      key: 'roleDesc',
-      title: $t('page.system-manage.roles.roleDesc'),
-      minWidth: 120
+      key: 'description',
+      title: $t('page.system-manage.roles.description'),
+      align: 'center',
+      ellipsis: {
+        tooltip: {
+          maxWidth: 800
+        }
+      },
+      width: 200
+    },
+    {
+      key: 'home',
+      title: $t('page.system-manage.roles.home'),
+      align: 'center',
+      width: 120,
+      render: row => {
+        if (row.home === null || row.home === undefined) {
+          return null;
+        }
+        const label = menuRecords.value[row.home];
+        return <NTag type="primary">{label}</NTag>;
+      }
+    },
+    {
+      key: 'update_time',
+      title: $t('common.update_time'),
+      align: 'center',
+      width: 200
     },
     {
       key: 'status',
-      title: $t('page.system-manage.roles.roleStatus'),
+      title: $t('page.system-manage.roles.status'),
       align: 'center',
-      width: 100,
-      render: row => {
-        if (row.status === null) {
-          return null;
-        }
-
-        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
-          1: 'success',
-          2: 'warning'
-        };
-
-        const label = $t(enableStatusRecord[row.status]);
-
-        return <NTag type={tagMap[row.status]}>{label}</NTag>;
-      }
+      width: 100
     },
     {
       key: 'operate',
@@ -102,17 +123,8 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
   ]
 });
 
-const {
-  drawerVisible,
-  operateType,
-  editingData,
-  handleAdd,
-  handleEdit,
-  checkedRowKeys,
-  onBatchDeleted,
-  onDeleted
-  // closeDrawer
-} = useTableOperate(data, 'id', getData);
+const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onBatchDeleted, onDeleted } =
+  useTableOperate(data, 'id', getData);
 
 async function handleBatchDelete() {
   // request
@@ -121,16 +133,20 @@ async function handleBatchDelete() {
   onBatchDeleted();
 }
 
-function handleDelete(id: number) {
-  // request
-  console.log(id);
-
-  onDeleted();
+async function handleDelete(id: number) {
+  const { error } = await fetchDeleteRole({ id });
+  if (!error) {
+    onDeleted();
+  }
 }
 
 function edit(id: number) {
   handleEdit(id);
 }
+
+onMounted(async () => {
+  await getMenuOptions();
+});
 </script>
 
 <template>
@@ -158,17 +174,17 @@ function edit(id: number) {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="702"
         :loading="loading"
         remote
         :row-key="row => row.id"
         :pagination="mobilePagination"
         class="sm:h-full"
       />
-      <RoleOperateDrawer
+      <RoleOperateModal
         v-model:visible="drawerVisible"
         :operate-type="operateType"
         :row-data="editingData"
+        :menu-options="menuOptions"
         @submitted="getDataByPage"
       />
     </NCard>

@@ -3,7 +3,7 @@ import { reactive } from 'vue';
 import { NButton, NTag } from 'naive-ui';
 import { utils, writeFile } from 'xlsx';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
-import { fetchGetUserList } from '@/service/api';
+import { fetchGetUserPageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { isTableColumnHasKey, useNaiveTable } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -11,17 +11,12 @@ import { $t } from '@/locales';
 const appStore = useAppStore();
 
 const searchParams: Api.SystemManage.UserSearchParams = reactive({
-  current: 1,
-  size: 999,
-  status: null,
-  keyword: null,
-  contact: null,
-  gender: null,
-  is_active: null
+  page: 1,
+  page_size: 999
 });
 
 const { columns, data, loading } = useNaiveTable({
-  api: () => fetchGetUserList(searchParams),
+  api: () => fetchGetUserPageList(searchParams),
   transform: response => {
     const { data: list, error } = response;
 
@@ -163,7 +158,7 @@ function isTableColumnHasTitle<T>(column: NaiveUI.TableColumn<T>): column is Nai
         <NSpace align="end" wrap justify="end" class="lt-sm:w-200px">
           <NButton size="small" ghost type="primary" @click="exportExcel">
             <template #icon>
-              <icon-file-icons:microsoft-excel class="text-icon" />
+              <icon-file-icons-microsoft-excel class="text-icon" />
             </template>
             导出excel
           </NButton>
