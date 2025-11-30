@@ -50,7 +50,13 @@ const local: App.I18n.Schema = {
     },
     keyword: 'Keyword',
     create_time: 'Created At',
-    update_time: 'Updated At'
+    update_time: 'Updated At',
+    enable: 'Enable',
+    disable: 'Disable',
+    confirmEnable: 'Are you sure you want to enable?',
+    confirmDisable: 'Are you sure you want to disable?',
+    enableSuccess: 'Enable Success',
+    disableSuccess: 'Disable Success'
   },
   request: {
     logout: 'Logout user after request failed',
@@ -267,6 +273,7 @@ const local: App.I18n.Schema = {
     'system-manage_users': 'User Manage',
     'system-manage_user-detail': 'User Detail',
     'system-manage_roles': 'Role Manage',
+    'system-manage_apis': 'Api Manage',
     'system-manage_menus': 'Menu Manage',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',
@@ -579,6 +586,30 @@ const local: App.I18n.Schema = {
           home: 'Please select role home',
           status: 'Please select role status',
           description: 'Please enter role description'
+        }
+      },
+      apis: {
+        title: 'Api List',
+        apiMethod: {
+          get: 'GET',
+          post: 'POST',
+          put: 'PUT',
+          patch: 'PATCH',
+          delete: 'DELETE'
+        },
+        name: 'Api Name',
+        path: 'Api Path',
+        method: 'Api Method',
+        summary: 'Summary',
+        operation_id: 'Operation Id',
+        tags: 'Tags',
+        description: 'Api Description',
+        status: 'Api Status',
+        form: {
+          keyword: 'Please enter api keyword',
+          method: 'Please select api method',
+          tag: 'Please select api tag',
+          status: 'Please select api status'
         }
       },
       menus: {

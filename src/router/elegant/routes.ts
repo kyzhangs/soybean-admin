@@ -640,6 +640,17 @@ export const generatedRoutes: GeneratedRoute[] = [
     },
     children: [
       {
+        name: 'system-manage_apis',
+        path: '/system-manage/apis',
+        component: 'view.system-manage_apis',
+        meta: {
+          title: 'system-manage_apis',
+          i18nKey: 'route.system-manage_apis',
+          icon: 'ant-design:api-outlined',
+          order: 4
+        }
+      },
+      {
         name: 'system-manage_menus',
         path: '/system-manage/menus',
         component: 'view.system-manage_menus',

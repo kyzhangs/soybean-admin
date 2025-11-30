@@ -71,6 +71,36 @@ declare namespace Api {
     /** role page list */
     type RolePageList = Common.PaginatingQueryRecord<Role>;
 
+    /** api request method */
+    type ApiMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+
+    /** api */
+    type Api = Common.CommonRecord<{
+      name: string;
+      path: string;
+      method: ApiMethod;
+      summary: string;
+      operation_id: string;
+      tags: string[];
+    }> &
+      CommonType.RecordNullable<{
+        description: string;
+      }>;
+
+    /** api search params */
+    type ApiSearchParams = Common.PageSearchParams &
+      CommonType.RecordNullable<
+        Pick<Api, 'method' | 'status'> & {
+          keyword: string;
+        }
+      >;
+
+    /** api update params */
+    type ApiUpdateParams = Pick<Api, 'id' | 'status'>;
+
+    /** api page list */
+    type ApiPageList = Common.PaginatingQueryRecord<Api>;
+
     /**
      * menu type
      *

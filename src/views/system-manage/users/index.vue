@@ -1,11 +1,12 @@
 <script setup lang="tsx">
 import { reactive } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { userGenderRecord } from '@/constants/business';
+import { enableStatusRecord, userGenderRecord } from '@/constants/business';
 import { yesOrNoRecord } from '@/constants/common';
 import { fetchDeteleUser, fetchGetUserPageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+import { getTableIndex } from '@/utils/common';
 import { $t } from '@/locales';
 import UserOperateModal from './modules/user-operate-modal.vue';
 import UserSearch from './modules/user-search.vue';
@@ -39,7 +40,8 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'index',
       title: $t('common.index'),
       align: 'center',
-      width: 64
+      width: 64,
+      render: (_, index) => getTableIndex(index, searchParams)
     },
     {
       key: 'username',
@@ -120,7 +122,17 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'status',
       title: $t('page.system-manage.users.status'),
       align: 'center',
-      width: 100
+      width: 100,
+      render: row => {
+        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
+          1: 'success',
+          2: 'error'
+        };
+
+        const label = $t(enableStatusRecord[row.status]);
+
+        return <NTag type={tagMap[row.status]}> {label}</NTag>;
+      }
     },
     {
       key: 'operate',

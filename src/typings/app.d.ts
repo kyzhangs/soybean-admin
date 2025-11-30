@@ -357,6 +357,12 @@ declare namespace App {
         keyword: string;
         create_time: string;
         update_time: string;
+        enable: string;
+        disable: string;
+        confirmEnable: string;
+        confirmDisable: string;
+        enableSuccess: string;
+        disableSuccess: string;
       };
       request: {
         logout: string;
@@ -749,6 +755,30 @@ declare namespace App {
               home: string;
               status: string;
               description: string;
+            };
+          };
+          apis: {
+            title: string;
+            apiMethod: {
+              get: string;
+              post: string;
+              put: string;
+              patch: string;
+              delete: string;
+            };
+            name: string;
+            path: string;
+            method: string;
+            summary: string;
+            operation_id: string;
+            tags: string;
+            description: string;
+            status: string;
+            form: {
+              keyword: string;
+              tag: string;
+              method: string;
+              status: string;
             };
           };
           menus: {

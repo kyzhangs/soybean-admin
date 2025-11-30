@@ -3,7 +3,7 @@ import { request } from '@/service/request';
 /** get menu list */
 export function fetchGetMenuList() {
   return request<Api.SystemManage.MenuList>({
-    url: '/systemManage/getMenuList/v2',
+    url: '/system-manage/menus/list',
     method: 'get'
   });
 }

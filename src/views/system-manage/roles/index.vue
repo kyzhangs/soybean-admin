@@ -1,10 +1,11 @@
 <script setup lang="tsx">
 import { computed, onMounted, reactive, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { enableStatusRecord } from '@/constants/business';
 import { fetchDeleteRole, fetchGetMenuOptions, fetchGetRolePageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
-import { transformOptionToRecord } from '@/utils/common';
+import { getTableIndex, transformOptionToRecord } from '@/utils/common';
 import { $t } from '@/locales';
 import RoleOperateModal from './modules/role-operate-modal.vue';
 import RoleSearch from './modules/role-search.vue';
@@ -46,7 +47,8 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       key: 'index',
       title: $t('common.index'),
       width: 64,
-      align: 'center'
+      align: 'center',
+      render: (_, index) => getTableIndex(index, searchParams)
     },
     {
       key: 'name',
@@ -95,7 +97,17 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       key: 'status',
       title: $t('page.system-manage.roles.status'),
       align: 'center',
-      width: 100
+      width: 100,
+      render: row => {
+        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
+          1: 'success',
+          2: 'error'
+        };
+
+        const label = $t(enableStatusRecord[row.status]);
+
+        return <NTag type={tagMap[row.status]}> {label}</NTag>;
+      }
     },
     {
       key: 'operate',

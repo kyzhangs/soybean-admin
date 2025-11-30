@@ -50,7 +50,13 @@ const local: App.I18n.Schema = {
     },
     keyword: '关键字',
     create_time: '创建时间',
-    update_time: '更新时间'
+    update_time: '更新时间',
+    enable: '启用',
+    disable: '停用',
+    confirmEnable: '确认启用吗？',
+    confirmDisable: '确认停用吗？',
+    enableSuccess: '启用成功',
+    disableSuccess: '停用成功'
   },
   request: {
     logout: '请求失败后登出用户',
@@ -264,6 +270,7 @@ const local: App.I18n.Schema = {
     'system-manage_users': '用户管理',
     'system-manage_user-detail': '用户详情',
     'system-manage_roles': '角色管理',
+    'system-manage_apis': '接口管理',
     'system-manage_menus': '菜单管理',
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
@@ -576,6 +583,30 @@ const local: App.I18n.Schema = {
           home: '请选择角色主页',
           status: '请选择角色状态',
           description: '请输入角色描述'
+        }
+      },
+      apis: {
+        title: '接口列表',
+        apiMethod: {
+          get: 'GET',
+          post: 'POST',
+          put: 'PUT',
+          patch: 'PATCH',
+          delete: 'DELETE'
+        },
+        name: '接口名称',
+        path: '接口路径',
+        method: '请求方式',
+        summary: '摘要',
+        operation_id: 'Operation Id',
+        tags: '接口标签',
+        description: '接口描述',
+        status: '接口状态',
+        form: {
+          keyword: '请输入接口名称、摘要、描述或路径',
+          method: '请选择请求方式',
+          tag: '请选择接口标签',
+          status: '请选择接口状态'
         }
       },
       menus: {
