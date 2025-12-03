@@ -171,7 +171,7 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
   ]
 });
 
-const { checkedRowKeys, onBatchDeleted, onDeleted } = useTableOperate(data, 'id', getData);
+const { checkedRowKeys, onBatchOperate, onDeleted } = useTableOperate(data, 'id', getData);
 
 const operateType = ref<OperateType>('add');
 
@@ -184,7 +184,7 @@ async function handleBatchDelete() {
   // request
   console.log(checkedRowKeys.value);
 
-  onBatchDeleted();
+  onBatchOperate();
 }
 
 function handleDelete(id: number) {

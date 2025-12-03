@@ -12,6 +12,8 @@ const local: App.I18n.Schema = {
     addSuccess: 'Add Success',
     backToHome: 'Back to home',
     batchDelete: 'Batch Delete',
+    batchOperate: 'Batch Actions',
+    batchOperateCompleted: 'Batch operation completed',
     cancel: 'Cancel',
     close: 'Close',
     check: 'Check',
@@ -56,7 +58,11 @@ const local: App.I18n.Schema = {
     confirmEnable: 'Are you sure you want to enable?',
     confirmDisable: 'Are you sure you want to disable?',
     enableSuccess: 'Enable Success',
-    disableSuccess: 'Disable Success'
+    disableSuccess: 'Disable Success',
+    batchEnable: 'Batch Enable',
+    confirmBatchEnable: 'Are you sure you want to batch enable?',
+    batchDisable: 'Batch Disable',
+    confirmBatchDisable: 'Are you sure you want to batch disable?'
   },
   request: {
     logout: 'Logout user after request failed',
@@ -236,16 +242,10 @@ const local: App.I18n.Schema = {
     'iframe-page': 'Iframe',
     home: 'Home',
     document: 'Document',
+    document_api: 'Api Document',
     document_project: 'Project Document',
     'document_project-link': 'Project Document(External Link)',
-    document_video: 'Video Tutorial',
-    document_vue: 'Vue Document',
-    document_vite: 'Vite Document',
-    document_unocss: 'UnoCSS Document',
     document_naive: 'Naive UI Document',
-    'document_pro-naive': 'Pro Naive UI Document',
-    document_antd: 'Ant Design Vue Document',
-    document_alova: 'Alova Document',
     'user-center': 'User Center',
     about: 'About',
     function: 'System Function',
@@ -590,6 +590,7 @@ const local: App.I18n.Schema = {
       },
       apis: {
         title: 'Api List',
+        syncApi: 'Sync Api',
         apiMethod: {
           get: 'GET',
           post: 'POST',

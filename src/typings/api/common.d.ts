@@ -26,8 +26,34 @@ declare namespace Api {
     /** delete params */
     type DeleteParams = Pick<Common.CommonRecord, 'id'>;
 
+    type BatchOperateType = 'ENABLE' | 'DISABLE' | 'DELETE';
+
     /** batch operate params */
-    type BatchOperateParams = { ids: number[] };
+    type BatchOperateParams = { operate: BatchOperateType; ids: number[] };
+
+    interface BatchError {
+      id: number;
+      error: string;
+    }
+
+    type BatchOperateOut = {
+      operate: BatchOperateType;
+      success: number[];
+      errors: BatchError[];
+      pass_rate: number;
+    };
+
+    /** batch operate config */
+    interface BatchConfig {
+      key: BatchOperateType;
+      label: string;
+      needConfirm?: boolean;
+      title?: string;
+      content?: string;
+      type?: NaiveUI.ThemeColor;
+      confirmText?: string;
+      cancelText?: string;
+    }
 
     /**
      * enable status

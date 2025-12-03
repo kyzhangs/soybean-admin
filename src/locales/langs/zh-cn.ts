@@ -12,6 +12,8 @@ const local: App.I18n.Schema = {
     addSuccess: '添加成功',
     backToHome: '返回首页',
     batchDelete: '批量删除',
+    batchOperate: '批量操作',
+    batchOperateCompleted: '批量操作完成',
     cancel: '取消',
     close: '关闭',
     check: '勾选',
@@ -56,7 +58,11 @@ const local: App.I18n.Schema = {
     confirmEnable: '确认启用吗？',
     confirmDisable: '确认停用吗？',
     enableSuccess: '启用成功',
-    disableSuccess: '停用成功'
+    disableSuccess: '禁用成功',
+    batchEnable: '批量启用',
+    confirmBatchEnable: '确认批量启用吗？',
+    batchDisable: '批量禁用',
+    confirmBatchDisable: '确认批量禁用吗？'
   },
   request: {
     logout: '请求失败后登出用户',
@@ -233,16 +239,10 @@ const local: App.I18n.Schema = {
     'iframe-page': '外链页面',
     home: '首页',
     document: '文档',
+    document_api: '接口文档',
     document_project: '项目文档',
     'document_project-link': '项目文档(外链)',
-    document_video: '视频教程',
-    document_vue: 'Vue文档',
-    document_vite: 'Vite文档',
-    document_unocss: 'UnoCSS文档',
     document_naive: 'Naive UI文档',
-    'document_pro-naive': 'Pro Naive UI文档',
-    document_antd: 'Ant Design Vue文档',
-    document_alova: 'Alova文档',
     'user-center': '个人中心',
     about: '关于',
     function: '系统功能',
@@ -587,6 +587,7 @@ const local: App.I18n.Schema = {
       },
       apis: {
         title: '接口列表',
+        syncApi: '一键同步接口',
         apiMethod: {
           get: 'GET',
           post: 'POST',

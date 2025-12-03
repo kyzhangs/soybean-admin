@@ -42,3 +42,12 @@ export function fetchGetRoleOptions() {
     url: '/system-manage/roles/role-options'
   });
 }
+
+/** batch operate roles */
+export function fetchBatchOperateRole(data: Api.Common.BatchOperateParams) {
+  return request<Api.Common.BatchOperateOut>({
+    url: '/system-manage/roles/batch',
+    method: 'post',
+    data
+  });
+}

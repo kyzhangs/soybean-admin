@@ -36,6 +36,8 @@ declare namespace App {
         addSuccess: string;
         backToHome: string;
         batchDelete: string;
+        batchOperate: string;
+        batchOperateCompleted: string;
         cancel: string;
         close: string;
         check: string;
@@ -81,6 +83,10 @@ declare namespace App {
         confirmDisable: string;
         enableSuccess: string;
         disableSuccess: string;
+        batchEnable: string;
+        confirmBatchEnable: string;
+        batchDisable: string;
+        confirmBatchDisable: string;
       };
       request: {
         logout: string;
@@ -477,6 +483,7 @@ declare namespace App {
           };
           apis: {
             title: string;
+            syncApi: string;
             apiMethod: {
               get: string;
               post: string;

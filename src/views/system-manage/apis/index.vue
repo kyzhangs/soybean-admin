@@ -2,7 +2,7 @@
 import { reactive } from 'vue';
 import { NButton, NPopconfirm, NTag, NTooltip } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
-import { fetchGetApiPageList, fetchUpdateApi } from '@/service/api';
+import { fetchBatchOperateApi, fetchGetApiPageList, fetchSyncApi, fetchUpdateApi } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { getTableIndex } from '@/utils/common';
@@ -100,7 +100,7 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       render: row => {
         return row.tags.map((tag, index) => (
           <span>
-            <NTag type="warning">{tag}</NTag>
+            <NTag type="default">{tag}</NTag>
             {index < row.tags!.length - 1 && <span style="margin-right: 4px;"> -&gt;</span>}
           </span>
         ));
@@ -132,7 +132,7 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
           {{
             default: () => (row.status === '1' ? $t('common.confirmDisable') : $t('common.confirmEnable')),
             trigger: () => (
-              <NButton type={row.status === '1' ? 'error' : 'info'} ghost size="small">
+              <NButton type={row.status === '1' ? 'error' : 'primary'} ghost size="small">
                 {row.status === '1' ? $t('common.disable') : $t('common.enable')}
               </NButton>
             )
@@ -143,10 +143,15 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
   ]
 });
 
-const {
-  checkedRowKeys
-  // closeDrawer
-} = useTableOperate(data, 'id', getData);
+const { checkedRowKeys, onBatchOperate } = useTableOperate(data, 'id', getData);
+
+async function handleBatchOperate(operate: Api.Common.BatchOperateType) {
+  const ids = checkedRowKeys.value;
+  const { error, response } = await fetchBatchOperateApi({ operate, ids });
+  if (!error) {
+    onBatchOperate(response.data);
+  }
+}
 
 async function handleUpdateStatus(row: Api.SystemManage.Api) {
   const form_data: Api.SystemManage.ApiUpdateParams = {
@@ -162,13 +167,13 @@ async function handleUpdateStatus(row: Api.SystemManage.Api) {
   }
 }
 
-// async function handleSyncApi() {
-//   const { error, response } = await fetchSyncApi();
-//   if (!error) {
-//     window.$message?.success(response.data.message);
-//     getData();
-//   }
-// }
+async function handleSyncApi() {
+  const { error, response } = await fetchSyncApi();
+  if (!error) {
+    window.$message?.success(response.data.message);
+    getData();
+  }
+}
 </script>
 
 <template>
@@ -181,12 +186,24 @@ async function handleUpdateStatus(row: Api.SystemManage.Api) {
       class="card-wrapper sm:flex-1-hidden"
     >
       <template #header-extra>
-        <TableHeaderOperation
+        <TableBatchOperation
           v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
+          :show-add="false"
+          :disabled-operate="checkedRowKeys.length === 0"
           :loading="loading"
+          :default-batch-keys="['ENABLE', 'DISABLE']"
+          @batch="handleBatchOperate"
           @refresh="getData"
-        ></TableHeaderOperation>
+        >
+          <template #prefix>
+            <NButton type="success" ghost size="small" @click="handleSyncApi">
+              <template #icon>
+                <icon-ic-round-sync class="text-icon" />
+              </template>
+              {{ $t('page.system-manage.apis.syncApi') }}
+            </NButton>
+          </template>
+        </TableBatchOperation>
       </template>
       <NDataTable
         v-model:checked-row-keys="checkedRowKeys"

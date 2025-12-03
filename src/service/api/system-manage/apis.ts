@@ -15,3 +15,20 @@ export function fetchUpdateApi(data: Api.SystemManage.ApiUpdateParams) {
     data
   });
 }
+
+/** sync apis */
+export function fetchSyncApi() {
+  return request({
+    url: '/system-manage/apis/sync',
+    method: 'post'
+  });
+}
+
+/** batch operate apis */
+export function fetchBatchOperateApi(data: Api.Common.BatchOperateParams) {
+  return request<Api.Common.BatchOperateOut>({
+    url: '/system-manage/apis/batch',
+    method: 'post',
+    data
+  });
+}

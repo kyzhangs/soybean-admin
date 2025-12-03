@@ -22,16 +22,10 @@ declare module "@elegant-router/types" {
     "exception_404": "/exception/404";
     "exception_500": "/exception/500";
     "document": "/document";
+    "document_api": "/document/api";
     "document_project": "/document/project";
     "document_project-link": "/document/project-link";
-    "document_video": "/document/video";
-    "document_vue": "/document/vue";
-    "document_vite": "/document/vite";
-    "document_unocss": "/document/unocss";
     "document_naive": "/document/naive";
-    "document_pro-naive": "/document/pro-naive";
-    "document_antd": "/document/antd";
-    "document_alova": "/document/alova";
     "403": "/403";
     "404": "/404";
     "500": "/500";
@@ -121,16 +115,10 @@ declare module "@elegant-router/types" {
     | "exception_404"
     | "exception_500"
     | "document"
+    | "document_api"
     | "document_project"
     | "document_project-link"
-    | "document_video"
-    | "document_vue"
-    | "document_vite"
-    | "document_unocss"
     | "document_naive"
-    | "document_pro-naive"
-    | "document_antd"
-    | "document_alova"
   >;
 
   /**
@@ -236,16 +224,10 @@ declare module "@elegant-router/types" {
     | "exception_403"
     | "exception_404"
     | "exception_500"
+    | "document_api"
     | "document_project"
     | "document_project-link"
-    | "document_video"
-    | "document_vue"
-    | "document_vite"
-    | "document_unocss"
     | "document_naive"
-    | "document_pro-naive"
-    | "document_antd"
-    | "document_alova"
   >;
 
   /**

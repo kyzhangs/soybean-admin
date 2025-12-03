@@ -35,3 +35,12 @@ export function fetchDeteleUser(data: Api.Common.DeleteParams) {
     data
   });
 }
+
+/** fetch delete user */
+export function fetchBatchOperateUser(data: Api.Common.BatchOperateParams) {
+  return request<Api.Common.BatchOperateOut>({
+    url: '/system-manage/users/batch',
+    method: 'post',
+    data
+  });
+}

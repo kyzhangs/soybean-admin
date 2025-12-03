@@ -196,14 +196,21 @@ export function useTableOperate<TableData>(
   }
 
   /** the checked row keys of table */
-  const checkedRowKeys = shallowRef<string[]>([]);
+  const checkedRowKeys = shallowRef<number[]>([]);
 
-  /** the hook after the batch delete operation is completed */
-  async function onBatchDeleted() {
-    window.$message?.success($t('common.deleteSuccess'));
+  /** the hook after the batch operation is completed */
+  async function onBatchOperate(response?: App.Service.Response<Api.Common.BatchOperateOut>) {
+    const message = response?.message || $t('common.batchOperateCompleted');
+    const { data: result } = response || { data: { pass_rate: 100 } };
 
+    if (result.pass_rate === 100) {
+      window.$message?.success(message);
+    } else if (result.pass_rate === 0) {
+      window.$message?.error(message);
+    } else {
+      window.$message?.warning(message);
+    }
     checkedRowKeys.value = [];
-
     await getData();
   }
 
@@ -223,7 +230,7 @@ export function useTableOperate<TableData>(
     editingData,
     handleEdit,
     checkedRowKeys,
-    onBatchDeleted,
+    onBatchOperate,
     onDeleted
   };
 }

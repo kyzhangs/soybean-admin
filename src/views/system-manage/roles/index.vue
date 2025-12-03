@@ -2,7 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
-import { fetchDeleteRole, fetchGetMenuOptions, fetchGetRolePageList } from '@/service/api';
+import { fetchBatchOperateRole, fetchDeleteRole, fetchGetMenuOptions, fetchGetRolePageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { getTableIndex, transformOptionToRecord } from '@/utils/common';
@@ -84,7 +84,7 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
           return null;
         }
         const label = menuRecords.value[row.home];
-        return <NTag type="primary">{label}</NTag>;
+        return <NTag type="info">{label}</NTag>;
       }
     },
     {
@@ -135,20 +135,22 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
   ]
 });
 
-const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onBatchDeleted, onDeleted } =
+const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onBatchOperate } =
   useTableOperate(data, 'id', getData);
 
-async function handleBatchDelete() {
-  // request
-  console.log(checkedRowKeys.value);
-
-  onBatchDeleted();
+async function handleBatchOperate(operate: Api.Common.BatchOperateType) {
+  const ids = checkedRowKeys.value;
+  const { error, response } = await fetchBatchOperateRole({ operate, ids });
+  if (!error) {
+    onBatchOperate(response.data);
+  }
 }
 
 async function handleDelete(id: number) {
   const { error } = await fetchDeleteRole({ id });
   if (!error) {
-    onDeleted();
+    getData();
+    window.$message?.success($t('common.deleteSuccess'));
   }
 }
 
@@ -171,12 +173,12 @@ onMounted(async () => {
       class="card-wrapper sm:flex-1-hidden"
     >
       <template #header-extra>
-        <TableHeaderOperation
+        <TableBatchOperation
           v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
+          :disabled-operate="checkedRowKeys.length === 0"
           :loading="loading"
           @add="handleAdd"
-          @delete="handleBatchDelete"
+          @batch="handleBatchOperate"
           @refresh="getData"
         />
       </template>

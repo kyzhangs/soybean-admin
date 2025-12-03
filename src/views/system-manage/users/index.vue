@@ -3,7 +3,7 @@ import { reactive } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
 import { yesOrNoRecord } from '@/constants/common';
-import { fetchDeteleUser, fetchGetUserPageList } from '@/service/api';
+import { fetchBatchOperateUser, fetchDeteleUser, fetchGetUserPageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { getTableIndex } from '@/utils/common';
@@ -160,14 +160,15 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
   ]
 });
 
-const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onBatchDeleted, onDeleted } =
+const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onBatchOperate, onDeleted } =
   useTableOperate(data, 'id', getData);
 
-async function handleBatchDelete() {
-  // request
-  console.log(checkedRowKeys.value);
-
-  onBatchDeleted();
+async function handleBatchOperate(operate: Api.Common.BatchOperateType) {
+  const ids = checkedRowKeys.value;
+  const { error, response } = await fetchBatchOperateUser({ operate, ids });
+  if (!error) {
+    onBatchOperate(response.data);
+  }
 }
 
 async function handleDelete(id: number) {
@@ -193,12 +194,12 @@ function edit(id: number) {
       class="card-wrapper sm:flex-1-hidden"
     >
       <template #header-extra>
-        <TableHeaderOperation
+        <TableBatchOperation
           v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
+          :disabled-operate="checkedRowKeys.length === 0"
           :loading="loading"
           @add="handleAdd"
-          @delete="handleBatchDelete"
+          @batch="handleBatchOperate"
           @refresh="getData"
         />
       </template>
