@@ -485,6 +485,7 @@ declare namespace App {
           apis: {
             title: string;
             syncApi: string;
+            confirmSyncApi: string;
             apiMethod: {
               get: string;
               post: string;

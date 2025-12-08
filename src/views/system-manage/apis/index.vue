@@ -196,12 +196,19 @@ async function handleSyncApi() {
           @refresh="getData"
         >
           <template #prefix>
-            <NButton type="success" ghost size="small" @click="handleSyncApi">
-              <template #icon>
-                <icon-ic-round-sync class="text-icon" />
+            <NPopconfirm @positive-click="handleSyncApi">
+              <template #default>
+                {{ $t('page.system-manage.apis.confirmSyncApi') }}
               </template>
-              {{ $t('page.system-manage.apis.syncApi') }}
-            </NButton>
+              <template #trigger>
+                <NButton type="primary" ghost size="small">
+                  <template #icon>
+                    <icon-ic-round-sync class="text-icon" />
+                  </template>
+                  {{ $t('page.system-manage.apis.syncApi') }}
+                </NButton>
+              </template>
+            </NPopconfirm>
           </template>
         </TableBatchOperation>
       </template>

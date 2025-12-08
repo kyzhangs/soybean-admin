@@ -664,6 +664,15 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
+        name: 'system-manage_permissions',
+        path: '/system-manage/permissions',
+        component: 'view.system-manage_permissions',
+        meta: {
+          title: 'system-manage_permissions',
+          i18nKey: 'route.system-manage_permissions',
+        }
+      },
+      {
         name: 'system-manage_roles',
         component: 'view.system-manage_roles',
         path: '/system-manage/roles',

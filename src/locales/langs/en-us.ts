@@ -274,6 +274,7 @@ const local: App.I18n.Schema = {
     'system-manage_roles': 'Roles Manage',
     'system-manage_apis': 'Apis Manage',
     'system-manage_menus': 'Menus Manage',
+    'system-manage_permissions': 'Permissions Manage',
     'system-manage_user-detail': 'User Detail',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',
@@ -592,6 +593,7 @@ const local: App.I18n.Schema = {
       apis: {
         title: 'Api List',
         syncApi: 'Sync Api',
+        confirmSyncApi: 'Are you sure to sync all APIs?',
         apiMethod: {
           get: 'GET',
           post: 'POST',

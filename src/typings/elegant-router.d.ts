@@ -87,6 +87,7 @@ declare module "@elegant-router/types" {
     "system-manage": "/system-manage";
     "system-manage_apis": "/system-manage/apis";
     "system-manage_menus": "/system-manage/menus";
+    "system-manage_permissions": "/system-manage/permissions";
     "system-manage_roles": "/system-manage/roles";
     "system-manage_user-detail": "/system-manage/user-detail/:id";
     "system-manage_users": "/system-manage/users";
@@ -208,6 +209,7 @@ declare module "@elegant-router/types" {
     | "pro-naive_table_row-edit"
     | "system-manage_apis"
     | "system-manage_menus"
+    | "system-manage_permissions"
     | "system-manage_roles"
     | "system-manage_user-detail"
     | "system-manage_users"

@@ -122,7 +122,7 @@ function handleBatchSelect(key: string | number) {
         {{ $t('common.add') }}
       </NButton>
       <NDropdown :options="batchOptions" :disabled="disabledOperate" @select="handleBatchSelect">
-        <NButton size="small" ghost type="warning" :disabled="disabledOperate">
+        <NButton size="small" type="default" :disabled="disabledOperate">
           <template #icon>
             <icon-ic-round-more-vert class="text-icon" />
           </template>

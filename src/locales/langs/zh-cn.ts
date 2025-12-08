@@ -271,6 +271,7 @@ const local: App.I18n.Schema = {
     'system-manage_roles': '角色管理',
     'system-manage_apis': '接口管理',
     'system-manage_menus': '菜单管理',
+    'system-manage_permissions': '权限管理',
     'system-manage_user-detail': '用户详情',
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
@@ -589,6 +590,7 @@ const local: App.I18n.Schema = {
       apis: {
         title: '接口列表',
         syncApi: '一键同步接口',
+        confirmSyncApi: '确定要同步所有接口吗？',
         apiMethod: {
           get: 'GET',
           post: 'POST',

@@ -4,13 +4,17 @@ import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
 import { fetchBatchOperateRole, fetchDeleteRole, fetchGetRoleHomeOptions, fetchGetRolePageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
+import { useTabStore } from '@/store/modules/tab';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+import { useRouterPush } from '@/hooks/common/router';
 import { getTableIndex, transformOptionToRecord } from '@/utils/common';
 import { $t } from '@/locales';
 import RoleOperateModal from './modules/role-operate-modal.vue';
 import RoleSearch from './modules/role-search.vue';
 
 const appStore = useAppStore();
+const tabStore = useTabStore();
+const { routerPushByKey } = useRouterPush();
 
 const searchParams: Api.SystemManage.RoleSearchParams = reactive({
   page: 1,
@@ -28,6 +32,14 @@ async function getMenuOptions() {
   if (!error) {
     menuOptions.value = response.data.data;
   }
+}
+
+async function handleAuthSettings(id: number) {
+  const permission_route = 'system-manage_permissions';
+  await tabStore.removeTabByRouteName(permission_route);
+
+  const roleId = String(id);
+  await routerPushByKey(permission_route, { query: { roleId } });
 }
 
 const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
@@ -54,7 +66,7 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       key: 'name',
       title: $t('page.system-manage.roles.name'),
       align: 'center',
-      width: 120
+      minWidth: 120
     },
     {
       key: 'code',
@@ -72,7 +84,7 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
           maxWidth: 800
         }
       },
-      width: 200
+      minWidth: 200
     },
     {
       key: 'home',
@@ -113,9 +125,12 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 130,
+      minWidth: 200,
       render: row => (
         <div class="flex-center gap-8px">
+          <NButton type="primary" size="small" onClick={() => handleAuthSettings(row.id)}>
+            {$t('page.system-manage.roles.authSettings')}
+          </NButton>
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
@@ -123,7 +138,7 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
             {{
               default: () => $t('common.confirmDelete'),
               trigger: () => (
-                <NButton type="error" ghost size="small">
+                <NButton type="error" size="small">
                   {$t('common.delete')}
                 </NButton>
               )
