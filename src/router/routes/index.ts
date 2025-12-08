@@ -103,6 +103,20 @@ const customRoutes: CustomRoute[] = [
           localIcon: 'logo',
           href: 'https://docs.soybeanjs.cn/zh'
         }
+      },
+      {
+        name: 'document_naive',
+        path: '/document/naive',
+        component: 'view.iframe-page',
+        props: {
+          url: 'https://www.naiveui.com/zh-CN/'
+        },
+        meta: {
+          title: 'document_naive',
+          i18nKey: 'route.document_naive',
+          order: 3,
+          icon: 'logos:naiveui'
+        }
       }
     ]
   }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, shallowRef, watch } from 'vue';
-import { fetchGetAllPages, fetchGetMenuTree } from '@/service/api';
+import { fetchGetMenuTree, fetchGetRoleHomeOptions } from '@/service/api';
 import { $t } from '@/locales';
 
 defineOptions({
@@ -38,24 +38,15 @@ async function updateHome(val: string) {
   home.value = val;
 }
 
-const pages = shallowRef<string[]>([]);
+const pageSelectOptions = shallowRef<CommonType.Option<string, string>[]>([]);
 
 async function getPages() {
-  const { error, data } = await fetchGetAllPages();
+  const { error, data } = await fetchGetRoleHomeOptions();
 
   if (!error) {
-    pages.value = data;
+    pageSelectOptions.value = data;
   }
 }
-
-const pageSelectOptions = computed(() => {
-  const opts: CommonType.Option[] = pages.value.map(page => ({
-    label: page,
-    value: page
-  }));
-
-  return opts;
-});
 
 const tree = shallowRef<Api.SystemManage.MenuTree[]>([]);
 

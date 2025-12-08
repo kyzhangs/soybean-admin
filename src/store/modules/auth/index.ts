@@ -125,7 +125,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
         window.$notification?.success({
           title: $t('page.login.common.loginSuccess'),
-          content: $t('page.login.common.welcomeBack', { username: userInfo.username }),
+          content: $t('page.login.common.welcomeBack', { username: userInfo.name || userInfo.username }),
           duration: 4500
         });
       }

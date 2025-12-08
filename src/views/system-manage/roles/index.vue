@@ -2,7 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
-import { fetchBatchOperateRole, fetchDeleteRole, fetchGetMenuOptions, fetchGetRolePageList } from '@/service/api';
+import { fetchBatchOperateRole, fetchDeleteRole, fetchGetRoleHomeOptions, fetchGetRolePageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { getTableIndex, transformOptionToRecord } from '@/utils/common';
@@ -24,7 +24,7 @@ const menuOptions = ref<CommonType.Option<string>[]>([]);
 const menuRecords = computed(() => transformOptionToRecord(menuOptions.value));
 
 async function getMenuOptions() {
-  const { error, response } = await fetchGetMenuOptions();
+  const { error, response } = await fetchGetRoleHomeOptions();
   if (!error) {
     menuOptions.value = response.data.data;
   }

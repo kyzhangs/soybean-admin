@@ -143,31 +143,30 @@ declare namespace Api {
     >;
 
     type Menu = Common.CommonRecord<{
-      /** parent menu id */
       parentId: number;
-      /** menu type */
-      menuType: MenuType;
-      /** menu name */
-      menuName: string;
-      /** route name */
-      routeName: string;
-      /** route path */
-      routePath: string;
-      /** component */
+      type: MenuType;
+      name: string;
+      title: string;
+      path: string;
       component?: string;
-      /** iconify icon name or local icon name */
       icon: string;
-      /** icon type */
       iconType: IconType;
-      /** buttons */
       buttons?: MenuButton[] | null;
-      /** children menu */
       children?: Menu[] | null;
     }> &
       MenuPropsOfRoute;
 
-    /** menu list */
-    type MenuList = Common.PaginatingQueryRecord<Menu>;
+    /** menu page list */
+    type MenuPageList = Common.PaginatingQueryRecord<Menu>;
+
+    /** menu search params */
+    type MenuSearchParams = Common.PageSearchParams &
+      CommonType.RecordNullable<
+        Pick<Menu, 'status'> & {
+          keyword: string;
+          hide_in_menu: boolean;
+        }
+      >;
 
     type MenuTree = {
       id: number;

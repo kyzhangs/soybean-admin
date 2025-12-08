@@ -51,3 +51,9 @@ export function fetchBatchOperateRole(data: Api.Common.BatchOperateParams) {
     data
   });
 }
+
+export function fetchGetRoleAuthSettings() {
+  return request({
+    url: '/system-manage/roles/R_SUPER/auth-settings'
+  });
+}

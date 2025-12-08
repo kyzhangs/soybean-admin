@@ -5,9 +5,9 @@ import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { useBoolean } from '@sa/hooks';
 import { yesOrNoRecord } from '@/constants/common';
 import { enableStatusRecord, menuTypeRecord } from '@/constants/business';
-import { fetchGetAllPages, fetchGetMenuList } from '@/service/api';
+import { fetchBatchOperateMenu, fetchGetMenuList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
-import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+import { useNaiveTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
 import SvgIcon from '@/components/custom/svg-icon.vue';
 import MenuOperateModal, { type OperateType } from './modules/menu-operate-modal.vue';
@@ -16,11 +16,9 @@ const appStore = useAppStore();
 
 const { bool: visible, setTrue: openModal } = useBoolean();
 
-const wrapperRef = ref<HTMLElement | null>(null);
-
-const { columns, columnChecks, data, loading, pagination, getData, getDataByPage } = useNaivePaginatedTable({
+const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable({
   api: () => fetchGetMenuList(),
-  transform: response => defaultTransform(response),
+  transform: response => response.data || [],
   columns: () => [
     {
       type: 'selection',
@@ -28,35 +26,35 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       width: 48
     },
     {
-      key: 'id',
-      title: $t('page.system-manage.menus.id'),
-      align: 'center'
+      key: 'index',
+      align: 'center',
+      width: 48
     },
     {
-      key: 'menuType',
+      key: 'type',
       title: $t('page.system-manage.menus.menuType'),
       align: 'center',
-      width: 80,
+      width: 100,
       render: row => {
         const tagMap: Record<Api.SystemManage.MenuType, NaiveUI.ThemeColor> = {
-          1: 'default',
-          2: 'primary'
+          1: 'primary',
+          2: 'default'
         };
 
-        const label = $t(menuTypeRecord[row.menuType]);
+        const label = $t(menuTypeRecord[row.type]);
 
-        return <NTag type={tagMap[row.menuType]}>{label}</NTag>;
+        return <NTag type={tagMap[row.type]}>{label}</NTag>;
       }
     },
     {
-      key: 'menuName',
+      key: 'name',
       title: $t('page.system-manage.menus.menuName'),
       align: 'center',
       minWidth: 120,
       render: row => {
-        const { i18nKey, menuName } = row;
+        const { i18nKey, name } = row;
 
-        const label = i18nKey ? $t(i18nKey) : menuName;
+        const label = i18nKey ? $t(i18nKey) : name;
 
         return <span>{label}</span>;
       }
@@ -79,36 +77,16 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       }
     },
     {
-      key: 'routeName',
+      key: 'title',
       title: $t('page.system-manage.menus.routeName'),
       align: 'center',
-      minWidth: 120
+      width: 120
     },
     {
-      key: 'routePath',
+      key: 'path',
       title: $t('page.system-manage.menus.routePath'),
       align: 'center',
       minWidth: 120
-    },
-    {
-      key: 'status',
-      title: $t('page.system-manage.menus.menuStatus'),
-      align: 'center',
-      width: 80,
-      render: row => {
-        if (row.status === null) {
-          return null;
-        }
-
-        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
-          1: 'success',
-          2: 'warning'
-        };
-
-        const label = $t(enableStatusRecord[row.status]);
-
-        return <NTag type={tagMap[row.status]}>{label}</NTag>;
-      }
     },
     {
       key: 'hideInMenu',
@@ -141,13 +119,29 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       width: 60
     },
     {
+      key: 'status',
+      title: $t('page.system-manage.menus.menuStatus'),
+      align: 'center',
+      width: 120,
+      render: row => {
+        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
+          1: 'success',
+          2: 'warning'
+        };
+
+        const label = $t(enableStatusRecord[row.status]);
+
+        return <NTag type={tagMap[row.status]}>{label}</NTag>;
+      }
+    },
+    {
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 230,
+      minWidth: 120,
       render: row => (
         <div class="flex-center justify-end gap-8px">
-          {row.menuType === '1' && (
+          {row.type === '1' && (
             <NButton type="primary" ghost size="small" onClick={() => handleAddChildMenu(row)}>
               {$t('page.system-manage.menus.addChildMenu')}
             </NButton>
@@ -180,11 +174,12 @@ function handleAdd() {
   openModal();
 }
 
-async function handleBatchDelete() {
-  // request
-  console.log(checkedRowKeys.value);
-
-  onBatchOperate();
+async function handleBatchOperate(operate: Api.Common.BatchOperateType) {
+  const ids = checkedRowKeys.value;
+  const { error, response } = await fetchBatchOperateMenu({ operate, ids });
+  if (!error) {
+    onBatchOperate(response.data);
+  }
 }
 
 function handleDelete(id: number) {
@@ -215,8 +210,8 @@ function handleAddChildMenu(item: Api.SystemManage.Menu) {
 const allPages = ref<string[]>([]);
 
 async function getAllPages() {
-  const { data: pages } = await fetchGetAllPages();
-  allPages.value = pages || [];
+  // const { data: pages } = await fetchGetAllPages();
+  allPages.value = [];
 }
 
 function init() {
@@ -228,7 +223,7 @@ init();
 </script>
 
 <template>
-  <div ref="wrapperRef" class="flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
+  <div class="flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <NCard
       :title="$t('page.system-manage.menus.title')"
       :bordered="false"
@@ -236,12 +231,12 @@ init();
       class="card-wrapper sm:flex-1-hidden"
     >
       <template #header-extra>
-        <TableHeaderOperation
+        <TableBatchOperation
           v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
+          :disabled-operate="checkedRowKeys.length === 0"
           :loading="loading"
           @add="handleAdd"
-          @delete="handleBatchDelete"
+          @batch="handleBatchOperate"
           @refresh="getData"
         />
       </template>
@@ -251,11 +246,10 @@ init();
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="1088"
+        :scroll-x="scrollX"
         :loading="loading"
         :row-key="row => row.id"
         remote
-        :pagination="pagination"
         class="sm:h-full"
       />
       <MenuOperateModal
@@ -263,7 +257,6 @@ init();
         :operate-type="operateType"
         :row-data="editingData"
         :all-pages="allPages"
-        @submitted="getDataByPage"
       />
     </NCard>
   </div>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useDialog } from 'naive-ui';
+import { computed, h } from 'vue';
 import { $t } from '@/locales';
 
 defineOptions({
@@ -35,12 +34,11 @@ const columns = defineModel<NaiveUI.TableColumnCheck[]>('columns', {
   default: () => []
 });
 
-const dialog = useDialog();
-
 const defaultBatchConfigs: Api.Common.BatchConfig[] = [
   {
     label: $t('common.batchEnable'),
     key: 'ENABLE',
+    icon: 'icon-ic-round-check-circle',
     needConfirm: true,
     title: $t('common.batchEnable'),
     content: $t('common.confirmEnable'),
@@ -49,6 +47,7 @@ const defaultBatchConfigs: Api.Common.BatchConfig[] = [
   {
     label: $t('common.batchDisable'),
     key: 'DISABLE',
+    icon: 'icon-ic-round-block',
     needConfirm: true,
     title: $t('common.batchDisable'),
     content: $t('common.confirmDisable'),
@@ -57,6 +56,7 @@ const defaultBatchConfigs: Api.Common.BatchConfig[] = [
   {
     label: $t('common.batchDelete'),
     key: 'DELETE',
+    icon: 'icon-ic-round-delete',
     needConfirm: true,
     title: $t('common.batchDelete'),
     content: $t('common.confirmDelete'),
@@ -78,7 +78,8 @@ const effectiveBatchConfigs = computed<Api.Common.BatchConfig[]>(() => {
 const batchOptions = computed(() =>
   effectiveBatchConfigs.value.map(item => ({
     key: item.key,
-    label: item.label
+    label: item.label,
+    icon: item.icon ? () => h('div', { class: [item.icon, 'text-icon'] }) : undefined
   }))
 );
 
@@ -99,7 +100,7 @@ function handleBatchSelect(key: string | number) {
     return;
   }
 
-  dialog.warning({
+  window.$dialog?.warning({
     title: config.title,
     content: config.content,
     positiveText: config.confirmText ?? $t('common.confirm'),

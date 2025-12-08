@@ -45,7 +45,7 @@ export function batchDeleteUser(ids: number[]) {
 
 /** get menu list */
 export function fetchGetMenuList() {
-  return alova.Get<Api.SystemManage.MenuList>('/systemManage/getMenuList/v2');
+  return alova.Get<Api.SystemManage.Menu[]>('/systemManage/getMenuList/v2');
 }
 
 /** get all pages */

@@ -47,6 +47,7 @@ declare namespace Api {
     interface BatchConfig {
       key: BatchOperateType;
       label: string;
+      icon?: string;
       needConfirm?: boolean;
       title?: string;
       content?: string;

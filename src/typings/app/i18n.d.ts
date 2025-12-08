@@ -465,6 +465,7 @@ declare namespace App {
             title: string;
             add: string;
             edit: string;
+            authSettings: string;
             menuAuth: string;
             buttonAuth: string;
             name: string;

@@ -665,8 +665,8 @@ export const generatedRoutes: GeneratedRoute[] = [
       },
       {
         name: 'system-manage_roles',
-        path: '/system-manage/roles',
         component: 'view.system-manage_roles',
+        path: '/system-manage/roles',
         meta: {
           title: 'system-manage_roles',
           i18nKey: 'route.system-manage_roles',
