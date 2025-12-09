@@ -159,6 +159,8 @@ declare namespace App {
             mixWidth: string;
             mixCollapsedWidth: string;
             mixChildMenuWidth: string;
+            autoSelectFirstMenu: string;
+            autoSelectFirstMenuTip: string;
           };
           footer: {
             title: string;
