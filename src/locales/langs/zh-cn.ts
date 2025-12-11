@@ -580,6 +580,7 @@ const local: App.I18n.Schema = {
         authSettings: '权限设置',
         menuAuth: '菜单权限',
         buttonAuth: '按钮权限',
+        apiAuth: '接口权限',
         form: {
           keyword: '请输入角色名称或描述',
           name: '请输入角色名称',

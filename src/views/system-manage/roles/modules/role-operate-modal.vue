@@ -8,6 +8,7 @@ import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 import MenuAuthModal from './menu-auth-modal.vue';
 import ButtonAuthModal from './button-auth-modal.vue';
+import ApiAuthModal from './api-auth-modal.vue';
 
 defineOptions({
   name: 'RoleOperateModal'
@@ -37,6 +38,7 @@ const { formRef, validate, restoreValidation } = useNaiveForm();
 const { defaultRequiredRule } = useFormRules();
 const { bool: menuAuthVisible, setTrue: openMenuAuthModal } = useBoolean();
 const { bool: buttonAuthVisible, setTrue: openButtonAuthModal } = useBoolean();
+const { bool: ApiAuthVisible, setTrue: openApiAuthModal } = useBoolean();
 
 const title = computed(() => {
   const titles: Record<NaiveUI.TableOperateType, string> = {
@@ -55,7 +57,7 @@ function createDefaultModel(): Model {
     name: '',
     code: '',
     description: null,
-    home: '',
+    home: 'home',
     status: '1'
   };
 }
@@ -113,11 +115,11 @@ watch(visible, () => {
 </script>
 
 <template>
-  <NModal v-model:show="visible" :title="title" preset="dialog" :mask-closable="false" class="min-w-450px w-500px">
+  <NModal v-model:show="visible" :title="title" preset="dialog" :mask-closable="false" class="min-w-450px">
     <NDivider />
     <NForm ref="formRef" :model="model" :rules="rules">
       <NGrid responsive="screen" item-responsive>
-        <NFormItemGi span="24" :label="$t('page.system-manage.roles.name')" path="name">
+        <NFormItemGi span="12" :label="$t('page.system-manage.roles.name')" path="name" class="pr-12px">
           <NInput
             v-model:value="model.name"
             :placeholder="$t('page.system-manage.roles.form.name')"
@@ -125,7 +127,7 @@ watch(visible, () => {
             :maxlength="16"
           />
         </NFormItemGi>
-        <NFormItemGi span="24" :label="$t('page.system-manage.roles.code')" path="code">
+        <NFormItemGi span="12" :label="$t('page.system-manage.roles.code')" path="code" class="pl-12px">
           <NInput
             v-model:value="model.code"
             :placeholder="$t('page.system-manage.roles.form.code')"
@@ -141,12 +143,12 @@ watch(visible, () => {
             :options="props.menuOptions"
             :placeholder="$t('page.system-manage.roles.form.home')"
             size="small"
-            class="pr-24px"
+            class="pr-12px"
             clearable
           />
         </NFormItemGi>
 
-        <NFormItemGi span="12" :label="$t('page.system-manage.roles.status')" path="status" justify="end">
+        <NFormItemGi span="12" :label="$t('page.system-manage.roles.status')" path="status" class="pl-12px">
           <NRadioGroup v-model:value="model.status">
             <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
@@ -156,7 +158,7 @@ watch(visible, () => {
             v-model:value="model.description"
             :placeholder="$t('page.system-manage.roles.form.description')"
             type="textarea"
-            :autosize="{ minRows: 2, maxRows: 3 }"
+            :autosize="{ minRows: 3, maxRows: 4 }"
             maxlength="255"
             show-count
           />
@@ -164,11 +166,18 @@ watch(visible, () => {
       </NGrid>
     </NForm>
 
-    <NSpace v-if="isEdit">
-      <NButton @click="openMenuAuthModal">{{ $t('page.system-manage.roles.menuAuth') }}</NButton>
+    <NSpace v-if="isEdit" justify="space-between">
+      <NButton type="primary" ghost @click="openMenuAuthModal">{{ $t('page.system-manage.roles.menuAuth') }}</NButton>
+      <NButton type="primary" ghost @click="openButtonAuthModal">
+        {{ $t('page.system-manage.roles.buttonAuth') }}
+      </NButton>
+      <NButton type="primary" ghost @click="openApiAuthModal">{{ $t('page.system-manage.roles.apiAuth') }}</NButton>
+    </NSpace>
+
+    <NSpace>
       <MenuAuthModal v-model:visible="menuAuthVisible" :role-id="roleId" />
-      <NButton @click="openButtonAuthModal">{{ $t('page.system-manage.roles.buttonAuth') }}</NButton>
       <ButtonAuthModal v-model:visible="buttonAuthVisible" :role-id="roleId" />
+      <ApiAuthModal v-model:visible="ApiAuthVisible" :role-id="roleId" />
     </NSpace>
 
     <template #action>

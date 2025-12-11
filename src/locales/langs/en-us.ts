@@ -584,6 +584,7 @@ const local: App.I18n.Schema = {
         authSettings: 'Auth Settings',
         menuAuth: 'Menu Auth',
         buttonAuth: 'Button Auth',
+        apiAuth: 'Api Auth',
         form: {
           keyword: 'Paease enter role name or description',
           name: 'Please enter role name',

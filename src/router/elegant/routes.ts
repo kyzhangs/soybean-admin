@@ -670,7 +670,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         meta: {
           title: 'system-manage_permissions',
           i18nKey: 'route.system-manage_permissions',
-          icon: "fad:lock"
+          icon: 'fad:lock',
+          hideInMenu: true
         }
       },
       {

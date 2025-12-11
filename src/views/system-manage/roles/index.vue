@@ -34,12 +34,10 @@ async function getMenuOptions() {
   }
 }
 
-async function handleAuthSettings(id: number) {
+async function handleClickPermission(code: string) {
   const permission_route = 'system-manage_permissions';
   await tabStore.removeTabByRouteName(permission_route);
-
-  const roleId = String(id);
-  await routerPushByKey(permission_route, { query: { roleId } });
+  await routerPushByKey(permission_route, { query: { code } });
 }
 
 const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
@@ -81,7 +79,7 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       align: 'center',
       ellipsis: {
         tooltip: {
-          maxWidth: 800
+          maxWidth: 450
         }
       },
       minWidth: 200
@@ -128,7 +126,12 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       minWidth: 200,
       render: row => (
         <div class="flex-center gap-8px">
-          <NButton type="primary" size="small" onClick={() => handleAuthSettings(row.id)}>
+          <NButton
+            type="primary"
+            size="small"
+            onClick={() => handleClickPermission(row.code)}
+            disabled={row.status === '2'}
+          >
             {$t('page.system-manage.roles.authSettings')}
           </NButton>
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>

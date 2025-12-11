@@ -470,6 +470,7 @@ declare namespace App {
             authSettings: string;
             menuAuth: string;
             buttonAuth: string;
+            apiAuth: string;
             name: string;
             code: string;
             status: string;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, shallowRef, watch } from 'vue';
+import { NDivider } from 'naive-ui';
 import { fetchGetMenuTree, fetchGetRoleHomeOptions } from '@/service/api';
 import { $t } from '@/locales';
 
@@ -61,13 +62,12 @@ async function getTree() {
 const checks = shallowRef<number[]>([]);
 
 async function getChecks() {
-  console.log(props.roleId);
   // request
-  checks.value = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+  checks.value = [1, 2, 3];
 }
 
 function handleSubmit() {
-  console.log(checks.value, props.roleId);
+  console.log(checks.value);
   // request
 
   window.$message?.success?.($t('common.modifySuccess'));
@@ -90,22 +90,25 @@ watch(visible, val => {
 </script>
 
 <template>
-  <NModal v-model:show="visible" :title="title" preset="card" class="w-480px">
-    <div class="flex-y-center gap-16px pb-12px">
-      <div>{{ $t('page.system-manage.menus.home') }}</div>
+  <NModal v-model:show="visible" :title="title" preset="dialog" class="min-h-500px min-w-450px">
+    <NDivider />
+    <div class="flex-y-center gap-16px pb-24px">
+      <div>{{ $t('page.system-manage.roles.home') }}</div>
       <NSelect :value="home" :options="pageSelectOptions" size="small" class="w-160px" @update:value="updateHome" />
     </div>
     <NTree
       v-model:checked-keys="checks"
       :data="tree"
-      key-field="id"
+      key-field="value"
       checkable
+      cascade
       expand-on-click
       virtual-scroll
       block-line
-      class="h-280px"
+      show-line
+      class="h-300px"
     />
-    <template #footer>
+    <template #action>
       <NSpace justify="end">
         <NButton size="small" class="mt-16px" @click="closeModal">
           {{ $t('common.cancel') }}
