@@ -581,6 +581,7 @@ const local: App.I18n.Schema = {
         menuAuth: '菜单权限',
         buttonAuth: '按钮权限',
         apiAuth: '接口权限',
+        homeSaveSuccess: '角色首页保存成功',
         form: {
           keyword: '请输入角色名称或描述',
           name: '请输入角色名称',
@@ -620,6 +621,7 @@ const local: App.I18n.Schema = {
         home: '首页',
         title: '菜单列表',
         id: 'ID',
+        menuTitle: '菜单标题',
         parentId: '父级菜单ID',
         menuType: '菜单类型',
         menuName: '菜单名称',

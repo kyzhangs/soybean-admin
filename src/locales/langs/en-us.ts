@@ -585,6 +585,7 @@ const local: App.I18n.Schema = {
         menuAuth: 'Menu Auth',
         buttonAuth: 'Button Auth',
         apiAuth: 'Api Auth',
+        homeSaveSuccess: 'Role home save success',
         form: {
           keyword: 'Paease enter role name or description',
           name: 'Please enter role name',
@@ -625,6 +626,7 @@ const local: App.I18n.Schema = {
         title: 'Menu List',
         id: 'ID',
         parentId: 'Parent ID',
+        menuTitle: 'Menu Title',
         menuType: 'Menu Type',
         menuName: 'Menu Name',
         routeName: 'Route Name',

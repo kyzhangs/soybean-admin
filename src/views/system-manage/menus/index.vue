@@ -28,6 +28,12 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
     {
       key: 'index',
       align: 'center',
+      width: 80
+    },
+    {
+      key: 'id',
+      title: 'ID',
+      align: 'center',
       width: 48
     },
     {
@@ -47,16 +53,23 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       }
     },
     {
-      key: 'name',
-      title: $t('page.system-manage.menus.menuName'),
+      key: 'title',
+      title: $t('page.system-manage.menus.menuTitle'),
       align: 'center',
       minWidth: 120,
       render: row => {
-        const { i18nKey, name } = row;
+        const { i18nKey, name, title } = row;
 
-        const label = i18nKey ? $t(i18nKey) : name;
+        const label = i18nKey ? $t(i18nKey) : title;
 
-        return <span>{label}</span>;
+        return (
+          <NTooltip placement="left-start">
+            {{
+              trigger: () => <span>{label}</span>,
+              default: () => <span>{name}</span>
+            }}
+          </NTooltip>
+        );
       }
     },
     {
@@ -138,7 +151,7 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      minWidth: 120,
+      minWidth: 200,
       render: row => (
         <div class="flex-center justify-end gap-8px">
           {row.type === '1' && (

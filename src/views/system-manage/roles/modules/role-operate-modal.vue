@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { jsonClone } from '@sa/utils';
-import { useBoolean } from '@sa/hooks';
 import { enableStatusOptions } from '@/constants/business';
 import { fetchCreateRole, fetchUpdateRole } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
-import MenuAuthModal from './menu-auth-modal.vue';
-import ButtonAuthModal from './button-auth-modal.vue';
-import ApiAuthModal from './api-auth-modal.vue';
 
 defineOptions({
   name: 'RoleOperateModal'
@@ -18,8 +14,8 @@ interface Props {
   /** the type of operation */
   operateType: NaiveUI.TableOperateType;
   /** the edit row data */
-  rowData?: Api.SystemManage.Role | null;
-  menuOptions: CommonType.Option<string>[];
+  rowData: Api.SystemManage.Role | null;
+  menuOptions: CommonType.Option<string, string>[];
 }
 
 const props = defineProps<Props>();
@@ -36,9 +32,6 @@ const visible = defineModel<boolean>('visible', {
 
 const { formRef, validate, restoreValidation } = useNaiveForm();
 const { defaultRequiredRule } = useFormRules();
-const { bool: menuAuthVisible, setTrue: openMenuAuthModal } = useBoolean();
-const { bool: buttonAuthVisible, setTrue: openButtonAuthModal } = useBoolean();
-const { bool: ApiAuthVisible, setTrue: openApiAuthModal } = useBoolean();
 
 const title = computed(() => {
   const titles: Record<NaiveUI.TableOperateType, string> = {
@@ -55,14 +48,14 @@ const model = ref(createDefaultModel());
 function createDefaultModel(): Model {
   return {
     name: '',
-    code: '',
+    code: 'R_',
     description: null,
     home: 'home',
     status: '1'
   };
 }
 
-type RuleKey = Exclude<keyof Model, 'description'>;
+type RuleKey = Exclude<keyof Model, 'id' | 'description'>;
 
 const rules: Record<RuleKey, App.Global.FormRule> = {
   name: defaultRequiredRule,
@@ -70,8 +63,6 @@ const rules: Record<RuleKey, App.Global.FormRule> = {
   status: defaultRequiredRule,
   home: defaultRequiredRule
 };
-
-const roleId = computed(() => props.rowData?.id || -1);
 
 const isEdit = computed(() => props.operateType === 'edit');
 
@@ -165,20 +156,6 @@ watch(visible, () => {
         </NFormItemGi>
       </NGrid>
     </NForm>
-
-    <NSpace v-if="isEdit" justify="space-between">
-      <NButton type="primary" ghost @click="openMenuAuthModal">{{ $t('page.system-manage.roles.menuAuth') }}</NButton>
-      <NButton type="primary" ghost @click="openButtonAuthModal">
-        {{ $t('page.system-manage.roles.buttonAuth') }}
-      </NButton>
-      <NButton type="primary" ghost @click="openApiAuthModal">{{ $t('page.system-manage.roles.apiAuth') }}</NButton>
-    </NSpace>
-
-    <NSpace>
-      <MenuAuthModal v-model:visible="menuAuthVisible" :role-id="roleId" />
-      <ButtonAuthModal v-model:visible="buttonAuthVisible" :role-id="roleId" />
-      <ApiAuthModal v-model:visible="ApiAuthVisible" :role-id="roleId" />
-    </NSpace>
 
     <template #action>
       <NSpace :size="16">

@@ -5,12 +5,13 @@ import { enableStatusRecord } from '@/constants/business';
 import { fetchBatchOperateApi, fetchGetApiPageList, fetchSyncApi, fetchUpdateApi } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+import { useAuth } from '@/hooks/business/auth';
 import { getTableIndex } from '@/utils/common';
 import { $t } from '@/locales';
 import ApiSearch from './modules/api-search.vue';
 
 const appStore = useAppStore();
-
+const { hasAuth } = useAuth();
 const searchParams: Api.SystemManage.ApiSearchParams = reactive({
   page: 1,
   page_size: 10,
@@ -195,7 +196,7 @@ async function handleSyncApi() {
           @batch="handleBatchOperate"
           @refresh="getData"
         >
-          <template #prefix>
+          <template v-if="hasAuth('B_SYNC_APIS')" #prefix>
             <NPopconfirm @positive-click="handleSyncApi">
               <template #default>
                 {{ $t('page.system-manage.apis.confirmSyncApi') }}

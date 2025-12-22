@@ -21,24 +21,37 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   const token = ref(getToken());
 
-  const userInfo: Api.UC.UserInfo = reactive({
-    userId: '',
-    username: '',
-    name: null,
-    email: null,
-    phone: null,
-    gender: '3',
-    active_time: null,
-    avatar: null,
-    roles: [],
-    buttons: []
-  });
+  /**
+   * get default user info
+   *
+   * @returns default user info
+   */
+  function getDefaultUserInfo(): Api.UC.UserInfo {
+    return {
+      userId: '',
+      username: '',
+      name: null,
+      email: null,
+      phone: null,
+      gender: '3',
+      active_time: null,
+      avatar: null,
+      last_login: null,
+      roles: [],
+      buttons: [],
+      is_superuser: false
+    };
+  }
+
+  const userInfo: Api.UC.UserInfo = reactive(getDefaultUserInfo());
 
   /** is super role in static route */
   const isStaticSuper = computed(() => {
     const { VITE_AUTH_ROUTE_MODE, VITE_STATIC_SUPER_ROLE } = import.meta.env;
 
-    return VITE_AUTH_ROUTE_MODE === 'static' && userInfo.roles.includes(VITE_STATIC_SUPER_ROLE);
+    return Boolean(
+      VITE_AUTH_ROUTE_MODE === 'static' && (userInfo.roles.includes(VITE_STATIC_SUPER_ROLE) || userInfo.is_superuser)
+    );
   });
 
   /** Is login */
@@ -158,7 +171,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
     if (!error) {
       // update store
-      Object.assign(userInfo, info);
+      Object.assign(userInfo, getDefaultUserInfo(), info);
 
       return true;
     }

@@ -25,6 +25,7 @@ declare namespace Api {
         name: string;
         email: string;
         phone: string;
+        is_superuser: boolean;
         avatar: string;
         active_time: string;
         last_login: string;
@@ -66,10 +67,29 @@ declare namespace Api {
     type RoleCreateParams = Pick<Role, 'name' | 'code' | 'description' | 'status' | 'home'>;
 
     /** role update params */
-    type RoleUpdateParams = Exclude<RoleCreateParams, 'code'>;
+    type RoleUpdateParams = CommonType.RecordNullable<Exclude<RoleCreateParams, 'code'>>;
 
     /** role page list */
     type RolePageList = Common.PaginatingQueryRecord<Role>;
+
+    /** role permissions */
+    type RolePermissions = {
+      role: Role;
+      menus: string[];
+      buttons: string[];
+      apis: number[];
+    };
+
+    /** role permissions search params */
+    type RolePermissionsSearchParams = { code: string };
+
+    /** role permissions update params */
+    type RolePermissionsUpdateParams = {
+      code: string;
+      menus?: string[];
+      buttons?: string[];
+      apis?: number[];
+    };
 
     /** api request method */
     type ApiMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -101,6 +121,13 @@ declare namespace Api {
     /** api page list */
     type ApiPageList = Common.PaginatingQueryRecord<Api>;
 
+    /** api tree */
+    type ApiTree = {
+      label: string;
+      value: number;
+      children?: ApiTree[];
+    };
+
     /**
      * menu type
      *
@@ -109,16 +136,21 @@ declare namespace Api {
      */
     type MenuType = '1' | '2';
 
-    type MenuButton = {
-      /**
-       * button code
-       *
-       * it can be used to control the button permission
-       */
+    type Button = Common.CommonRecord<{
+      name: string;
       code: string;
-      /** button description */
-      desc: string;
-    };
+    }> &
+      CommonType.RecordNullable<{
+        description: string;
+      }>;
+
+    type ButtonSearchParams = Common.PageSearchParams;
+
+    type ButtonCreateParams = Pick<Button, 'name' | 'code' | 'description'>;
+
+    type ButtonUpdateParams = CommonType.RecordNullable<Exclude<ButtonCreateParams, 'code'>>;
+
+    type ButtonPageList = Common.PaginatingQueryRecord<Button>;
 
     /**
      * icon type
@@ -151,7 +183,7 @@ declare namespace Api {
       component?: string;
       icon: string;
       iconType: IconType;
-      buttons?: MenuButton[] | null;
+      buttons?: Button[] | null;
       children?: Menu[] | null;
     }> &
       MenuPropsOfRoute;
@@ -169,9 +201,8 @@ declare namespace Api {
       >;
 
     type MenuTree = {
-      id: number;
       label: string;
-      pId: number;
+      value: string;
       children?: MenuTree[];
     };
   }

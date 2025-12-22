@@ -32,3 +32,9 @@ export function fetchBatchOperateApi(data: Api.Common.BatchOperateParams) {
     data
   });
 }
+
+export function fetchGetApiTree() {
+  return request<Api.SystemManage.ApiTree[]>({
+    url: '/system-manage/apis/tree'
+  });
+}

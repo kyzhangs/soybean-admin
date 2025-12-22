@@ -471,6 +471,7 @@ declare namespace App {
             menuAuth: string;
             buttonAuth: string;
             apiAuth: string;
+            homeSaveSuccess: string;
             name: string;
             code: string;
             status: string;
@@ -515,6 +516,7 @@ declare namespace App {
             home: string;
             title: string;
             id: string;
+            menuTitle: string;
             parentId: string;
             menuType: string;
             menuName: string;

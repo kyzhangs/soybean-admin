@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useRoute } from 'vue-router';
 import { useLoading } from '@sa/hooks';
 import { useAppStore } from '@/store/modules/app';
 import { useAuthStore } from '@/store/modules/auth';
-import { useTabStore } from '@/store/modules/tab';
+import { useRouteStore } from '@/store/modules/route';
+import { useRouterPush } from '@/hooks/common/router';
 import { useAuth } from '@/hooks/business/auth';
 import { $t } from '@/locales';
 
-const route = useRoute();
-const appStore = useAppStore();
+const { routerPushByKey } = useRouterPush();
+
 const authStore = useAuthStore();
-const tabStore = useTabStore();
+const appStore = useAppStore();
+const routeStore = useRouteStore();
 const { hasAuth } = useAuth();
 const { loading, startLoading, endLoading } = useLoading();
 
@@ -20,7 +21,7 @@ type AccountKey = 'super' | 'admin' | 'user';
 interface Account {
   key: AccountKey;
   label: string;
-  userName: string;
+  username: string;
   password: string;
 }
 
@@ -28,20 +29,20 @@ const accounts = computed<Account[]>(() => [
   {
     key: 'super',
     label: $t('page.login.pwdLogin.superAdmin'),
-    userName: 'Super',
-    password: '123456'
+    username: 'sysadmin',
+    password: '111111'
   },
   {
     key: 'admin',
     label: $t('page.login.pwdLogin.admin'),
-    userName: 'Admin',
-    password: '123456'
+    username: 'admin',
+    password: '111111'
   },
   {
     key: 'user',
     label: $t('page.login.pwdLogin.user'),
-    userName: 'User',
-    password: '123456'
+    username: 'user',
+    password: '111111'
   }
 ]);
 
@@ -51,10 +52,11 @@ async function handleToggleAccount(account: Account) {
   loginAccount.value = account.key;
 
   startLoading();
-  await authStore.login(account.userName, account.password, false);
-  tabStore.initTabStore(route);
+  await authStore.login(account.username, account.password);
+  await routeStore.initAuthRoute();
   endLoading();
-  appStore.reloadPage();
+  await appStore.reloadPage();
+  await routerPushByKey('function_toggle-auth');
 }
 </script>
 

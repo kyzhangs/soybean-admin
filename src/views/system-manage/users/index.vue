@@ -148,7 +148,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
             {{
               default: () => $t('common.confirmDelete'),
               trigger: () => (
-                <NButton type="error" ghost size="small">
+                <NButton type="error" ghost size="small" disabled={Boolean(row.is_superuser)}>
                   {$t('common.delete')}
                 </NButton>
               )

@@ -216,9 +216,10 @@ function handleUpdateI18nKeyByRouteName() {
 }
 
 function handleCreateButton() {
-  const buttonItem: Api.SystemManage.MenuButton = {
+  const buttonItem: Api.SystemManage.ButtonCreateParams = {
+    name: '',
     code: '',
-    desc: ''
+    description: null
   };
 
   return buttonItem;
@@ -420,6 +421,11 @@ watch(
             <NDynamicInput v-model:value="model.buttons" :on-create="handleCreateButton">
               <template #default="{ value }">
                 <div class="ml-8px flex-y-center flex-1 gap-12px">
+                  <NInput
+                    v-model:value="value.name"
+                    :placeholder="$t('page.system-manage.menus.form.buttonCode')"
+                    class="flex-1"
+                  />
                   <NInput
                     v-model:value="value.code"
                     :placeholder="$t('page.system-manage.menus.form.buttonCode')"

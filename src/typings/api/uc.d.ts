@@ -7,7 +7,16 @@ declare namespace Api {
   namespace UC {
     type UserInfo = Pick<
       Api.SystemManage.User,
-      'username' | 'name' | 'gender' | 'email' | 'phone' | 'avatar' | 'active_time' | 'last_login' | 'roles'
+      | 'username'
+      | 'name'
+      | 'gender'
+      | 'email'
+      | 'phone'
+      | 'is_superuser'
+      | 'avatar'
+      | 'active_time'
+      | 'last_login'
+      | 'roles'
     > & { userId: string; buttons: string[] };
   }
 }

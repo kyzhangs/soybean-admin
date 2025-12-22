@@ -36,13 +36,6 @@ export function fetchDeleteRole(data: Api.Common.DeleteParams) {
   });
 }
 
-/** get role options */
-export function fetchGetRoleOptions() {
-  return request<CommonType.Option<string, string>>({
-    url: '/system-manage/roles/role-options'
-  });
-}
-
 /** batch operate roles */
 export function fetchBatchOperateRole(data: Api.Common.BatchOperateParams) {
   return request<Api.Common.BatchOperateOut>({
@@ -52,8 +45,27 @@ export function fetchBatchOperateRole(data: Api.Common.BatchOperateParams) {
   });
 }
 
-export function fetchGetRoleAuthSettings() {
-  return request({
-    url: '/system-manage/roles/R_SUPER/auth-settings'
+/** get role options */
+export function fetchGetRoleOptions() {
+  return request<CommonType.Option<string, string>>({
+    url: '/system-manage/roles/role-options'
+  });
+}
+
+/** get role permissions */
+export function fetchGetRolePermissions(data: Api.SystemManage.RolePermissionsSearchParams) {
+  return request<Api.SystemManage.RolePermissions>({
+    url: '/system-manage/roles/role-permissions',
+    method: 'post',
+    data
+  });
+}
+
+/** update role permissions */
+export function fetchUpdateRolePermissions(data: Api.SystemManage.RolePermissionsUpdateParams) {
+  return request<Api.SystemManage.RolePermissions>({
+    url: '/system-manage/roles/update-role-permissions',
+    method: 'post',
+    data
   });
 }

@@ -126,12 +126,7 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       minWidth: 200,
       render: row => (
         <div class="flex-center gap-8px">
-          <NButton
-            type="primary"
-            size="small"
-            onClick={() => handleClickPermission(row.code)}
-            disabled={row.status === '2'}
-          >
+          <NButton type="primary" ghost size="small" onClick={() => handleClickPermission(row.code)}>
             {$t('page.system-manage.roles.authSettings')}
           </NButton>
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
