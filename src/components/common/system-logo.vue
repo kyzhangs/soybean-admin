@@ -5,7 +5,7 @@ defineOptions({ name: 'SystemLogo' });
 </script>
 
 <template>
-  <SvgIcon icon="ic-bug-report" />
+  <SvgIcon icon="line-md:github-loop" />
 </template>
 
 <style scoped></style>
