@@ -1,47 +1,24 @@
 <script setup lang="tsx">
-import { computed, onMounted, reactive, ref } from 'vue';
+import { reactive } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
-import { fetchBatchOperateRole, fetchDeleteRole, fetchGetRoleHomeOptions, fetchGetRolePageList } from '@/service/api';
+import { fetchBatchOperateButton, fetchDeleteButton, fetchGetButtonPageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
-import { useTabStore } from '@/store/modules/tab';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
-import { useRouterPush } from '@/hooks/common/router';
-import { getTableIndex, transformOptionToRecord } from '@/utils/common';
+import { getTableIndex } from '@/utils/common';
 import { $t } from '@/locales';
-import RoleOperateModal from './modules/role-operate-modal.vue';
-import RoleSearch from './modules/role-search.vue';
+import ButtonSearch from './modules/button-search.vue';
+import ButtonOperateModal from './modules/button-operate-modal.vue';
 
 const appStore = useAppStore();
-const tabStore = useTabStore();
-const { routerPushByKey } = useRouterPush();
 
-const searchParams: Api.SystemManage.RoleSearchParams = reactive({
+const searchParams: Api.SystemManage.ApiSearchParams = reactive({
   page: 1,
-  page_size: 10,
-  keyword: null,
-  code: null,
-  status: null
+  page_size: 10
 });
 
-const menuOptions = ref<CommonType.Option<string>[]>([]);
-const menuRecords = computed(() => transformOptionToRecord(menuOptions.value));
-
-async function getMenuOptions() {
-  const { error, response } = await fetchGetRoleHomeOptions();
-  if (!error) {
-    menuOptions.value = response.data.data;
-  }
-}
-
-async function handleClickPermission(code: string) {
-  const permission_route = 'system-manage_permissions';
-  await tabStore.removeTabByRouteName(permission_route);
-  await routerPushByKey(permission_route, { query: { code } });
-}
-
 const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
-  api: () => fetchGetRolePageList(searchParams),
+  api: () => fetchGetButtonPageList(searchParams),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
     searchParams.page = params.page;
@@ -62,50 +39,36 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
     },
     {
       key: 'name',
-      title: $t('page.system-manage.roles.name'),
+      title: $t('page.system-manage.buttons.name'),
       align: 'center',
-      minWidth: 120
+      width: 120
     },
     {
       key: 'code',
-      title: $t('page.system-manage.roles.code'),
+      title: $t('page.system-manage.buttons.code'),
       align: 'center',
-      width: 120,
-      render: row => <NTag type="default">{row.code}</NTag>
+      width: 120
     },
     {
       key: 'description',
-      title: $t('page.system-manage.roles.description'),
-      align: 'center',
-      ellipsis: {
-        tooltip: {
-          maxWidth: 450
-        }
-      },
-      minWidth: 200
-    },
-    {
-      key: 'home',
-      title: $t('page.system-manage.roles.home'),
+      title: $t('page.system-manage.buttons.description'),
       align: 'center',
       width: 120,
-      render: row => {
-        if (row.home === null || row.home === undefined) {
-          return null;
+      ellipsis: {
+        tooltip: {
+          maxWidth: 800
         }
-        const label = menuRecords.value[row.home];
-        return <NTag type="info">{label}</NTag>;
       }
     },
     {
-      key: 'update_time',
-      title: $t('common.update_time'),
+      key: 'create_time',
+      title: $t('page.system-manage.buttons.create_time'),
       align: 'center',
-      width: 200
+      width: 120
     },
     {
       key: 'status',
-      title: $t('page.system-manage.roles.status'),
+      title: $t('page.system-manage.buttons.status'),
       align: 'center',
       width: 100,
       render: row => {
@@ -123,12 +86,9 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      minWidth: 200,
+      width: 100,
       render: row => (
         <div class="flex-center gap-8px">
-          <NButton type="primary" ghost size="small" onClick={() => handleClickPermission(row.code)}>
-            {$t('page.system-manage.roles.authSettings')}
-          </NButton>
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
@@ -148,19 +108,19 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
   ]
 });
 
-const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onBatchOperate } =
+const { drawerVisible, operateType, editingData, checkedRowKeys, onBatchOperate, handleEdit, handleAdd } =
   useTableOperate(data, 'id', getData);
 
 async function handleBatchOperate(operate: Api.Common.BatchOperateType) {
   const ids = checkedRowKeys.value;
-  const { error, response } = await fetchBatchOperateRole({ operate, ids });
+  const { error, response } = await fetchBatchOperateButton({ operate, ids });
   if (!error) {
     onBatchOperate(response.data);
   }
 }
 
 async function handleDelete(id: number) {
-  const { error } = await fetchDeleteRole({ id });
+  const { error } = await fetchDeleteButton({ id });
   if (!error) {
     getData();
     window.$message?.success($t('common.deleteSuccess'));
@@ -170,16 +130,12 @@ async function handleDelete(id: number) {
 function edit(id: number) {
   handleEdit(id);
 }
-
-onMounted(async () => {
-  await getMenuOptions();
-});
 </script>
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <RoleSearch v-model:model="searchParams" @search="getDataByPage" />
-    <NCard :title="$t('page.system-manage.roles.title')" size="small" class="card-wrapper sm:flex-1-hidden">
+    <ButtonSearch v-model:model="searchParams" @search="getDataByPage" />
+    <NCard :title="$t('page.system-manage.buttons.title')" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableBatchOperation
           v-model:columns="columnChecks"
@@ -202,14 +158,13 @@ onMounted(async () => {
         :pagination="mobilePagination"
         class="sm:h-full"
       />
-      <RoleOperateModal
-        v-model:visible="drawerVisible"
-        :operate-type="operateType"
-        :row-data="editingData"
-        :menu-options="menuOptions"
-        @submitted="getDataByPage"
-      />
     </NCard>
+    <ButtonOperateModal
+      v-model:visible="drawerVisible"
+      :operate-type="operateType"
+      :row-data="editingData"
+      @submitted="getDataByPage"
+    />
   </div>
 </template>
 

@@ -144,9 +144,14 @@ declare namespace Api {
         description: string;
       }>;
 
-    type ButtonSearchParams = Common.PageSearchParams;
+    type ButtonSearchParams = Common.PageSearchParams &
+      CommonType.RecordNullable<
+        Pick<Button, 'status'> & {
+          keyword: string;
+        }
+      >;
 
-    type ButtonCreateParams = Pick<Button, 'name' | 'code' | 'description'>;
+    type ButtonCreateParams = Pick<Button, 'name' | 'code' | 'description' | 'status'>;
 
     type ButtonUpdateParams = CommonType.RecordNullable<Exclude<ButtonCreateParams, 'code'>>;
 

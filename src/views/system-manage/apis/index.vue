@@ -180,12 +180,7 @@ async function handleSyncApi() {
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <ApiSearch v-model:model="searchParams" @search="getDataByPage" />
-    <NCard
-      :title="$t('page.system-manage.apis.title')"
-      :bordered="false"
-      size="small"
-      class="card-wrapper sm:flex-1-hidden"
-    >
+    <NCard :title="$t('page.system-manage.apis.title')" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableBatchOperation
           v-model:columns="columnChecks"

@@ -1,7 +1,7 @@
 import { request } from '@/service/request';
 
-/** get button list */
-export function fetchGetButtonList(data: Api.SystemManage.ButtonSearchParams) {
+/** get button page list */
+export function fetchGetButtonPageList(data: Api.SystemManage.ButtonSearchParams) {
   return request<Api.SystemManage.ButtonPageList>({
     url: '/system-manage/buttons/list',
     method: 'post',

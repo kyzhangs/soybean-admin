@@ -232,6 +232,7 @@ const routeMap: RouteMap = {
   "pro-naive_table_row-edit": "/pro-naive/table/row-edit",
   "system-manage": "/system-manage",
   "system-manage_apis": "/system-manage/apis",
+  "system-manage_buttons": "/system-manage/buttons",
   "system-manage_menus": "/system-manage/menus",
   "system-manage_permissions": "/system-manage/permissions",
   "system-manage_roles": "/system-manage/roles",

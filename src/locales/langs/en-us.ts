@@ -1,6 +1,6 @@
 const local: App.I18n.Schema = {
   system: {
-    title: 'SoybeanAdmin',
+    title: 'DTP Admin',
     updateTitle: 'System Version Update Notification',
     updateContent: 'A new version of the system has been detected. Do you want to refresh the page immediately?',
     updateConfirm: 'Refresh immediately',
@@ -277,6 +277,7 @@ const local: App.I18n.Schema = {
     'system-manage_roles': 'Roles Manage',
     'system-manage_apis': 'Apis Manage',
     'system-manage_menus': 'Menus Manage',
+    'system-manage_buttons': 'Buttons Manage',
     'system-manage_permissions': 'Permissions Manage',
     'system-manage_user-detail': 'User Detail',
     'multi-menu': 'Multi Menu',
@@ -688,6 +689,24 @@ const local: App.I18n.Schema = {
         iconType: {
           iconify: 'Iconify Icon',
           local: 'Local Icon'
+        }
+      },
+      buttons: {
+        title: 'Button List',
+        add: 'Add Button',
+        edit: 'Edit Button',
+        name: 'Button Name',
+        code: 'Button Code',
+        description: 'Button Description',
+        status: 'Button Status',
+        create_time: 'Created At',
+        update_time: 'Updated At',
+        form: {
+          keyword: 'Please enter button name or code',
+          name: 'Please enter button name',
+          code: 'Please enter button code',
+          description: 'Please enter button description',
+          status: 'Please select button status'
         }
       }
     }

@@ -162,8 +162,7 @@ watch(visible, async () => {
 </script>
 
 <template>
-  <NModal v-model:show="visible" :title="title" preset="dialog" :mask-closable="false" class="min-w-750px w-750px">
-    <NDivider />
+  <NModal v-model:show="visible" :title="title" preset="card" :mask-closable="false" class="min-w-750px w-750px">
     <NForm
       ref="formRef"
       :model="model"
@@ -172,6 +171,7 @@ watch(visible, async () => {
       label-align="right"
       label-width="auto"
       require-mark-placement="right-hanging"
+      class="w-full pt-5px"
     >
       <NGrid responsive="screen" item-responsive>
         <NFormItemGi span="12" :label="$t('page.system-manage.users.username')" path="username">
@@ -240,7 +240,7 @@ watch(visible, async () => {
       </NGrid>
     </NForm>
 
-    <template #action>
+    <template #footer>
       <NSpace justify="end" :size="16">
         <NButton @click="closeModal">{{ $t('common.cancel') }}</NButton>
         <NButton type="primary" @click="handleSubmit">{{ $t('common.confirm') }}</NButton>

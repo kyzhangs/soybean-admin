@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useLoading } from '@sa/hooks';
-import { fetchGetButtonList } from '@/service/api';
+import { fetchGetButtonPageList } from '@/service/api';
 
 defineOptions({ name: 'ButtonPermissions' });
 
@@ -22,7 +22,7 @@ const allChecked = computed(() => {
 
 async function getButtonList() {
   startLoading();
-  const { error, data } = await fetchGetButtonList({
+  const { error, data } = await fetchGetButtonPageList({
     page: 1,
     page_size: 999
   });

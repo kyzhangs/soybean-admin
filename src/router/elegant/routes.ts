@@ -651,6 +651,17 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
+        name: 'system-manage_buttons',
+        path: '/system-manage/buttons',
+        component: 'view.system-manage_buttons',
+        meta: {
+          title: 'system-manage_buttons',
+          i18nKey: 'route.system-manage_buttons',
+          icon: 'carbon:button',
+          order: 5
+        }
+      },
+      {
         name: 'system-manage_menus',
         path: '/system-manage/menus',
         component: 'view.system-manage_menus',

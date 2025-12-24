@@ -59,6 +59,7 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   "pro-naive_table_remote": () => import("@/views/pro-naive/table/remote/index.vue"),
   "pro-naive_table_row-edit": () => import("@/views/pro-naive/table/row-edit/index.vue"),
   "system-manage_apis": () => import("@/views/system-manage/apis/index.vue"),
+  "system-manage_buttons": () => import("@/views/system-manage/buttons/index.vue"),
   "system-manage_menus": () => import("@/views/system-manage/menus/index.vue"),
   "system-manage_permissions": () => import("@/views/system-manage/permissions/index.vue"),
   "system-manage_roles": () => import("@/views/system-manage/roles/index.vue"),

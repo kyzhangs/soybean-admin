@@ -5,7 +5,7 @@ import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { useBoolean } from '@sa/hooks';
 import { yesOrNoRecord } from '@/constants/common';
 import { enableStatusRecord, menuTypeRecord } from '@/constants/business';
-import { fetchBatchOperateMenu, fetchGetMenuList } from '@/service/api';
+import { fetchBatchOperateMenu, fetchGetMenuList, fetchGetRoleHomeOptions } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { useNaiveTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -53,6 +53,23 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       }
     },
     {
+      key: 'icon',
+      title: $t('page.system-manage.menus.icon'),
+      align: 'center',
+      width: 60,
+      render: row => {
+        const icon = row.iconType === '1' ? row.icon : undefined;
+
+        const localIcon = row.iconType === '2' ? row.icon : undefined;
+
+        return (
+          <div class="flex-center">
+            <SvgIcon icon={icon} localIcon={localIcon} class="text-icon" />
+          </div>
+        );
+      }
+    },
+    {
       key: 'title',
       title: $t('page.system-manage.menus.menuTitle'),
       align: 'center',
@@ -73,24 +90,7 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       }
     },
     {
-      key: 'icon',
-      title: $t('page.system-manage.menus.icon'),
-      align: 'center',
-      width: 60,
-      render: row => {
-        const icon = row.iconType === '1' ? row.icon : undefined;
-
-        const localIcon = row.iconType === '2' ? row.icon : undefined;
-
-        return (
-          <div class="flex-center">
-            <SvgIcon icon={icon} localIcon={localIcon} class="text-icon" />
-          </div>
-        );
-      }
-    },
-    {
-      key: 'title',
+      key: 'name',
       title: $t('page.system-manage.menus.routeName'),
       align: 'center',
       width: 120
@@ -99,7 +99,10 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       key: 'path',
       title: $t('page.system-manage.menus.routePath'),
       align: 'center',
-      minWidth: 120
+      minWidth: 120,
+      ellipsis: {
+        tooltip: true
+      }
     },
     {
       key: 'hideInMenu',
@@ -220,11 +223,13 @@ function handleAddChildMenu(item: Api.SystemManage.Menu) {
   openModal();
 }
 
-const allPages = ref<string[]>([]);
+const allPages = ref<CommonType.Option<string, string>[]>([]);
 
 async function getAllPages() {
-  // const { data: pages } = await fetchGetAllPages();
-  allPages.value = [];
+  const { error, data: options } = await fetchGetRoleHomeOptions();
+  if (!error) {
+    allPages.value = options;
+  }
 }
 
 function init() {

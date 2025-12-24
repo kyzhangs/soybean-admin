@@ -581,6 +581,24 @@ declare namespace App {
               local: string;
             };
           };
+          buttons: {
+            title: string;
+            add: string;
+            edit: string;
+            name: string;
+            code: string;
+            description: string;
+            status: string;
+            create_time: string;
+            update_time: string;
+            form: {
+              keyword: string;
+              name: string;
+              code: string;
+              description: string;
+              status: string;
+            };
+          };
         };
       };
       form: {

@@ -1,6 +1,6 @@
 const local: App.I18n.Schema = {
   system: {
-    title: 'Soybean 管理系统',
+    title: 'DTP管理系统',
     updateTitle: '系统版本更新通知',
     updateContent: '检测到系统有新版本发布，是否立即刷新页面？',
     updateConfirm: '立即刷新',
@@ -273,6 +273,7 @@ const local: App.I18n.Schema = {
     'system-manage_roles': '角色管理',
     'system-manage_apis': '接口管理',
     'system-manage_menus': '菜单管理',
+    'system-manage_buttons': '按钮管理',
     'system-manage_permissions': '权限管理',
     'system-manage_user-detail': '用户详情',
     'multi-menu': '多级菜单',
@@ -684,6 +685,24 @@ const local: App.I18n.Schema = {
         iconType: {
           iconify: 'iconify图标',
           local: '本地图标'
+        }
+      },
+      buttons: {
+        title: '按钮列表',
+        add: '添加按钮',
+        edit: '编辑按钮',
+        name: '按钮名称',
+        code: '按钮编码',
+        description: '按钮描述',
+        status: '按钮状态',
+        create_time: '创建时间',
+        update_time: '更新时间',
+        form: {
+          keyword: '请输入按钮名称或编码',
+          name: '请输入按钮名称',
+          code: '请输入按钮编码',
+          description: '请输入按钮描述',
+          status: '请选择按钮状态'
         }
       }
     }
