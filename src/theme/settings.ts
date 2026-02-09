@@ -4,7 +4,7 @@ export const themeSettings: App.Theme.ThemeSetting = {
   grayscale: false,
   colourWeakness: false,
   recommendColor: false,
-  themeColor: '#646cff',
+  themeColor: '#1296db',
   themeRadius: 6,
   otherColor: {
     info: '#2080f0',
@@ -14,7 +14,7 @@ export const themeSettings: App.Theme.ThemeSetting = {
   },
   isInfoFollowPrimary: true,
   layout: {
-    mode: 'vertical',
+    mode: 'horizontal',
     scrollMode: 'content'
   },
   page: {
@@ -22,9 +22,9 @@ export const themeSettings: App.Theme.ThemeSetting = {
     animateMode: 'fade-slide'
   },
   header: {
-    height: 56,
+    height: 40,
     breadcrumb: {
-      visible: true,
+      visible: false,
       showIcon: true
     },
     multilingual: {
@@ -37,9 +37,9 @@ export const themeSettings: App.Theme.ThemeSetting = {
   tab: {
     visible: true,
     cache: true,
-    height: 44,
+    height: 32,
     mode: 'chrome',
-    closeTabByMiddleClick: false
+    closeTabByMiddleClick: true
   },
   fixedHeaderAndTab: true,
   sider: {
@@ -54,13 +54,13 @@ export const themeSettings: App.Theme.ThemeSetting = {
   footer: {
     visible: true,
     fixed: false,
-    height: 48,
+    height: 32,
     right: true
   },
   watermark: {
-    visible: false,
+    visible: true,
     text: 'SoybeanAdmin',
-    enableUserName: false,
+    enableUserName: true,
     enableTime: false,
     timeFormat: 'YYYY-MM-DD HH:mm'
   },

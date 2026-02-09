@@ -107,6 +107,10 @@ const local: App.I18n.Schema = {
         azir: {
           name: "Azir's Preset",
           desc: 'It is a cold and elegant preset that Azir likes'
+        },
+        dtp: {
+          name: 'dtp-runner-dev',
+          desc: 'dtp-runner-dev theme preset with balanced settings'
         }
       }
     },

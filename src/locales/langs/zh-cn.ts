@@ -107,6 +107,10 @@ const local: App.I18n.Schema = {
         azir: {
           name: 'Azir的预设',
           desc: '是 Azir 比较喜欢的莫兰迪色系冷淡风'
+        },
+        dtp: {
+          name: 'dtp-runner-dev',
+          desc: 'dtp-runner-dev 默认主题预设'
         }
       }
     },
