@@ -1,6 +1,6 @@
 {
-  "name": "dtp",
-  "desc": "dtp runner dev theme preset with balanced settings",
+  "name": "dtp-runner-dev",
+  "desc": "dtp-runner-dev theme preset with balanced settings",
   "i18nkey": "theme.appearance.preset.dtp",
   "version": "1.0.0",
   "themeScheme": "light",

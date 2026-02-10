@@ -59,7 +59,7 @@ export const themeSettings: App.Theme.ThemeSetting = {
   },
   watermark: {
     visible: true,
-    text: 'SoybeanAdmin',
+    text: 'dtp-runner-dev',
     enableUserName: true,
     enableTime: false,
     timeFormat: 'YYYY-MM-DD HH:mm'

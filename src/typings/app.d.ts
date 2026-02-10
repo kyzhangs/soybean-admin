@@ -816,7 +816,7 @@ declare namespace App {
       };
       form: {
         required: string;
-        userName: FormMsg;
+        username: FormMsg;
         phone: FormMsg;
         pwd: FormMsg;
         confirmPwd: FormMsg;
@@ -893,9 +893,9 @@ declare namespace App {
     /** The backend service response data */
     type Response<T = unknown> = {
       /** The backend service response code */
-      code: string;
+      code: number;
       /** The backend service response message */
-      msg: string;
+      message: string;
       /** The backend service response data */
       data: T;
     };
