@@ -64,6 +64,20 @@ const customRoutes: CustomRoute[] = [
     },
     children: [
       {
+        name: 'document_api',
+        path: '/document/api',
+        component: 'view.iframe-page',
+        props: {
+          url: 'http://localhost:9038'
+        },
+        meta: {
+          title: 'document_api',
+          i18nKey: 'route.document_api',
+          order: 1,
+          localIcon: 'logo'
+        }
+      },
+      {
         name: 'document_antd',
         path: '/document/antd',
         component: 'view.iframe-page',

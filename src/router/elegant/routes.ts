@@ -239,70 +239,6 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
-    name: 'manage',
-    path: '/manage',
-    component: 'layout.base',
-    meta: {
-      title: 'manage',
-      i18nKey: 'route.manage',
-      icon: 'carbon:cloud-service-management',
-      order: 9,
-      roles: ['R_ADMIN']
-    },
-    children: [
-      {
-        name: 'manage_menu',
-        path: '/manage/menu',
-        component: 'view.manage_menu',
-        meta: {
-          title: 'manage_menu',
-          i18nKey: 'route.manage_menu',
-          icon: 'material-symbols:route',
-          order: 3,
-          roles: ['R_ADMIN'],
-          keepAlive: true
-        }
-      },
-      {
-        name: 'manage_role',
-        path: '/manage/role',
-        component: 'view.manage_role',
-        meta: {
-          title: 'manage_role',
-          i18nKey: 'route.manage_role',
-          icon: 'carbon:user-role',
-          order: 2,
-          roles: ['R_SUPER']
-        }
-      },
-      {
-        name: 'manage_user',
-        path: '/manage/user',
-        component: 'view.manage_user',
-        meta: {
-          title: 'manage_user',
-          i18nKey: 'route.manage_user',
-          icon: 'ic:round-manage-accounts',
-          order: 1,
-          roles: ['R_ADMIN']
-        }
-      },
-      {
-        name: 'manage_user-detail',
-        path: '/manage/user-detail/:id',
-        component: 'view.manage_user-detail',
-        props: true,
-        meta: {
-          title: 'manage_user-detail',
-          i18nKey: 'route.manage_user-detail',
-          hideInMenu: true,
-          roles: ['R_ADMIN'],
-          activeMenu: 'manage_user'
-        }
-      }
-    ]
-  },
-  {
     name: 'multi-menu',
     path: '/multi-menu',
     component: 'layout.base',
@@ -692,13 +628,105 @@ export const generatedRoutes: GeneratedRoute[] = [
     ]
   },
   {
+    name: 'system-manage',
+    path: '/system-manage',
+    component: 'layout.base',
+    meta: {
+      title: 'system-manage',
+      i18nKey: 'route.system-manage',
+      icon: 'carbon:cloud-service-management',
+      order: 20
+    },
+    children: [
+      {
+        name: 'system-manage_apis',
+        path: '/system-manage/apis',
+        component: 'view.system-manage_apis',
+        meta: {
+          title: 'system-manage_apis',
+          i18nKey: 'route.system-manage_apis',
+          icon: 'ant-design:api-outlined',
+          order: 2050
+        }
+      },
+      {
+        name: 'system-manage_buttons',
+        path: '/system-manage/buttons',
+        component: 'view.system-manage_buttons',
+        meta: {
+          title: 'system-manage_buttons',
+          i18nKey: 'route.system-manage_buttons',
+          icon: 'line-md:lightbulb-twotone',
+          order: 2040
+        }
+      },
+      {
+        name: 'system-manage_menus',
+        path: '/system-manage/menus',
+        component: 'view.system-manage_menus',
+        meta: {
+          title: 'system-manage_menus',
+          i18nKey: 'route.system-manage_menus',
+          icon: 'material-symbols:route',
+          order: 2030
+        }
+      },
+      {
+        name: 'system-manage_permissions',
+        path: '/system-manage/permissions',
+        component: 'view.system-manage_permissions',
+        meta: {
+          title: 'system-manage_permissions',
+          i18nKey: 'route.system-manage_permissions',
+          icon: 'fad-lock',
+          hideInMenu: true,
+          activeMenu: 'system-manage_users'
+        }
+      },
+      {
+        name: 'system-manage_roles',
+        path: '/system-manage/roles',
+        component: 'view.system-manage_roles',
+        meta: {
+          title: 'system-manage_roles',
+          i18nKey: 'route.system-manage_roles',
+          icon: 'carbon-user-role',
+          order: 2020
+        }
+      },
+      {
+        name: 'system-manage_user-detail',
+        path: '/system-manage/user-detail/:id',
+        component: 'view.system-manage_user-detail',
+        meta: {
+          title: 'system-manage_user-detail',
+          i18nKey: 'route.system-manage_user-detail',
+          hideInMenu: true,
+          activeMenu: 'system-manage_users'
+        }
+      },
+      {
+        name: 'system-manage_users',
+        path: '/system-manage/users',
+        component: 'view.system-manage_users',
+        meta: {
+          title: 'system-manage_users',
+          i18nKey: 'route.system-manage_users',
+          icon: 'ic-round-manage-accounts',
+          order: 2010
+        }
+      }
+    ]
+  },
+  {
     name: 'user-center',
     path: '/user-center',
     component: 'layout.base$view.user-center',
     meta: {
       title: 'user-center',
       i18nKey: 'route.user-center',
-      hideInMenu: true
+      hideInMenu: true,
+      activeMenu: 'system-manage_users'
     }
   }
 ];

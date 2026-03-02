@@ -8,20 +8,20 @@ declare namespace Api {
     /** common params of paginating */
     interface PaginatingCommonParams {
       /** current page number */
-      current: number;
+      page: number;
       /** page size */
-      size: number;
+      page_size: number;
       /** total count */
       total: number;
     }
 
     /** common params of paginating query list data */
     interface PaginatingQueryRecord<T = any> extends PaginatingCommonParams {
-      records: T[];
+      rows: T[];
     }
 
     /** common search params of table */
-    type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>;
+    type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'page' | 'page_size'>;
 
     /**
      * enable status
@@ -35,16 +35,42 @@ declare namespace Api {
     type CommonRecord<T = any> = {
       /** record id */
       id: number;
-      /** record creator */
-      createBy: string;
       /** record create time */
-      createTime: string;
-      /** record updater */
-      updateBy: string;
+      create_time: string;
       /** record update time */
-      updateTime: string;
+      update_time: string;
       /** record status */
-      status: EnableStatus | null;
+      status: EnableStatus;
     } & T;
+
+    type BatchOperateType = 'ENABLE' | 'DISABLE' | 'DELETE' | 'RESET_PASSWORD';
+
+    /** batch operate params */
+    type BatchOperateParams = { operate: BatchOperateType; ids: number[] };
+
+    interface BatchError {
+      id: number;
+      error: string;
+    }
+
+    type BatchOperateOut = {
+      operate: BatchOperateType;
+      success: number[];
+      errors: BatchError[];
+      pass_rate: number;
+    };
+
+    /** batch operate config */
+    interface BatchConfig {
+      key: BatchOperateType;
+      label: string;
+      icon?: string;
+      needConfirm?: boolean;
+      title?: string;
+      content?: string;
+      type?: NaiveUI.ThemeColor;
+      confirmText?: string;
+      cancelText?: string;
+    }
   }
 }

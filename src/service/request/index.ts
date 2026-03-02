@@ -1,5 +1,6 @@
 import type { AxiosResponse } from 'axios';
 import { BACKEND_ERROR_CODE, createFlatRequest, createRequest } from '@sa/axios';
+import { stringify } from 'qs';
 import { useAuthStore } from '@/store/modules/auth';
 import { localStg } from '@/utils/storage';
 import { getServiceBaseURL } from '@/utils/service';
@@ -12,10 +13,8 @@ const { baseURL, otherBaseURL } = getServiceBaseURL(import.meta.env, isHttpProxy
 
 export const request = createFlatRequest(
   {
-    baseURL
-    // headers: {
-    //   apifoxToken: 'XL299LiMEDZ0H5h3A29PxwQXdMJqWyY2'
-    // }
+    baseURL,
+    paramsSerializer: params => stringify(params, { skipNulls: true })
   },
   {
     defaultState: {

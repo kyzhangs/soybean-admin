@@ -47,7 +47,22 @@ const local: App.I18n.Schema = {
     yesOrNo: {
       yes: '是',
       no: '否'
-    }
+    },
+    keyword: '关键字',
+    create_time: '创建时间',
+    update_time: '更新时间',
+    batchOperate: '批量操作',
+    batchEnable: '批量启用',
+    batchDisable: '批量禁用',
+    confirmBatchEnable: '确认批量启用吗?',
+    confirmBatchDisable: '确认批量禁用吗?',
+    batchOperateCompleted: '批量操作完成!',
+    enable: '启用',
+    confirmEnable: '确认启用吗？',
+    enableSuccess: '启用成功',
+    disable: '禁用',
+    confirmDisable: '确认禁用吗？',
+    disableSuccess: '禁用成功'
   },
   request: {
     logout: '请求失败后登出用户',
@@ -230,6 +245,7 @@ const local: App.I18n.Schema = {
     'iframe-page': '外链页面',
     home: '首页',
     document: '文档',
+    document_api: '接口文档',
     document_project: '项目文档',
     'document_project-link': '项目文档(外链)',
     document_video: '视频教程',
@@ -263,11 +279,14 @@ const local: App.I18n.Schema = {
     function_request: '请求',
     'function_toggle-auth': '切换权限',
     'function_super-page': '超级管理员可见',
-    manage: '系统管理',
-    manage_user: '用户管理',
-    'manage_user-detail': '用户详情',
-    manage_role: '角色管理',
-    manage_menu: '菜单管理',
+    'system-manage': '系统管理',
+    'system-manage_users': '用户管理',
+    'system-manage_user-detail': '用户详情',
+    'system-manage_roles': '角色管理',
+    'system-manage_menus': '菜单管理',
+    'system-manage_apis': '接口管理',
+    'system-manage_buttons': '按钮管理',
+    'system-manage_permissions': '权限管理',
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
     'multi-menu_first_child': '菜单一子菜单',
@@ -521,56 +540,95 @@ const local: App.I18n.Schema = {
         }
       }
     },
-    manage: {
+    'system-manage': {
       common: {
         status: {
           enable: '启用',
           disable: '禁用'
         }
       },
-      role: {
-        title: '角色列表',
-        roleName: '角色名称',
-        roleCode: '角色编码',
-        roleStatus: '角色状态',
-        roleDesc: '角色描述',
-        menuAuth: '菜单权限',
-        buttonAuth: '按钮权限',
-        form: {
-          roleName: '请输入角色名称',
-          roleCode: '请输入角色编码',
-          roleStatus: '请选择角色状态',
-          roleDesc: '请输入角色描述'
-        },
-        addRole: '新增角色',
-        editRole: '编辑角色'
-      },
-      user: {
+      users: {
         title: '用户列表',
-        userName: '用户名',
-        userGender: '性别',
-        nickName: '昵称',
-        userPhone: '手机号',
-        userEmail: '邮箱',
-        userStatus: '用户状态',
-        userRole: '用户角色',
-        form: {
-          userName: '请输入用户名',
-          userGender: '请选择性别',
-          nickName: '请输入昵称',
-          userPhone: '请输入手机号',
-          userEmail: '请输入邮箱',
-          userStatus: '请选择用户状态',
-          userRole: '请选择用户角色'
-        },
-        addUser: '新增用户',
-        editUser: '编辑用户',
-        gender: {
+        add: '新增用户',
+        edit: '编辑用户',
+        UserGender: {
           male: '男',
-          female: '女'
+          female: '女',
+          unknown: '未知'
+        },
+        username: '用户名',
+        gender: '性别',
+        name: '姓名',
+        phone: '手机号',
+        email: '邮箱',
+        is_active: '是否激活',
+        active_time: '激活时间: {active_time}',
+        last_login: '最近登录时间',
+        status: '用户状态',
+        roles: '用户角色',
+        contact: '联系方式',
+        batchResetPassword: '重置密码',
+        confirmBatchResetPassword: '确认重置密码吗?',
+        form: {
+          keyword: '请输入姓名或用户名',
+          contact: '请输入手机号或邮箱',
+          username: '请输入用户名',
+          gender: '请选择性别',
+          name: '请输入昵称',
+          phone: '请输入手机号',
+          email: '请输入邮箱',
+          is_active: '请选择激活状态',
+          status: '请选择用户状态',
+          roles: '请选择用户角色'
         }
       },
-      menu: {
+      roles: {
+        title: '角色列表',
+        add: '新增角色',
+        edit: '编辑角色',
+        permissions: '权限设置',
+        name: '角色名称',
+        code: '角色编码',
+        status: '角色状态',
+        description: '角色描述',
+        home: '角色主页',
+        form: {
+          keyword: '请输入角色名称或编码',
+          name: '请输入角色名称',
+          code: '请输入角色编码',
+          status: '请选择角色状态',
+          description: '请输入角色描述',
+          home: '请选择角色主页'
+        }
+      },
+      apis: {
+        title: '接口列表',
+        add: '添加接口',
+        edit: '编辑接口',
+        name: '接口名称',
+        summary: '接口摘要',
+        path: '接口路径',
+        method: '请求方法',
+        tags: '接口标签',
+        status: '接口状态',
+        description: '接口描述',
+        apiMethod: {
+          get: 'GET',
+          post: 'POST',
+          put: 'PUT',
+          patch: 'PATCH',
+          delete: 'DELETE'
+        },
+        syncApi: '同步接口',
+        confirmSyncApi: '确认同步接口吗？',
+        form: {
+          keyword: '请输入接口名称、摘要、路径或描述',
+          method: '请选择请求方法',
+          status: '请选择接口状态',
+          tags: '请选择接口标签'
+        }
+      },
+      menus: {
         home: '首页',
         title: '菜单列表',
         id: 'ID',
@@ -636,6 +694,22 @@ const local: App.I18n.Schema = {
         iconType: {
           iconify: 'iconify图标',
           local: '本地图标'
+        }
+      },
+      buttons: {
+        title: '按钮列表',
+        add: '添加按钮',
+        edit: '编辑按钮',
+        name: '按钮名称',
+        code: '按钮编码',
+        status: '按钮状态',
+        description: '按钮描述',
+        form: {
+          keyword: '请输入按钮名称、编码或描述',
+          name: '请输入按钮名称',
+          code: '请输入按钮编码',
+          status: '请选择按钮状态',
+          description: '请输入按钮描述'
         }
       }
     }

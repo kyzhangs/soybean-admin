@@ -47,7 +47,22 @@ const local: App.I18n.Schema = {
     yesOrNo: {
       yes: 'Yes',
       no: 'No'
-    }
+    },
+    keyword: 'Keyword',
+    create_time: 'Created At',
+    update_time: 'Updated At',
+    batchOperate: 'Batch Operate',
+    batchEnable: 'Batch Enable',
+    batchDisable: 'Batch Disable',
+    confirmBatchEnable: 'Confirm Batch Enable?',
+    confirmBatchDisable: 'Confirm Batch Disable?',
+    batchOperateCompleted: 'Batch Operate Completed!',
+    enable: 'Enable',
+    confirmEnable: 'Confirm Enable?',
+    enableSuccess: 'Enable Success',
+    disable: 'Disable',
+    confirmDisable: 'Confirm Batch Disable?',
+    disableSuccess: 'Disable Success'
   },
   request: {
     logout: 'Logout user after request failed',
@@ -234,6 +249,7 @@ const local: App.I18n.Schema = {
     'iframe-page': 'Iframe',
     home: 'Home',
     document: 'Document',
+    document_api: 'Api Document',
     document_project: 'Project Document',
     'document_project-link': 'Project Document(External Link)',
     document_video: 'Video Tutorial',
@@ -267,11 +283,14 @@ const local: App.I18n.Schema = {
     function_request: 'Request',
     'function_toggle-auth': 'Toggle Auth',
     'function_super-page': 'Super Admin Visible',
-    manage: 'System Manage',
-    manage_user: 'User Manage',
-    'manage_user-detail': 'User Detail',
-    manage_role: 'Role Manage',
-    manage_menu: 'Menu Manage',
+    'system-manage': 'System Manage',
+    'system-manage_users': 'User Manage',
+    'system-manage_user-detail': 'User Detail',
+    'system-manage_roles': 'Role Manage',
+    'system-manage_menus': 'Menu Manage',
+    'system-manage_apis': ' Api Manage',
+    'system-manage_buttons': 'Button Manage',
+    'system-manage_permissions': 'Permission Manage',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',
     'multi-menu_first_child': 'Menu One Child',
@@ -525,56 +544,95 @@ const local: App.I18n.Schema = {
         }
       }
     },
-    manage: {
+    'system-manage': {
       common: {
         status: {
           enable: 'Enable',
           disable: 'Disable'
         }
       },
-      role: {
-        title: 'Role List',
-        roleName: 'Role Name',
-        roleCode: 'Role Code',
-        roleStatus: 'Role Status',
-        roleDesc: 'Role Description',
-        menuAuth: 'Menu Auth',
-        buttonAuth: 'Button Auth',
-        form: {
-          roleName: 'Please enter role name',
-          roleCode: 'Please enter role code',
-          roleStatus: 'Please select role status',
-          roleDesc: 'Please enter role description'
-        },
-        addRole: 'Add Role',
-        editRole: 'Edit Role'
-      },
-      user: {
+      users: {
         title: 'User List',
-        userName: 'User Name',
-        userGender: 'Gender',
-        nickName: 'Nick Name',
-        userPhone: 'Phone Number',
-        userEmail: 'Email',
-        userStatus: 'User Status',
-        userRole: 'User Role',
-        form: {
-          userName: 'Please enter user name',
-          userGender: 'Please select gender',
-          nickName: 'Please enter nick name',
-          userPhone: 'Please enter phone number',
-          userEmail: 'Please enter email',
-          userStatus: 'Please select user status',
-          userRole: 'Please select user role'
-        },
-        addUser: 'Add User',
-        editUser: 'Edit User',
-        gender: {
+        add: 'Add User',
+        edit: 'Edit User',
+        UserGender: {
           male: 'Male',
-          female: 'Female'
+          female: 'Female',
+          unknown: 'Unknown'
+        },
+        username: 'Username',
+        name: 'Name',
+        gender: 'Gender',
+        phone: 'Phone Number',
+        email: 'Email',
+        is_active: 'Is Active',
+        active_time: 'Active Time: {active_time}',
+        last_login: 'Last Login At',
+        status: 'User Status',
+        roles: 'User Role',
+        contact: 'User Contact',
+        batchResetPassword: 'Batch Reset Password',
+        confirmBatchResetPassword: 'Confirm Batch Reset Password?',
+        form: {
+          keyword: 'Please enter name or username',
+          contact: 'Please enter phone or email',
+          username: 'Please enter username',
+          gender: 'Please select gender',
+          name: 'Please enter nick name',
+          phone: 'Please enter phone number',
+          email: 'Please enter email',
+          is_active: 'Please select user active status',
+          status: 'Please select user status',
+          roles: 'Please select user role'
         }
       },
-      menu: {
+      roles: {
+        title: 'Role List',
+        add: 'Add Role',
+        edit: 'Edit Role',
+        name: 'Role Name',
+        code: 'Role Code',
+        status: 'Role Status',
+        description: 'Role Description',
+        home: 'Role Home',
+        permissions: 'Permissions Settings',
+        form: {
+          keyword: 'Please enter role name or code',
+          name: 'Please enter role name',
+          code: 'Please enter role code',
+          status: 'Please select role status',
+          description: 'Please enter role description',
+          home: 'Please select role home'
+        }
+      },
+      apis: {
+        title: 'Api List',
+        add: 'Add Api',
+        edit: 'Edit Api',
+        name: 'Api Name',
+        summary: 'Api Summary',
+        path: 'Api Path',
+        method: 'Api Method',
+        tags: 'Api Tags',
+        status: 'Api Status',
+        description: 'Api Description',
+        apiMethod: {
+          get: 'GET',
+          post: 'POST',
+          put: 'PUT',
+          patch: 'PATCH',
+          delete: 'DELETE'
+        },
+        syncApi: 'Sync Api',
+        confirmSyncApi: 'Confirm Sync Api',
+        form: {
+          keyword: 'Please enter api name,summary,path or description',
+          method: 'Please select api method',
+          status: 'Please select api status',
+          tags: 'Please select api tags'
+        }
+      },
+      menus: {
         home: 'Home',
         title: 'Menu List',
         id: 'ID',
@@ -640,6 +698,22 @@ const local: App.I18n.Schema = {
         iconType: {
           iconify: 'Iconify Icon',
           local: 'Local Icon'
+        }
+      },
+      buttons: {
+        title: 'Button List',
+        add: 'Add Button',
+        edit: 'Edit Button',
+        name: 'Button Name',
+        code: 'Button Code',
+        status: 'Button Status',
+        description: 'Button Description',
+        form: {
+          keyword: 'Please enter button name, code or description',
+          name: 'Please enter button name',
+          code: 'Please enter button code',
+          status: 'Please select button status',
+          description: 'Please enter button description'
         }
       }
     }
