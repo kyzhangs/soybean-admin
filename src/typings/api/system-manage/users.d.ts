@@ -36,6 +36,8 @@ declare namespace Api {
         active_time: string;
         /** last login at */
         last_login: string;
+        /** avatar */
+        avatar: string;
       }> & {
         roles: string[];
       };
