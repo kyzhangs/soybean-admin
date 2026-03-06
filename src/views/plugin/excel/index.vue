@@ -3,64 +3,59 @@ import { reactive } from 'vue';
 import { NButton, NTag } from 'naive-ui';
 import { utils, writeFile } from 'xlsx';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
-import { fetchGetUserPageList } from '@/service/api';
+import { yesOrNoRecord } from '@/constants/common';
 import { useAppStore } from '@/store/modules/app';
 import { isTableColumnHasKey, useNaiveTable } from '@/hooks/common/table';
+import { getTableIndex } from '@/utils/common';
+import { fetchGetUserPageList } from '@/service-alova/api';
 import { $t } from '@/locales';
 
 const appStore = useAppStore();
 
 const searchParams: Api.SystemManage.UserSearchParams = reactive({
-  current: 1,
-  size: 999,
-  status: null,
-  userName: null,
-  userGender: null,
-  nickName: null,
-  userPhone: null,
-  userEmail: null
+  page: 1,
+  page_size: 100
 });
 
 const { columns, data, loading } = useNaiveTable({
   api: () => fetchGetUserPageList(searchParams),
-  transform: response => {
-    const { data: list, error } = response;
-
-    if (!error) {
-      return list.rows;
-    }
-
-    return [];
-  },
+  transform: response => response.rows,
   columns: () => [
     {
       type: 'selection',
       align: 'center',
-      width: 48
+      width: 48,
+      disabled: row => row.is_superuser
     },
     {
       key: 'index',
       title: $t('common.index'),
       align: 'center',
       width: 64,
-      render: (_, index) => index + 1
+      render: (_, index) => getTableIndex(index, searchParams)
     },
     {
-      key: 'userName',
+      key: 'username',
       title: $t('page.system-manage.users.username'),
       align: 'center',
       minWidth: 100
     },
     {
-      key: 'userGender',
+      key: 'name',
+      title: $t('page.system-manage.users.name'),
+      align: 'center',
+      minWidth: 100
+    },
+    {
+      key: 'gender',
       title: $t('page.system-manage.users.gender'),
       align: 'center',
       width: 100,
       render: row => {
         const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
-          1: 'primary',
-          2: 'error',
-          3: 'default'
+          '1': 'primary',
+          '2': 'error',
+          '3': 'default'
         };
 
         const label = $t(userGenderRecord[row.gender]);
@@ -69,20 +64,49 @@ const { columns, data, loading } = useNaiveTable({
       }
     },
     {
-      key: 'nickName',
-      title: $t('page.system-manage.users.name'),
-      align: 'center',
-      minWidth: 100
-    },
-    {
-      key: 'userPhone',
+      key: 'phone',
       title: $t('page.system-manage.users.phone'),
       align: 'center',
       width: 120
     },
     {
-      key: 'userEmail',
+      key: 'email',
       title: $t('page.system-manage.users.email'),
+      align: 'center',
+      minWidth: 200
+    },
+    {
+      key: 'is_active',
+      title: $t('page.system-manage.users.is_active'),
+      align: 'center',
+      minWidth: 200,
+      render: row => {
+        const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
+          Y: 'primary',
+          N: 'error'
+        };
+
+        const value = row.is_active ? 'Y' : 'N';
+        const label = $t(yesOrNoRecord[value]);
+
+        const tag = <NTag type={tagMap[value]}>{label}</NTag>;
+
+        if (row.is_active && row.active_time) {
+          return (
+            <NTooltip>
+              {{
+                default: () => $t('page.system-manage.users.active_time', { active_time: row.active_time }),
+                trigger: () => tag
+              }}
+            </NTooltip>
+          );
+        }
+        return tag;
+      }
+    },
+    {
+      key: 'last_login',
+      title: $t('page.system-manage.users.last_login'),
       align: 'center',
       minWidth: 200
     },
@@ -134,7 +158,7 @@ function getTableValue(col: NaiveUI.TableColumn<Api.SystemManage.User>, item: Ap
 
   const { key } = col;
 
-  if (key === 'userRoles') {
+  if (key === 'roles') {
     return item.roles.map(role => role).join(',');
   }
 
@@ -142,7 +166,7 @@ function getTableValue(col: NaiveUI.TableColumn<Api.SystemManage.User>, item: Ap
     return (item.status && $t(enableStatusRecord[item.status])) || null;
   }
 
-  if (key === 'userGender') {
+  if (key === 'gender') {
     return (item.gender && $t(userGenderRecord[item.gender])) || null;
   }
 
@@ -164,7 +188,7 @@ function isTableColumnHasTitle<T>(column: NaiveUI.TableColumn<T>): column is Nai
         <NSpace align="end" wrap justify="end" class="lt-sm:w-200px">
           <NButton size="small" ghost type="primary" @click="exportExcel">
             <template #icon>
-              <icon-file-icons:microsoft-excel class="text-icon" />
+              <icon-file-icons-microsoft-excel class="text-icon" />
             </template>
             导出excel
           </NButton>

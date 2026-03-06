@@ -2,7 +2,7 @@ import { alova } from '../request';
 
 /** get role list */
 export function fetchGetRoleList(params?: Api.SystemManage.RoleSearchParams) {
-  return alova.Get<Api.SystemManage.RolePageList>('/systemManage/getRoleList', { params });
+  return alova.Get<Api.SystemManage.RolePageList>('/system-manage/roles', { params });
 }
 
 /**
@@ -11,23 +11,23 @@ export function fetchGetRoleList(params?: Api.SystemManage.RoleSearchParams) {
  * these roles are all enabled
  */
 export function fetchGetAllRoles() {
-  return alova.Get<Api.SystemManage.Role[]>('/systemManage/getAllRoles');
+  return alova.Get<Api.SystemManage.Role[]>('/system-manage/roles/enable');
 }
 
-/** get user list */
-export function fetchGetUserList(params?: Api.SystemManage.UserSearchParams) {
-  return alova.Get<Api.SystemManage.UserPageList>('/systemManage/getUserList', { params });
+/** get user page list */
+export function fetchGetUserPageList(params: Api.SystemManage.UserSearchParams) {
+  return alova.Get<Api.SystemManage.UserPageList>('/system-manage/users', { params });
 }
 
 export type UserModel = Pick<Api.SystemManage.User, 'username' | 'gender' | 'name' | 'phone' | 'email' | 'status'>;
 /** add user */
 export function addUser(data: UserModel) {
-  return alova.Post<null>('/systemManage/addUser', data);
+  return alova.Post<null>('/system-manage/users', data);
 }
 
 /** update user */
 export function updateUser(data: UserModel) {
-  return alova.Post<null>('/systemManage/updateUser', data);
+  return alova.Post<null>('/system-manage/users', data);
 }
 
 /** delete user */
