@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { yesOrNoRecord } from '@/constants/common';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
@@ -13,7 +13,7 @@ import UserSearch from './modules/user-search.vue';
 
 const appStore = useAppStore();
 
-const searchParams: Api.SystemManage.UserSearchParams = reactive({
+const searchParams = ref<Api.SystemManage.UserSearchParams>({
   page: 1,
   page_size: 10,
   keyword: null,
@@ -24,11 +24,11 @@ const searchParams: Api.SystemManage.UserSearchParams = reactive({
 });
 
 const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination } = useNaivePaginatedTable({
-  api: () => fetchGetUserPageList(searchParams),
+  api: () => fetchGetUserPageList(searchParams.value),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
-    searchParams.page = params.page;
-    searchParams.page_size = params.pageSize;
+    searchParams.value.page = params.page;
+    searchParams.value.page_size = params.pageSize;
   },
   columns: () => [
     {
@@ -42,7 +42,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       title: $t('common.index'),
       align: 'center',
       width: 64,
-      render: (_, index) => getTableIndex(index, searchParams)
+      render: (_, index) => getTableIndex(index, searchParams.value)
     },
     {
       key: 'username',
