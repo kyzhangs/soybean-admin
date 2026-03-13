@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
 import { fetchBatchOperateRole, fetchDeleteRole, fetchGetEnabledMenus, fetchGetRolePageList } from '@/service/api';
@@ -16,11 +16,10 @@ const appStore = useAppStore();
 const tabStore = useTabStore();
 const { routerPushByKey } = useRouterPush();
 
-const searchParams: Api.SystemManage.RoleSearchParams = reactive({
+const searchParams = ref<Api.SystemManage.RoleSearchParams>({
   page: 1,
   page_size: 10,
   keyword: null,
-  code: null,
   status: null
 });
 
@@ -41,11 +40,11 @@ async function handleClickPermission(code: string) {
 }
 
 const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
-  api: () => fetchGetRolePageList(searchParams),
+  api: () => fetchGetRolePageList(searchParams.value),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
-    searchParams.page = params.page;
-    searchParams.page_size = params.pageSize;
+    searchParams.value.page = params.page;
+    searchParams.value.page_size = params.pageSize;
   },
   columns: () => [
     {
@@ -58,7 +57,7 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       title: $t('common.index'),
       width: 64,
       align: 'center',
-      render: (_, index) => getTableIndex(index, searchParams)
+      render: (_, index) => getTableIndex(index, searchParams.value)
     },
     {
       key: 'name',

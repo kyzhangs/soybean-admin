@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { reactive } from 'vue';
+import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag, NTooltip } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
 import { fetchBatchOperateApi, fetchGetApiPageList, fetchSyncApi, fetchUpdateApi } from '@/service/api';
@@ -13,7 +13,7 @@ import ApiSearch from './modules/api-search.vue';
 const appStore = useAppStore();
 const { hasAuth } = useAuth();
 
-const searchParams: Api.SystemManage.ApiSearchParams = reactive({
+const searchParams = ref<Api.SystemManage.ApiSearchParams>({
   page: 1,
   page_size: 10,
   keyword: null,
@@ -21,11 +21,11 @@ const searchParams: Api.SystemManage.ApiSearchParams = reactive({
 });
 
 const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
-  api: () => fetchGetApiPageList(searchParams),
+  api: () => fetchGetApiPageList(searchParams.value),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
-    searchParams.page = params.page;
-    searchParams.page_size = params.pageSize;
+    searchParams.value.page = params.page;
+    searchParams.value.page_size = params.pageSize;
   },
   columns: () => [
     {
@@ -38,7 +38,7 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       title: $t('common.index'),
       width: 64,
       align: 'center',
-      render: (_, index) => getTableIndex(index, searchParams)
+      render: (_, index) => getTableIndex(index, searchParams.value)
     },
     {
       key: 'summary',
