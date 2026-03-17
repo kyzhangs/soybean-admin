@@ -1,53 +1,46 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useThemeVars } from 'naive-ui';
 import { $t } from '@/locales';
+import { renderIcon } from '@/utils/common';
 
 defineOptions({
-  name: 'TableBatchOperation'
+  name: 'BatchOperation'
 });
 
+const themeVars = useThemeVars();
+
 interface Props {
-  disabledOperate?: boolean;
-  loading?: boolean;
-  /** 是否显示添加按钮 */
-  showAdd?: boolean;
-  /** 批量操作配置数组；如果不传则使用内置默认配置 */
+  disabled: boolean;
   batchConfigs?: Api.Common.BatchConfig[];
-  /** 指定默认批量操作类型；如果不传则使用全部 */
   defaultBatchKeys?: Array<Api.Common.BatchOperateType>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  showAdd: true,
   batchConfigs: undefined,
   defaultBatchKeys: () => ['ENABLE', 'DISABLE', 'DELETE'] as Array<Api.Common.BatchOperateType>
 });
 
-const emit = defineEmits<{
-  (e: 'add'): void;
-  (e: 'refresh'): void;
-  /** 统一的批量操作事件，参数为 BatchOperateType */
-  (e: 'batch', action: Api.Common.BatchOperateType): void;
-}>();
+interface Emits {
+  (e: 'batch', key: Api.Common.BatchOperateType): void;
+}
 
-const columns = defineModel<NaiveUI.TableColumnCheck[]>('columns', {
-  default: () => []
-});
+const emit = defineEmits<Emits>();
 
 const defaultBatchConfigs: Api.Common.BatchConfig[] = [
   {
     label: $t('common.batchEnable'),
     key: 'ENABLE',
-    icon: 'icon-ic-round-check-circle',
+    icon: renderIcon('ic:round-check-circle-outline', themeVars.value.successColor),
     needConfirm: true,
     title: $t('common.batchEnable'),
     content: $t('common.confirmBatchEnable'),
-    type: 'primary'
+    type: 'success'
   },
   {
     label: $t('common.batchDisable'),
     key: 'DISABLE',
-    icon: 'icon-ic-round-block',
+    icon: renderIcon('ic:round-block', themeVars.value.warningColor),
     needConfirm: true,
     title: $t('common.batchDisable'),
     content: $t('common.confirmBatchDisable'),
@@ -56,7 +49,7 @@ const defaultBatchConfigs: Api.Common.BatchConfig[] = [
   {
     label: $t('common.batchDelete'),
     key: 'DELETE',
-    icon: 'icon-ic-round-delete',
+    icon: renderIcon('ic:round-delete-outline', themeVars.value.errorColor),
     needConfirm: true,
     title: $t('common.batchDelete'),
     content: $t('common.confirmDelete'),
@@ -79,26 +72,13 @@ const batchOptions = computed(() =>
   effectiveBatchConfigs.value.map(item => {
     return {
       label: item.label,
-      key: item.key
-      // icon: () =>
-      //   h(
-      //     NIcon,
-      //     null,
-      //     { default: () => h(item.icon as any) } // 这里直接用全局组件名，比如 'icon-ic-round-check-circle'
-      //   )
+      key: item.key,
+      icon: item.icon
     };
   })
 );
 
-function add() {
-  emit('add');
-}
-
-function refresh() {
-  emit('refresh');
-}
-
-function handleBatchSelect(key: string | number) {
+function handleSelect(key: string) {
   const action = String(key) as Api.Common.BatchOperateType;
   const config = effectiveBatchConfigs.value.find(item => item.key === action);
 
@@ -107,7 +87,14 @@ function handleBatchSelect(key: string | number) {
     return;
   }
 
-  window.$dialog?.warning({
+  const dialogMethodMap: Record<string, keyof NonNullable<typeof window.$dialog>> = {
+    error: 'error',
+    warning: 'warning',
+    info: 'info',
+    success: 'success'
+  };
+  const dialogMethod = dialogMethodMap[config.type ?? ''] ?? 'warning';
+  window.$dialog?.[dialogMethod]({
     title: config.title,
     content: config.content,
     positiveText: config.confirmText ?? $t('common.confirm'),
@@ -120,16 +107,9 @@ function handleBatchSelect(key: string | number) {
 
 <template>
   <NSpace wrap justify="end" class="lt-sm:w-200px">
-    <slot name="prefix"></slot>
     <slot name="default">
-      <NButton v-if="showAdd" size="small" ghost type="primary" @click="add">
-        <template #icon>
-          <icon-ic-round-plus class="text-icon" />
-        </template>
-        {{ $t('common.add') }}
-      </NButton>
-      <NDropdown :options="batchOptions" :disabled="disabledOperate" @select="handleBatchSelect">
-        <NButton size="small" type="default" :disabled="disabledOperate">
+      <NDropdown :options="batchOptions" :disabled="props.disabled" @select="handleSelect">
+        <NButton size="small" type="default" :disabled="props.disabled">
           <template #icon>
             <icon-ic-round-more-vert class="text-icon" />
           </template>
@@ -137,14 +117,6 @@ function handleBatchSelect(key: string | number) {
         </NButton>
       </NDropdown>
     </slot>
-    <NButton size="small" @click="refresh">
-      <template #icon>
-        <icon-mdi-refresh class="text-icon" :class="{ 'animate-spin': loading }" />
-      </template>
-      {{ $t('common.refresh') }}
-    </NButton>
-    <TableColumnSetting v-model:columns="columns" />
-    <slot name="suffix"></slot>
   </NSpace>
 </template>
 

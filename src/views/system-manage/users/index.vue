@@ -6,7 +6,7 @@ import { enableStatusRecord, userGenderRecord } from '@/constants/business';
 import { fetchBatchOperateUser, fetchDeleteUser, fetchGetUserPageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
-import { getTableIndex } from '@/utils/common';
+import { getTableIndex, renderIcon } from '@/utils/common';
 import { $t } from '@/locales';
 import UserOperateModal from './modules/user-operate-modal.vue';
 import UserSearch from './modules/user-search.vue';
@@ -177,11 +177,11 @@ const {
 const RESET_PASSWORD = ref<Api.Common.BatchConfig>({
   label: $t('page.system-manage.users.batchResetPassword'),
   key: 'RESET_PASSWORD',
-  icon: 'icon-ic-round-check-circle',
+  icon: renderIcon('fad:redo'),
   needConfirm: true,
   title: $t('page.system-manage.users.batchResetPassword'),
   content: $t('page.system-manage.users.confirmBatchResetPassword'),
-  type: 'primary'
+  type: 'info'
 });
 
 async function handleBatchOperate(operate: Api.Common.BatchOperateType) {
@@ -216,9 +216,9 @@ function edit(id: number) {
       class="card-wrapper sm:flex-1-hidden"
     >
       <template #header-extra>
-        <TableBatchOperation
+        <TableHeaderOperation
           v-model:columns="columnChecks"
-          :disabled-operate="checkedRowKeys.length === 0"
+          :disabled-batch-operate="checkedRowKeys.length === 0"
           :loading="loading"
           :batch-configs="[RESET_PASSWORD]"
           @add="handleAdd"

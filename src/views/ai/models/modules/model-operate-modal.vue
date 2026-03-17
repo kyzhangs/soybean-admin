@@ -1,32 +1,31 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { jsonClone } from '@sa/utils';
-import { enableStatusOptions } from '@/constants/business';
-import { fetchCreateRole, fetchUpdateRole } from '@/service/api';
+import { fetchCreateLLMModel, fetchUpdateLLMModel } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
+import { enableStatusOptions } from '@/constants/business';
 import { $t } from '@/locales';
 
 defineOptions({
-  name: 'RoleOperateModal'
+  name: 'LLMModelOperateModal'
 });
 
 interface Props {
   /** the type of operation */
   operateType: NaiveUI.TableOperateType;
   /** the edit row data */
-  rowData: Api.SystemManage.Role | null;
-  menuOptions: CommonType.Option[];
+  rowData: Api.AI.LLMModel | null;
+  providerOptions: CommonType.Option[];
 }
 
 const props = defineProps<Props>();
+
+const llmModelId = computed(() => props.rowData?.id ?? 0);
 
 interface Emits {
   (e: 'submitted'): void;
 }
 
 const emit = defineEmits<Emits>();
-
-const roleId = computed(() => props.rowData?.id ?? 0);
 
 const visible = defineModel<boolean>('visible', {
   default: false
@@ -37,42 +36,66 @@ const { defaultRequiredRule } = useFormRules();
 
 const title = computed(() => {
   const titles: Record<NaiveUI.TableOperateType, string> = {
-    add: $t('page.system-manage.roles.add'),
-    edit: $t('page.system-manage.roles.edit')
+    add: $t('page.ai.models.add'),
+    edit: $t('page.ai.models.edit')
   };
   return titles[props.operateType];
 });
 
-type Model = Api.SystemManage.RoleCreateParams;
+type Model = Api.AI.LLMModelCreateParams;
 
-const model = ref(createDefaultModel());
+const model = ref<Model>(createDefaultModel());
 
 function createDefaultModel(): Model {
   return {
     name: '',
-    code: '',
+    model: '',
     description: null,
-    home: 'home',
+    provider_id: null,
     status: '1'
   };
 }
 
-type RuleKey = Exclude<keyof Model, 'id' | 'description'>;
+type RuleKey = Extract<keyof Model, 'name' | 'model' | 'provider_id'>;
 
 const rules: Record<RuleKey, App.Global.FormRule> = {
   name: defaultRequiredRule,
-  code: defaultRequiredRule,
-  status: defaultRequiredRule,
-  home: defaultRequiredRule
+  model: defaultRequiredRule,
+  provider_id: defaultRequiredRule
 };
 
 const isEdit = computed(() => props.operateType === 'edit');
 
+const isNameManual = ref({
+  is_edit: false,
+  is_clear: false
+});
+
+const handleNameUpdate = (value: string) => {
+  if (!isEdit.value && !isNameManual.value.is_edit) {
+    model.value.model = value;
+  }
+};
+
+const handleModelUpdate = (value: string) => {
+  // 当用户手动编辑 name 时，设置手动编辑标记
+  if (value || isNameManual.value.is_clear) {
+    isNameManual.value.is_edit = true;
+  } else {
+    isNameManual.value.is_edit = false;
+  }
+  model.value.model = value;
+};
+
 function handleInitModel() {
   model.value = createDefaultModel();
 
-  if (props.operateType === 'edit' && props.rowData) {
-    Object.assign(model.value, jsonClone(props.rowData));
+  // 重置手动编辑状态
+  isNameManual.value.is_edit = false;
+  isNameManual.value.is_clear = false;
+
+  if (isEdit.value && props.rowData) {
+    Object.assign(model.value, props.rowData);
   }
 }
 
@@ -83,14 +106,14 @@ function closeModal() {
 async function handleSubmit() {
   await validate();
   if (!isEdit.value) {
-    const { error } = await fetchCreateRole(model.value);
+    const { error } = await fetchCreateLLMModel(model.value);
     if (!error) {
       window.$message?.success($t('common.addSuccess'));
       closeModal();
       emit('submitted');
     }
   } else {
-    const { error } = await fetchUpdateRole(roleId.value, model.value);
+    const { error } = await fetchUpdateLLMModel(llmModelId.value, model.value);
     if (!error) {
       window.$message?.success($t('common.updateSuccess'));
       closeModal();
@@ -111,52 +134,53 @@ watch(visible, () => {
   <NModal v-model:show="visible" :title="title" preset="card" :mask-closable="false" class="min-w-450px w-450px">
     <NForm ref="formRef" :model="model" :rules="rules" class="w-full pt-5px">
       <NGrid responsive="screen" item-responsive>
-        <NFormItemGi span="12" :label="$t('page.system-manage.roles.name')" path="name" class="pr-12px">
+        <NFormItemGi span="12" :label="$t('page.ai.models.name')" path="name" class="pr-10px">
           <NInput
             v-model:value="model.name"
-            :placeholder="$t('page.system-manage.roles.form.name')"
+            :placeholder="$t('page.ai.models.form.name')"
             show-count
             :maxlength="16"
-          />
-        </NFormItemGi>
-        <NFormItemGi span="12" :label="$t('page.system-manage.roles.code')" path="code" class="pl-12px">
-          <NInput
-            v-model:value="model.code"
-            :placeholder="$t('page.system-manage.roles.form.code')"
-            :disabled="isEdit"
-            show-count
-            :maxlength="14"
-          >
-            <template v-if="!isEdit" #prefix>
-              <span class="role-code-prefix">R_</span>
-            </template>
-          </NInput>
-        </NFormItemGi>
-
-        <NFormItemGi span="12" :label="$t('page.system-manage.roles.home')" path="home">
-          <NSelect
-            v-model:value="model.home"
-            :options="props.menuOptions"
-            :placeholder="$t('page.system-manage.roles.form.home')"
-            size="small"
-            class="pr-12px"
             clearable
+            @update:value="handleNameUpdate"
           />
         </NFormItemGi>
 
-        <NFormItemGi span="12" :label="$t('page.system-manage.roles.status')" path="status" class="pl-12px">
+        <NFormItemGi span="12" :label="$t('page.ai.models.model')" path="model" class="pl-10px">
+          <NInput
+            v-model:value="model.model"
+            :placeholder="$t('page.ai.models.form.model')"
+            show-count
+            :maxlength="16"
+            clearable
+            :disabled="isEdit"
+            @clear="isNameManual.is_clear = true"
+            @update:value="handleModelUpdate"
+          />
+        </NFormItemGi>
+
+        <NFormItemGi span="12" :label="$t('page.ai.models.provider')" path="provider_id" class="pr-10px">
+          <NSelect
+            v-model:value="model.provider_id"
+            :placeholder="$t('page.ai.models.form.provider')"
+            :options="providerOptions"
+          />
+        </NFormItemGi>
+
+        <NFormItemGi :span="12" :label="$t('page.ai.models.status')" path="status" class="pl-10px">
           <NRadioGroup v-model:value="model.status">
             <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
         </NFormItemGi>
-        <NFormItemGi span="24" :label="$t('page.system-manage.roles.description')" path="description">
+
+        <NFormItemGi span="24" :label="$t('page.ai.models.description')" path="description">
           <NInput
             v-model:value="model.description"
-            :placeholder="$t('page.system-manage.roles.form.description')"
+            :placeholder="$t('page.ai.models.form.description')"
             type="textarea"
             :autosize="{ minRows: 3, maxRows: 4 }"
-            maxlength="255"
+            clearable
             show-count
+            :maxlength="255"
           />
         </NFormItemGi>
       </NGrid>
@@ -171,8 +195,4 @@ watch(visible, () => {
   </NModal>
 </template>
 
-<style scoped>
-.role-code-prefix {
-  color: var(--n-placeholder-color);
-}
-</style>
+<style scoped></style>

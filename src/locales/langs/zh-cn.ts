@@ -321,7 +321,9 @@ const local: App.I18n.Schema = {
     plugin_gantt_vtable: 'VTableGantt',
     plugin_typeit: '打字机',
     plugin_tables: '表格',
-    plugin_tables_vtable: 'VTable'
+    plugin_tables_vtable: 'VTable',
+    ai: 'AI',
+    ai_models: '模型管理'
   },
   page: {
     login: {
@@ -386,7 +388,7 @@ const local: App.I18n.Schema = {
     home: {
       branchDesc:
         '为了方便大家开发和更新合并，我们对main分支的代码进行了精简，只保留了首页菜单，其余内容已移至example分支进行维护。预览地址显示的内容即为example分支的内容。',
-      greeting: '早安，{username}, 今天又是充满活力的一天!',
+      greeting: '早安, {username}, 今天又是充满活力的一天!',
       weatherDesc: '今日多云转晴，20℃ - 25℃!',
       projectCount: '项目数',
       todo: '待办',
@@ -711,6 +713,44 @@ const local: App.I18n.Schema = {
           code: '请输入按钮编码',
           status: '请选择按钮状态',
           description: '请输入按钮描述'
+        }
+      }
+    },
+    ai: {
+      models: {
+        title: '模型列表',
+        add: '新增模型',
+        edit: '编辑模型',
+        name: '模型名称',
+        model: '模型',
+        status: '模型状态',
+        description: '模型描述',
+        provider: '模型供应商',
+        providerManage: '供应商管理',
+        form: {
+          keyword: '请输入模型名称',
+          name: '请输入模型名称',
+          model: '请输入模型',
+          status: '请选择模型状态',
+          description: '请输入模型描述',
+          provider: '请选择模型厂商'
+        }
+      },
+      providers: {
+        title: '供应商列表',
+        add: '新增供应商',
+        edit: '编辑供应商',
+        name: '供应商名称',
+        baseUrl: 'Base URL',
+        apiKey: 'API Key',
+        status: '供应商状态',
+        description: '供应商描述',
+        form: {
+          name: '请输入供应商名称',
+          baseUrl: '请输入 Base URL',
+          apiKey: '请输入 API Key',
+          description: '请输入供应商描述',
+          status: '请选择供应商状态'
         }
       }
     }

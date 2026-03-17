@@ -325,7 +325,9 @@ const local: App.I18n.Schema = {
     plugin_gantt_vtable: 'VTableGantt',
     plugin_typeit: 'Typeit',
     plugin_tables: 'Tables',
-    plugin_tables_vtable: 'VTable'
+    plugin_tables_vtable: 'VTable',
+    ai: 'AI',
+    ai_models: 'Models Manage'
   },
   page: {
     login: {
@@ -715,6 +717,44 @@ const local: App.I18n.Schema = {
           code: 'Please enter button code',
           status: 'Please select button status',
           description: 'Please enter button description'
+        }
+      }
+    },
+    ai: {
+      models: {
+        title: 'Model List',
+        add: 'Add Model',
+        edit: 'Edit Model',
+        name: 'Model Name',
+        model: 'Model',
+        status: 'Model Status',
+        description: 'Model Description',
+        provider: 'Model Provider',
+        providerManage: 'Provider Manage',
+        form: {
+          keyword: 'Please enter model name',
+          name: 'Please enter model name',
+          model: 'Please enter model',
+          status: 'Please select model status',
+          description: 'Please enter model description',
+          provider: 'Please select model provider'
+        }
+      },
+      providers: {
+        title: 'Provider List',
+        add: 'Add Provider',
+        edit: 'Edit Provider',
+        name: 'Provider Name',
+        baseUrl: 'Base URL',
+        apiKey: 'API Key',
+        status: 'Status',
+        description: 'Description',
+        form: {
+          name: 'Please enter provider name',
+          baseUrl: 'Please enter Base URL',
+          apiKey: 'Please enter API Key',
+          status: 'Please select status',
+          description: 'Please enter description'
         }
       }
     }

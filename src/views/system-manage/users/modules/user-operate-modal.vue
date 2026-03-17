@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { enableStatusOptions, userGenderOptions } from '@/constants/business';
-import { fetchCreateUser, fetchGetEnabledRoles, fetchUpdateUser } from '@/service/api';
+import { fetchCreateUser, fetchGetRoleOptions, fetchUpdateUser } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 
@@ -111,10 +111,10 @@ const handleNameUpdate = (value: string) => {
 };
 
 /** the enabled role options */
-const roleOptions = ref<CommonType.Option<string, string>[]>([]);
+const roleOptions = ref<CommonType.Option[]>([]);
 
 async function getRoleOptions() {
-  const { error, data } = await fetchGetEnabledRoles();
+  const { error, data } = await fetchGetRoleOptions();
   if (!error && data) {
     roleOptions.value = data;
   }

@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import type { SelectOption } from 'naive-ui';
 import { enableStatusOptions, menuIconTypeOptions, menuTypeOptions } from '@/constants/business';
-import { fetchGetEnabledMenus, fetchGetEnabledRoles } from '@/service/api';
+import { fetchGetMenuOptions } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { getLocalIcons } from '@/utils/icon';
 import { $t } from '@/locales';
@@ -139,7 +139,7 @@ const showPage = computed(() => model.value.type === '2');
 const pageOptions = ref<CommonType.Option[]>([]);
 
 async function handleGetAllPageOptions() {
-  const { error, data } = await fetchGetEnabledMenus();
+  const { error, data } = await fetchGetMenuOptions();
   if (!error) {
     pageOptions.value = data;
   }
@@ -155,17 +155,6 @@ const layoutOptions: CommonType.Option[] = [
     value: 'blank'
   }
 ];
-
-/** the enabled role options */
-const roleOptions = ref<CommonType.Option<string>[]>([]);
-
-async function getRoleOptions() {
-  const { error, response } = await fetchGetEnabledRoles();
-
-  if (!error) {
-    roleOptions.value = response.data.data;
-  }
-}
 
 function handleInitModel() {
   model.value = createDefaultModel();
@@ -255,7 +244,7 @@ watch(visible, () => {
   if (visible.value) {
     handleInitModel();
     restoreValidation();
-    getRoleOptions();
+    // getRoleOptions();
     handleGetAllPageOptions();
   }
 });

@@ -596,6 +596,44 @@ declare namespace App {
             };
           };
         };
+        ai: {
+          models: {
+            title: string;
+            add: string;
+            edit: string;
+            name: string;
+            model: string;
+            status: string;
+            description: string;
+            provider: string;
+            providerManage: string;
+            form: {
+              keyword: string;
+              name: string;
+              model: string;
+              status: string;
+              description: string;
+              provider: string;
+            };
+          };
+          providers: {
+            title: string;
+            add: string;
+            edit: string;
+            name: string;
+            baseUrl: string;
+            apiKey: string;
+            status: string;
+            description: string;
+            form: {
+              name: string;
+              baseUrl: string;
+              apiKey: string;
+              status: string;
+              description: string;
+            };
+          };
+        };
       };
       form: {
         required: string;

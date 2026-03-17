@@ -183,10 +183,10 @@ async function handleSyncApi() {
     <ApiSearch v-model:model="searchParams" @search="getDataByPage" />
     <NCard :title="$t('page.system-manage.apis.title')" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <TableBatchOperation
+        <TableHeaderOperation
           v-model:columns="columnChecks"
           :show-add="false"
-          :disabled-operate="checkedRowKeys.length === 0"
+          :disabled-batch-operate="checkedRowKeys.length === 0"
           :loading="loading"
           :default-batch-keys="['ENABLE', 'DISABLE']"
           @batch="handleBatchOperate"
@@ -207,7 +207,7 @@ async function handleSyncApi() {
               </template>
             </NPopconfirm>
           </template>
-        </TableBatchOperation>
+        </TableHeaderOperation>
       </template>
       <NDataTable
         v-model:checked-row-keys="checkedRowKeys"

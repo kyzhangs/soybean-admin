@@ -5,7 +5,7 @@ import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { useBoolean } from '@sa/hooks';
 import { yesOrNoRecord } from '@/constants/common';
 import { enableStatusRecord, menuTypeRecord } from '@/constants/business';
-import { fetchBatchOperateMenu, fetchGetEnabledMenus, fetchGetMenuList } from '@/service/api';
+import { fetchBatchOperateMenu, fetchGetMenuOptions, fetchGetMenuList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { useNaiveTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -223,10 +223,10 @@ function handleAddChildMenu(item: Api.SystemManage.Menu) {
   openModal();
 }
 
-const allPages = ref<CommonType.Option<string, string>[]>([]);
+const allPages = ref<CommonType.Option[]>([]);
 
 async function getAllPages() {
-  const { error, data: options } = await fetchGetEnabledMenus();
+  const { error, data: options } = await fetchGetMenuOptions();
   if (!error) {
     allPages.value = options;
   }

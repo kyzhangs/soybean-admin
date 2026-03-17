@@ -51,6 +51,26 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
+    name: 'ai',
+    path: '/ai',
+    component: 'layout.base',
+    meta: {
+      title: 'ai',
+      i18nKey: 'route.ai'
+    },
+    children: [
+      {
+        name: 'ai_models',
+        path: '/ai/models',
+        component: 'view.ai_models',
+        meta: {
+          title: 'ai_models',
+          i18nKey: 'route.ai_models'
+        }
+      }
+    ]
+  },
+  {
     name: 'alova',
     path: '/alova',
     component: 'layout.base',

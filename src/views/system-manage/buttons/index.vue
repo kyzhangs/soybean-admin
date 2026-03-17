@@ -139,9 +139,9 @@ function edit(id: number) {
     <ButtonSearch v-model:model="searchParams" @search="getDataByPage" />
     <NCard :title="$t('page.system-manage.buttons.title')" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <TableBatchOperation
+        <TableHeaderOperation
           v-model:columns="columnChecks"
-          :disabled-operate="checkedRowKeys.length === 0"
+          :disabled-batch-operate="checkedRowKeys.length === 0"
           :loading="loading"
           @add="handleAdd"
           @batch="handleBatchOperate"

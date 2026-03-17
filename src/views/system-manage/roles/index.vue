@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
-import { fetchBatchOperateRole, fetchDeleteRole, fetchGetEnabledMenus, fetchGetRolePageList } from '@/service/api';
+import { fetchBatchOperateRole, fetchDeleteRole, fetchGetMenuOptions, fetchGetRolePageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { useTabStore } from '@/store/modules/tab';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
@@ -23,13 +23,13 @@ const searchParams = ref<Api.SystemManage.RoleSearchParams>({
   status: null
 });
 
-const menuOptions = ref<CommonType.Option<string>[]>([]);
+const menuOptions = ref<CommonType.Option[]>([]);
 const menuRecords = computed(() => transformOptionToRecord(menuOptions.value));
 
 async function getMenuOptions() {
-  const { error, response } = await fetchGetEnabledMenus();
+  const { error, data } = await fetchGetMenuOptions();
   if (!error) {
-    menuOptions.value = response.data.data;
+    menuOptions.value = data;
   }
 }
 
@@ -180,9 +180,9 @@ onMounted(async () => {
     <RoleSearch v-model:model="searchParams" @search="getDataByPage" />
     <NCard :title="$t('page.system-manage.roles.title')" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
-        <TableBatchOperation
+        <TableHeaderOperation
           v-model:columns="columnChecks"
-          :disabled-operate="checkedRowKeys.length === 0"
+          :disabled-batch-operate="checkedRowKeys.length === 0"
           :loading="loading"
           @add="handleAdd"
           @batch="handleBatchOperate"

@@ -7,15 +7,17 @@ defineOptions({
 
 interface Props {
   itemAlign?: NaiveUI.Align;
-  disabledDelete?: boolean;
   loading?: boolean;
+  disabledBatchOperate?: boolean;
+  batchConfigs?: Api.Common.BatchConfig[];
+  defaultBatchKeys?: Array<Api.Common.BatchOperateType>;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 interface Emits {
   (e: 'add'): void;
-  (e: 'delete'): void;
+  (e: 'batch', key: Api.Common.BatchOperateType): void;
   (e: 'refresh'): void;
 }
 
@@ -29,8 +31,8 @@ function add() {
   emit('add');
 }
 
-function batchDelete() {
-  emit('delete');
+function handleBatchSelect(key: Api.Common.BatchOperateType) {
+  emit('batch', key);
 }
 
 function refresh() {
@@ -48,17 +50,6 @@ function refresh() {
         </template>
         {{ $t('common.add') }}
       </NButton>
-      <NPopconfirm @positive-click="batchDelete">
-        <template #trigger>
-          <NButton size="small" ghost type="error" :disabled="disabledDelete">
-            <template #icon>
-              <icon-ic-round-delete class="text-icon" />
-            </template>
-            {{ $t('common.batchDelete') }}
-          </NButton>
-        </template>
-        {{ $t('common.confirmDelete') }}
-      </NPopconfirm>
     </slot>
     <NButton size="small" @click="refresh">
       <template #icon>
@@ -66,6 +57,14 @@ function refresh() {
       </template>
       {{ $t('common.refresh') }}
     </NButton>
+    <slot name="batch">
+      <BatchOperation
+        :disabled="props.disabledBatchOperate"
+        :batch-configs="props.batchConfigs"
+        :default-batch-keys="props.defaultBatchKeys"
+        @batch="handleBatchSelect"
+      />
+    </slot>
     <TableColumnSetting v-model:columns="columns" />
     <slot name="suffix"></slot>
   </NSpace>

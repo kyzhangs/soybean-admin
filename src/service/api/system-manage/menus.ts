@@ -8,9 +8,9 @@ export function fetchGetMenuList() {
 }
 
 /** get enabled menus */
-export function fetchGetEnabledMenus() {
-  return request<CommonType.Option<string, string>[]>({
-    url: '/system-manage/menus/enabled'
+export function fetchGetMenuOptions() {
+  return request<CommonType.Option[]>({
+    url: '/system-manage/menus/options'
   });
 }
 

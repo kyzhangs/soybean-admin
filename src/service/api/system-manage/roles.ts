@@ -1,9 +1,9 @@
 import { request } from '@/service/request';
 
 /** get role list */
-export function fetchGetEnabledRoles() {
-  return request<CommonType.Option<string, string>[]>({
-    url: '/system-manage/roles/enabled'
+export function fetchGetRoleOptions() {
+  return request<CommonType.Option[]>({
+    url: '/system-manage/roles/options'
   });
 }
 

@@ -1,4 +1,6 @@
+import { h } from 'vue';
 import { $t } from '@/locales';
+import SvgIcon from '@/components/custom/svg-icon.vue';
 
 /**
  * Transform record to option
@@ -43,7 +45,7 @@ export function transformRecordToOption<T extends Record<string | number, string
  *
  * @param options
  */
-export function transformOptionToRecord(options: CommonType.Option<string, string>[]) {
+export function transformOptionToRecord(options: CommonType.Option<string | number, string>[]) {
   return options.reduce<Record<string, string>>((record, option) => {
     if (option.value !== undefined && option.label !== undefined) {
       record[String(option.value)] = option.label;
@@ -120,4 +122,8 @@ export function getTableIndex(
   const pageSize = searchParams.page_size ?? 10;
 
   return index + 1 + (page - 1) * pageSize;
+}
+
+export function renderIcon(icon: string, color?: string) {
+  return () => h(SvgIcon, { icon, style: color ? { color } : undefined });
 }

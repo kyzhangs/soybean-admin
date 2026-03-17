@@ -183,6 +183,8 @@ const routeMap: RouteMap = {
   "404": "/404",
   "500": "/500",
   "about": "/about",
+  "ai": "/ai",
+  "ai_models": "/ai/models",
   "alova": "/alova",
   "alova_request": "/alova/request",
   "alova_scenes": "/alova/scenes",
