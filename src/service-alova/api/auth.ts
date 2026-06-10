@@ -3,16 +3,16 @@ import { alova } from '../request';
 /**
  * Login
  *
- * @param userName User name
+ * @param username Username
  * @param password Password
  */
-export function fetchLogin(userName: string, password: string) {
-  return alova.Post<Api.Auth.LoginToken>('/auth/login', { userName, password });
+export function fetchLogin(username: string, password: string) {
+  return alova.Post<Api.Auth.Token>('/auth/login', { username, password });
 }
 
 /** Get user info */
 export function fetchGetUserInfo() {
-  return alova.Get<Api.Auth.UserInfo>('/auth/getUserInfo');
+  return alova.Get<Api.UserCenter.UserInfo>('/auth/getUserInfo');
 }
 
 /** Send captcha to target phone */
@@ -31,7 +31,7 @@ export function verifyCaptcha(phone: string, code: string) {
  * @param refreshToken Refresh token
  */
 export function fetchRefreshToken(refreshToken: string) {
-  return alova.Post<Api.Auth.LoginToken>(
+  return alova.Post<Api.Auth.Token>(
     '/auth/refreshToken',
     { refreshToken },
     {
