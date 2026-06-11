@@ -260,11 +260,11 @@ const local: App.I18n.Schema = {
     function_request: '请求',
     'function_toggle-auth': '切换权限',
     'function_super-page': '超级管理员可见',
-    manage: '系统管理',
-    manage_user: '用户管理',
-    'manage_user-detail': '用户详情',
-    manage_role: '角色管理',
-    manage_menu: '菜单管理',
+    'system-manage': '系统管理',
+    'system-manage_users': '用户管理',
+    'system-manage_user-detail': '用户详情',
+    'system-manage_roles': '角色管理',
+    'system-manage_menus': '菜单管理',
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
     'multi-menu_first_child': '菜单一子菜单',
@@ -518,14 +518,14 @@ const local: App.I18n.Schema = {
         }
       }
     },
-    manage: {
+    'system-manage': {
       common: {
         status: {
           enable: '启用',
           disable: '禁用'
         }
       },
-      role: {
+      roles: {
         title: '角色列表',
         roleName: '角色名称',
         roleCode: '角色编码',
@@ -542,7 +542,7 @@ const local: App.I18n.Schema = {
         addRole: '新增角色',
         editRole: '编辑角色'
       },
-      user: {
+      users: {
         title: '用户列表',
         username: '用户名',
         userGender: '性别',
@@ -567,7 +567,7 @@ const local: App.I18n.Schema = {
           female: '女'
         }
       },
-      menu: {
+      menus: {
         home: '首页',
         title: '菜单列表',
         id: 'ID',

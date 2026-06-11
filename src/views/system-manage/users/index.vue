@@ -1,26 +1,29 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { enableStatusRecord } from '@/constants/business';
-import { fetchGetRoleList } from '@/service/api';
+import { enableStatusRecord, userGenderRecord } from '@/constants/business';
+import { fetchGetUserList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
-import RoleOperateDrawer from './modules/role-operate-drawer.vue';
-import RoleSearch from './modules/role-search.vue';
+import UserOperateDrawer from './modules/user-operate-drawer.vue';
+import UserSearch from './modules/user-search.vue';
 
 const appStore = useAppStore();
 
-const searchParams = ref<Api.SystemManage.RoleSearchParams>({
+const searchParams = ref<Api.SystemManage.UserSearchParams>({
   current: 1,
   size: 10,
-  roleName: null,
-  roleCode: null,
-  status: null
+  status: null,
+  username: null,
+  userGender: null,
+  nickName: null,
+  userPhone: null,
+  userEmail: null
 });
 
-const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
-  api: () => fetchGetRoleList(searchParams.value),
+const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination } = useNaivePaginatedTable({
+  api: () => fetchGetUserList(searchParams.value),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
     searchParams.value.current = params.page;
@@ -35,30 +38,57 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
     {
       key: 'index',
       title: $t('common.index'),
-      width: 64,
       align: 'center',
+      width: 64,
       render: (_, index) => index + 1
     },
     {
-      key: 'roleName',
-      title: $t('page.manage.role.roleName'),
+      key: 'username',
+      title: $t('page.system-manage.users.username'),
       align: 'center',
-      minWidth: 120
+      minWidth: 100
     },
     {
-      key: 'roleCode',
-      title: $t('page.manage.role.roleCode'),
+      key: 'userGender',
+      title: $t('page.system-manage.users.userGender'),
       align: 'center',
-      minWidth: 120
+      width: 100,
+      render: row => {
+        if (row.userGender === null) {
+          return null;
+        }
+
+        const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
+          1: 'primary',
+          2: 'error'
+        };
+
+        const label = $t(userGenderRecord[row.userGender]);
+
+        return <NTag type={tagMap[row.userGender]}>{label}</NTag>;
+      }
     },
     {
-      key: 'roleDesc',
-      title: $t('page.manage.role.roleDesc'),
-      minWidth: 120
+      key: 'nickName',
+      title: $t('page.system-manage.users.nickName'),
+      align: 'center',
+      minWidth: 100
+    },
+    {
+      key: 'userPhone',
+      title: $t('page.system-manage.users.userPhone'),
+      align: 'center',
+      width: 120
+    },
+    {
+      key: 'userEmail',
+      title: $t('page.system-manage.users.userEmail'),
+      align: 'center',
+      minWidth: 200
     },
     {
       key: 'status',
-      title: $t('page.manage.role.roleStatus'),
+      title: $t('page.system-manage.users.userStatus'),
       align: 'center',
       width: 100,
       render: row => {
@@ -135,8 +165,13 @@ function edit(id: number) {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <RoleSearch v-model:model="searchParams" @search="getDataByPage" />
-    <NCard :title="$t('page.manage.role.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
+    <UserSearch v-model:model="searchParams" @search="getDataByPage" />
+    <NCard
+      :title="$t('page.system-manage.users.title')"
+      :bordered="false"
+      size="small"
+      class="card-wrapper sm:flex-1-hidden"
+    >
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
@@ -153,14 +188,14 @@ function edit(id: number) {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="702"
+        :scroll-x="962"
         :loading="loading"
         remote
         :row-key="row => row.id"
         :pagination="mobilePagination"
         class="sm:h-full"
       />
-      <RoleOperateDrawer
+      <UserOperateDrawer
         v-model:visible="drawerVisible"
         :operate-type="operateType"
         :row-data="editingData"

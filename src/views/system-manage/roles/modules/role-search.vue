@@ -34,16 +34,31 @@ function search() {
       <NCollapseItem :title="$t('common.search')" name="role-search">
         <NForm :model="model" label-placement="left" :label-width="80">
           <NGrid responsive="screen" item-responsive>
-            <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.role.roleName')" path="roleName" class="pr-24px">
-              <NInput v-model:value="model.roleName" :placeholder="$t('page.manage.role.form.roleName')" />
+            <NFormItemGi
+              span="24 s:12 m:6"
+              :label="$t('page.system-manage.roles.roleName')"
+              path="roleName"
+              class="pr-24px"
+            >
+              <NInput v-model:value="model.roleName" :placeholder="$t('page.system-manage.roles.form.roleName')" />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.role.roleCode')" path="roleCode" class="pr-24px">
-              <NInput v-model:value="model.roleCode" :placeholder="$t('page.manage.role.form.roleCode')" />
+            <NFormItemGi
+              span="24 s:12 m:6"
+              :label="$t('page.system-manage.roles.roleCode')"
+              path="roleCode"
+              class="pr-24px"
+            >
+              <NInput v-model:value="model.roleCode" :placeholder="$t('page.system-manage.roles.form.roleCode')" />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:6" :label="$t('page.manage.role.roleStatus')" path="status" class="pr-24px">
+            <NFormItemGi
+              span="24 s:12 m:6"
+              :label="$t('page.system-manage.roles.roleStatus')"
+              path="status"
+              class="pr-24px"
+            >
               <NSelect
                 v-model:value="model.status"
-                :placeholder="$t('page.manage.role.form.roleStatus')"
+                :placeholder="$t('page.system-manage.roles.form.roleStatus')"
                 :options="translateOptions(enableStatusOptions)"
                 clearable
               />

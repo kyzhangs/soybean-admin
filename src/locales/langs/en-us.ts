@@ -264,11 +264,11 @@ const local: App.I18n.Schema = {
     function_request: 'Request',
     'function_toggle-auth': 'Toggle Auth',
     'function_super-page': 'Super Admin Visible',
-    manage: 'System Manage',
-    manage_user: 'User Manage',
-    'manage_user-detail': 'User Detail',
-    manage_role: 'Role Manage',
-    manage_menu: 'Menu Manage',
+    'system-manage': 'System Manage',
+    'system-manage_users': 'Users Manage',
+    'system-manage_user-detail': 'User Detail',
+    'system-manage_roles': 'Roles Manage',
+    'system-manage_menus': 'Menus Manage',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',
     'multi-menu_first_child': 'Menu One Child',
@@ -522,14 +522,14 @@ const local: App.I18n.Schema = {
         }
       }
     },
-    manage: {
+    'system-manage': {
       common: {
         status: {
           enable: 'Enable',
           disable: 'Disable'
         }
       },
-      role: {
+      roles: {
         title: 'Role List',
         roleName: 'Role Name',
         roleCode: 'Role Code',
@@ -546,7 +546,7 @@ const local: App.I18n.Schema = {
         addRole: 'Add Role',
         editRole: 'Edit Role'
       },
-      user: {
+      users: {
         title: 'User List',
         username: 'User Name',
         userGender: 'Gender',
@@ -571,7 +571,7 @@ const local: App.I18n.Schema = {
           female: 'Female'
         }
       },
-      menu: {
+      menus: {
         home: 'Home',
         title: 'Menu List',
         id: 'ID',

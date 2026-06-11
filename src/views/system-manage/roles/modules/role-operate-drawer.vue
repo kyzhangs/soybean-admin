@@ -38,8 +38,8 @@ const { bool: buttonAuthVisible, setTrue: openButtonAuthModal } = useBoolean();
 
 const title = computed(() => {
   const titles: Record<NaiveUI.TableOperateType, string> = {
-    add: $t('page.manage.role.addRole'),
-    edit: $t('page.manage.role.editRole')
+    add: $t('page.system-manage.roles.addRole'),
+    edit: $t('page.system-manage.roles.editRole')
   };
   return titles[props.operateType];
 });
@@ -101,25 +101,25 @@ watch(visible, () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="360">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <NForm ref="formRef" :model="model" :rules="rules">
-        <NFormItem :label="$t('page.manage.role.roleName')" path="roleName">
-          <NInput v-model:value="model.roleName" :placeholder="$t('page.manage.role.form.roleName')" />
+        <NFormItem :label="$t('page.system-manage.roles.roleName')" path="roleName">
+          <NInput v-model:value="model.roleName" :placeholder="$t('page.system-manage.roles.form.roleName')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.role.roleCode')" path="roleCode">
-          <NInput v-model:value="model.roleCode" :placeholder="$t('page.manage.role.form.roleCode')" />
+        <NFormItem :label="$t('page.system-manage.roles.roleCode')" path="roleCode">
+          <NInput v-model:value="model.roleCode" :placeholder="$t('page.system-manage.roles.form.roleCode')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.role.roleStatus')" path="status">
+        <NFormItem :label="$t('page.system-manage.roles.roleStatus')" path="status">
           <NRadioGroup v-model:value="model.status">
             <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
         </NFormItem>
-        <NFormItem :label="$t('page.manage.role.roleDesc')" path="roleDesc">
-          <NInput v-model:value="model.roleDesc" :placeholder="$t('page.manage.role.form.roleDesc')" />
+        <NFormItem :label="$t('page.system-manage.roles.roleDesc')" path="roleDesc">
+          <NInput v-model:value="model.roleDesc" :placeholder="$t('page.system-manage.roles.form.roleDesc')" />
         </NFormItem>
       </NForm>
       <NSpace v-if="isEdit">
-        <NButton @click="openMenuAuthModal">{{ $t('page.manage.role.menuAuth') }}</NButton>
+        <NButton @click="openMenuAuthModal">{{ $t('page.system-manage.roles.menuAuth') }}</NButton>
         <MenuAuthModal v-model:visible="menuAuthVisible" :role-id="roleId" />
-        <NButton @click="openButtonAuthModal">{{ $t('page.manage.role.buttonAuth') }}</NButton>
+        <NButton @click="openButtonAuthModal">{{ $t('page.system-manage.roles.buttonAuth') }}</NButton>
         <ButtonAuthModal v-model:visible="buttonAuthVisible" :role-id="roleId" />
       </NSpace>
       <template #footer>
