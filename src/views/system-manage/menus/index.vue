@@ -1,26 +1,25 @@
 <script setup lang="tsx">
 import { ref } from 'vue';
 import type { Ref } from 'vue';
-import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { NButton, NPopconfirm, NTag, NTooltip } from 'naive-ui';
 import { useBoolean } from '@sa/hooks';
 import { yesOrNoRecord } from '@/constants/common';
 import { enableStatusRecord, menuTypeRecord } from '@/constants/business';
-import { fetchGetAllPages, fetchGetMenuList } from '@/service/api';
+import { fetchGetMenuOptions, fetchGetMenuList, fetchDeleteMenu } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
-import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+import { useNaiveTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
 import SvgIcon from '@/components/custom/svg-icon.vue';
+import MenuButtonBindModal from './modules/menu-button-bind-modal.vue';
 import MenuOperateModal, { type OperateType } from './modules/menu-operate-modal.vue';
 
 const appStore = useAppStore();
 
 const { bool: visible, setTrue: openModal } = useBoolean();
 
-const wrapperRef = ref<HTMLElement | null>(null);
-
-const { columns, columnChecks, data, loading, pagination, getData, getDataByPage } = useNaivePaginatedTable({
+const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable({
   api: () => fetchGetMenuList(),
-  transform: response => defaultTransform(response),
+  transform: response => response.data || [],
   columns: () => [
     {
       type: 'selection',
@@ -28,37 +27,19 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       width: 48
     },
     {
-      key: 'id',
-      title: $t('page.system-manage.menus.id'),
-      align: 'center'
-    },
-    {
-      key: 'menuType',
+      key: 'type',
       title: $t('page.system-manage.menus.menuType'),
       align: 'center',
-      width: 80,
+      width: 100,
       render: row => {
         const tagMap: Record<Api.SystemManage.MenuType, NaiveUI.ThemeColor> = {
-          1: 'default',
-          2: 'primary'
+          1: 'primary',
+          2: 'default'
         };
 
-        const label = $t(menuTypeRecord[row.menuType]);
+        const label = $t(menuTypeRecord[row.type]);
 
-        return <NTag type={tagMap[row.menuType]}>{label}</NTag>;
-      }
-    },
-    {
-      key: 'menuName',
-      title: $t('page.system-manage.menus.menuName'),
-      align: 'center',
-      minWidth: 120,
-      render: row => {
-        const { i18nKey, menuName } = row;
-
-        const label = i18nKey ? $t(i18nKey) : menuName;
-
-        return <span>{label}</span>;
+        return <NTag type={tagMap[row.type]}>{label}</NTag>;
       }
     },
     {
@@ -79,35 +60,45 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       }
     },
     {
-      key: 'routeName',
+      key: 'title',
+      title: $t('page.system-manage.menus.menuName'),
+      align: 'center',
+      width: 180,
+      render: row => {
+        return row.i18nKey ? $t(row.i18nKey) : row.title;
+      }
+    },
+    {
+      key: 'name',
       title: $t('page.system-manage.menus.routeName'),
       align: 'center',
-      minWidth: 120
-    },
-    {
-      key: 'routePath',
-      title: $t('page.system-manage.menus.routePath'),
-      align: 'center',
-      minWidth: 120
-    },
-    {
-      key: 'status',
-      title: $t('page.system-manage.menus.menuStatus'),
-      align: 'center',
-      width: 80,
+      width: 120,
       render: row => {
-        if (row.status === null) {
-          return null;
-        }
-
-        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
-          1: 'success',
-          2: 'warning'
+        return (
+          <NTooltip placement="left-start">
+            {{
+              trigger: () => <span>{row.name}</span>,
+              default: () => <span>{`${$t('page.system-manage.menus.routePath')}: ${row.path}`}</span>
+            }}
+          </NTooltip>
+        );
+      }
+    },
+    {
+      key: 'constant',
+      title: $t('page.system-manage.menus.constant'),
+      align: 'center',
+      width: 120,
+      render: row => {
+        const constant: CommonType.YesOrNo = row.constant ? 'Y' : 'N';
+        const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
+          Y: 'warning',
+          N: 'default'
         };
 
-        const label = $t(enableStatusRecord[row.status]);
+        const label = $t(yesOrNoRecord[constant]);
 
-        return <NTag type={tagMap[row.status]}>{label}</NTag>;
+        return <NTag type={tagMap[constant]}>{label}</NTag>;
       }
     },
     {
@@ -129,10 +120,21 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       }
     },
     {
-      key: 'parentId',
-      title: $t('page.system-manage.menus.parentId'),
-      width: 90,
-      align: 'center'
+      key: 'multiTab',
+      title: $t('page.system-manage.menus.multiTab'),
+      align: 'center',
+      width: 120,
+      render: row => {
+        const multiTab: CommonType.YesOrNo = row.multiTab ? 'Y' : 'N';
+        const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
+          Y: 'primary',
+          N: 'default'
+        };
+
+        const label = $t(yesOrNoRecord[multiTab]);
+
+        return <NTag type={tagMap[multiTab]}>{label}</NTag>;
+      }
     },
     {
       key: 'order',
@@ -141,19 +143,38 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       width: 60
     },
     {
+      key: 'status',
+      title: $t('page.system-manage.menus.menuStatus'),
+      align: 'center',
+      width: 120,
+      render: row => {
+        const tagMap: Record<Api.Common.Status, NaiveUI.ThemeColor> = {
+          1: 'success',
+          2: 'warning'
+        };
+
+        const label = $t(enableStatusRecord[row.status]);
+
+        return <NTag type={tagMap[row.status]}>{label}</NTag>;
+      }
+    },
+    {
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 230,
+      width: 280,
       render: row => (
         <div class="flex-center justify-end gap-8px">
-          {row.menuType === '1' && (
+          {row.type === '1' && (
             <NButton type="primary" ghost size="small" onClick={() => handleAddChildMenu(row)}>
               {$t('page.system-manage.menus.addChildMenu')}
             </NButton>
           )}
           <NButton type="primary" ghost size="small" onClick={() => handleEdit(row)}>
             {$t('common.edit')}
+          </NButton>
+          <NButton type="info" ghost size="small" onClick={() => handleBindButtons(row)}>
+            {$t('page.system-manage.menus.bindButtons')}
           </NButton>
           <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
@@ -171,27 +192,31 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
   ]
 });
 
-const { checkedRowKeys, onBatchDeleted, onDeleted } = useTableOperate(data, 'id', getData);
+const { checkedRowKeys, onDeleted } = useTableOperate(data, 'id', getData);
 
 const operateType = ref<OperateType>('add');
+const buttonBindVisible = ref(false);
+const buttonBindData = ref<Api.SystemManage.Menu | null>(null);
 
 function handleAdd() {
   operateType.value = 'add';
   openModal();
 }
 
-async function handleBatchDelete() {
+// async function handleBatchOperate() {
+//   const ids = checkedRowKeys.value;
+//   const { error, response } = await fetchBatchOperateMenu({ operate, ids });
+//   if (!error) {
+//     onBatchOperate(response.data);
+//   }
+// }
+
+async function handleDelete(menuId: string) {
   // request
-  console.log(checkedRowKeys.value);
-
-  onBatchDeleted();
-}
-
-function handleDelete(id: number) {
-  // request
-  console.log(id);
-
-  onDeleted();
+  const { error} = await fetchDeleteMenu(menuId)
+  if (!error) {
+    onDeleted();
+  }
 }
 
 /** the edit menu data or the parent menu data when adding a child menu */
@@ -212,11 +237,18 @@ function handleAddChildMenu(item: Api.SystemManage.Menu) {
   openModal();
 }
 
-const allPages = ref<string[]>([]);
+function handleBindButtons(item: Api.SystemManage.Menu) {
+  buttonBindData.value = { ...item };
+  buttonBindVisible.value = true;
+}
+
+const allPages = ref<CommonType.Option[]>([]);
 
 async function getAllPages() {
-  const { data: pages } = await fetchGetAllPages();
-  allPages.value = pages || [];
+  const { error, data: options } = await fetchGetMenuOptions();
+  if (!error) {
+    allPages.value = options;
+  }
 }
 
 function init() {
@@ -228,7 +260,7 @@ init();
 </script>
 
 <template>
-  <div ref="wrapperRef" class="flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
+  <div class="flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <NCard
       :title="$t('page.system-manage.menus.title')"
       :bordered="false"
@@ -236,12 +268,11 @@ init();
       class="card-wrapper sm:flex-1-hidden"
     >
       <template #header-extra>
-        <TableHeaderOperation
+        <TableHeaderBatchOperation
           v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
+          :disabled="checkedRowKeys.length === 0"
           :loading="loading"
           @add="handleAdd"
-          @delete="handleBatchDelete"
           @refresh="getData"
         />
       </template>
@@ -251,11 +282,10 @@ init();
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="1088"
+        :scroll-x="scrollX"
         :loading="loading"
         :row-key="row => row.id"
         remote
-        :pagination="pagination"
         class="sm:h-full"
       />
       <MenuOperateModal
@@ -263,8 +293,8 @@ init();
         :operate-type="operateType"
         :row-data="editingData"
         :all-pages="allPages"
-        @submitted="getDataByPage"
       />
+      <MenuButtonBindModal v-model:visible="buttonBindVisible" :row-data="buttonBindData" @submitted="getData" />
     </NCard>
   </div>
 </template>

@@ -200,9 +200,8 @@ export function useTableOperate<TableData>(
   const checkedRowKeys = shallowRef<string[]>([]);
 
   /** the hook after the batch delete operation is completed */
-  async function onBatchDeleted() {
-    window.$message?.success($t('common.deleteSuccess'));
-
+  async function onBatchOperate() {
+    window.$message?.success($t('common.batchOperationSuccess'));
     checkedRowKeys.value = [];
 
     await getData();
@@ -224,7 +223,7 @@ export function useTableOperate<TableData>(
     editingData,
     handleEdit,
     checkedRowKeys,
-    onBatchDeleted,
+    onBatchOperate,
     onDeleted
   };
 }
@@ -235,12 +234,12 @@ export function defaultTransform<ApiData>(
   const { data, error } = response;
 
   if (!error) {
-    const { records, current, size, total } = data;
+    const { page, page_size, rows, total } = data;
 
     return {
-      data: records,
-      pageNum: current,
-      pageSize: size,
+      data: rows,
+      pageNum: page,
+      pageSize: page_size,
       total
     };
   }

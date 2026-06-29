@@ -640,16 +640,36 @@ export const generatedRoutes: GeneratedRoute[] = [
     },
     children: [
       {
+        name: 'system-manage_apis',
+        path: '/system-manage/apis',
+        component: 'view.system-manage_apis',
+        meta: {
+          title: 'system-manage_apis',
+          i18nKey: 'route.system-manage_apis',
+          icon: 'hugeicons:api',
+          order: 3
+        }
+      },
+      {
+        name: 'system-manage_buttons',
+        path: '/system-manage/buttons',
+        component: 'view.system-manage_buttons',
+        meta: {
+          title: 'system-manage_buttons',
+          i18nKey: 'route.system-manage_buttons',
+          icon: 'ph:mouse-middle-click',
+          order: 5
+        }
+      },
+      {
         name: 'system-manage_menus',
         path: '/system-manage/menus',
         component: 'view.system-manage_menus',
         meta: {
           title: 'system-manage_menus',
           i18nKey: 'route.system-manage_menus',
-          icon: 'material-symbols:route',
-          order: 3,
-          roles: ['R_ADMIN'],
-          keepAlive: true
+          icon: 'material-symbols:format-list-bulleted',
+          order: 4
         }
       },
       {

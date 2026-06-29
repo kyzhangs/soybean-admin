@@ -42,6 +42,16 @@ export function translateOptions(options: CommonType.Option<string, App.I18n.I18
  *
  * @param className
  */
+/**
+ * Get table index
+ *
+ * @param index
+ * @param params
+ */
+export function getTableIndex(index: number, params: { page?: number | null; page_size?: number | null }) {
+  return ((params.page ?? 1) - 1) * (params.page_size ?? 10) + index + 1;
+}
+
 export function toggleHtmlClass(className: string) {
   function add() {
     document.documentElement.classList.add(className);

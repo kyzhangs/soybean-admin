@@ -3,7 +3,8 @@ import { reactive } from 'vue';
 import { NButton, NTag } from 'naive-ui';
 import { utils, writeFile } from 'xlsx';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
-import { fetchGetUserList } from '@/service/api';
+import { yesOrNoRecord } from "@/constants/common";
+import { fetchGetUserPageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { isTableColumnHasKey, useNaiveTable } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -11,23 +12,23 @@ import { $t } from '@/locales';
 const appStore = useAppStore();
 
 const searchParams: Api.SystemManage.UserSearchParams = reactive({
-  current: 1,
-  size: 999,
+  page: 1,
+  page_size: 999,
+  keyword: null,
+  contact: null,
+  is_active: null,
+  is_superuser: null,
+  gender: null,
   status: null,
-  username: null,
-  userGender: null,
-  nickName: null,
-  userPhone: null,
-  userEmail: null
 });
 
 const { columns, data, loading } = useNaiveTable({
-  api: () => fetchGetUserList(searchParams),
+  api: () => fetchGetUserPageList(searchParams),
   transform: response => {
     const { data: list, error } = response;
 
     if (!error) {
-      return list.records;
+      return list.rows;
     }
 
     return [];
@@ -52,54 +53,84 @@ const { columns, data, loading } = useNaiveTable({
       minWidth: 100
     },
     {
-      key: 'userGender',
-      title: $t('page.system-manage.users.userGender'),
-      align: 'center',
-      width: 100,
-      render: row => {
-        if (row.userGender === null) {
-          return null;
-        }
-
-        const tagMap: Record<Api.SystemManage.UserGender, NaiveUI.ThemeColor> = {
-          1: 'primary',
-          2: 'error'
-        };
-
-        const label = $t(userGenderRecord[row.userGender]);
-
-        return <NTag type={tagMap[row.userGender]}>{label}</NTag>;
-      }
-    },
-    {
-      key: 'nickName',
-      title: $t('page.system-manage.users.nickName'),
+      key: 'name',
+      title: $t('page.system-manage.users.name'),
       align: 'center',
       minWidth: 100
     },
     {
-      key: 'userPhone',
-      title: $t('page.system-manage.users.userPhone'),
+      key: 'gender',
+      title: $t('page.system-manage.users.gender'),
+      align: 'center',
+      width: 100,
+      render: row => {
+
+
+        const tagMap: Record<Api.SystemManage.Gender, NaiveUI.ThemeColor> = {
+          1: 'primary',
+          2: 'error',
+          3: "warning"
+        };
+
+        const label = $t(userGenderRecord[row.gender]);
+
+        return <NTag type={tagMap[row.gender]}>{label}</NTag>;
+      }
+    },
+    {
+      key: 'phone',
+      title: $t('page.system-manage.users.phone'),
       align: 'center',
       width: 120
     },
     {
-      key: 'userEmail',
-      title: $t('page.system-manage.users.userEmail'),
+      key: 'email',
+      title: $t('page.system-manage.users.email'),
+      align: 'center',
+      minWidth: 200
+    },
+    {
+      key: 'is_active',
+      title: $t('page.system-manage.users.is_active'),
+      align: 'center',
+      minWidth: 200,
+      render: row => {
+        const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
+          Y: 'primary',
+          N: 'default'
+        };
+
+        const value = row.is_active ? 'Y' : 'N';
+        const label = $t(yesOrNoRecord[value]);
+
+        const tag = <NTag type={tagMap[value]}>{label}</NTag>;
+
+        if (row.is_active && row.active_time) {
+          return (
+            <NTooltip>
+              {{
+                default: () => $t('page.system-manage.users.active_time', { active_time: row.active_time }),
+                trigger: () => tag
+              }}
+            </NTooltip>
+          );
+        }
+        return tag;
+      }
+    },
+    {
+      key: 'last_login',
+      title: $t('page.system-manage.users.last_login'),
       align: 'center',
       minWidth: 200
     },
     {
       key: 'status',
-      title: $t('page.system-manage.users.userStatus'),
+      title: $t('page.system-manage.users.status'),
       align: 'center',
       width: 100,
       render: row => {
-        if (row.status === null) {
-          return null;
-        }
-
-        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
+        const tagMap: Record<Api.Common.Status, NaiveUI.ThemeColor> = {
           1: 'success',
           2: 'warning'
         };
@@ -141,16 +172,20 @@ function getTableValue(col: NaiveUI.TableColumn<Api.SystemManage.User>, item: Ap
 
   const { key } = col;
 
-  if (key === 'userRoles') {
-    return item.userRoles.map(role => role).join(',');
+  if (key === 'roles') {
+    return item.roles.map(role => role).join(',');
   }
 
   if (key === 'status') {
     return (item.status && $t(enableStatusRecord[item.status])) || null;
   }
 
-  if (key === 'userGender') {
-    return (item.userGender && $t(userGenderRecord[item.userGender])) || null;
+  if (key === 'gender') {
+    return (item.gender && $t(userGenderRecord[item.gender])) || null;
+  }
+
+  if (key === 'is_active') {
+    return item.is_active ? '是' : '否';
   }
 
   // @ts-expect-error the key is not in the type of Api.SystemManage.User

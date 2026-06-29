@@ -22,7 +22,8 @@ export function setupElegantRouter() {
         'document_naive',
         'document_pro-naive',
         'document_antd',
-        'document_alova'
+        'document_alova',
+        'document_api'
       ]
     },
     routePathTransformer(routeName, routePath) {

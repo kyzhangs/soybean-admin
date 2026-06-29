@@ -8,20 +8,20 @@ declare namespace Api {
     /** common params of paginating */
     interface PaginatingCommonParams {
       /** current page number */
-      current: number;
+      page: number;
       /** page size */
-      size: number;
+      page_size: number;
       /** total count */
       total: number;
     }
 
     /** common params of paginating query list data */
     interface PaginatingQueryRecord<T = any> extends PaginatingCommonParams {
-      records: T[];
+      rows: T[];
     }
 
     /** common search params of table */
-    type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>;
+    type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'page' | 'page_size'>;
 
     /**
      * enable status
@@ -29,22 +29,37 @@ declare namespace Api {
      * - "1": enabled
      * - "2": disabled
      */
-    type EnableStatus = '1' | '2';
+    type Status = '1' | '2';
 
     /** common record */
     type CommonRecord<T = any> = {
       /** record id */
-      id: number;
-      /** record creator */
-      createBy: string;
-      /** record create time */
-      createTime: string;
-      /** record updater */
-      updateBy: string;
-      /** record update time */
-      updateTime: string;
+      id: string;
       /** record status */
-      status: EnableStatus | null;
+      status: Status;
+      /** create time */
+      create_time: string;
+      /** update time */
+      update_time: string;
     } & T;
+
+    interface BatchActionConfig {
+      key: string;
+      label: string;
+      icon?: string;
+      /** whether to show a confirm dialog before executing */
+      confirm?: boolean;
+      confirmMessage?: string;
+      /** dialog type for the confirm dialog */
+      dialogType?: 'success' | 'warning' | 'error' | 'info';
+    }
+
+    type BatchOperateParams = {
+      ids: string[];
+      data: {
+        field: string;
+        value: any;
+      };
+    };
   }
 }

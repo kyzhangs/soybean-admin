@@ -5,18 +5,9 @@ declare namespace Api {
    * backend api module: "uc"
    */
   namespace UserCenter {
-    type UserInfo = {
-      userId: string;
-      username: string;
-      roles: string[];
-      buttons: string[];
-    } & CommonType.RecordNullable<{
-      name: string;
-      gender: string;
-      phone: string;
-      email: string;
-      active_time: string;
-      last_login: string;
-    }>;
+    type UserInfo = Pick<
+      Api.SystemManage.User,
+      'username' | 'name' | 'gender' | 'phone' | 'email' | 'active_time' | 'last_login' | 'is_superuser' | 'avatar'
+    > & { userId: string; roles: string[]; buttons: string[] };
   }
 }

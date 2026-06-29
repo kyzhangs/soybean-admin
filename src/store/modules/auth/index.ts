@@ -24,6 +24,12 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const userInfo: Api.UserCenter.UserInfo = reactive({
     userId: '',
     username: '',
+    name: null,
+    gender: '3',
+    email: null,
+    phone: null,
+    is_superuser: false,
+    active_time: null,
     roles: [],
     buttons: []
   });

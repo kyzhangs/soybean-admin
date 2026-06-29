@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, toRaw } from 'vue';
+import { nextTick, toRaw } from 'vue';
 import { jsonClone } from '@sa/utils';
 import { enableStatusOptions, userGenderOptions } from '@/constants/business';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
+import { yesOrNoOptions } from '@/constants/common';
 import { translateOptions } from '@/utils/common';
 import { $t } from '@/locales';
+import { useBooleanYesNoComputed } from '@/hooks/common/boolean-yesno';
 
 defineOptions({
   name: 'UserSearch'
@@ -16,105 +17,130 @@ interface Emits {
 
 const emit = defineEmits<Emits>();
 
-const { formRef, validate, restoreValidation } = useNaiveForm();
+// const { formRef } = useNaiveForm();
 
 const model = defineModel<Api.SystemManage.UserSearchParams>('model', { required: true });
 
-type RuleKey = Extract<keyof Api.SystemManage.UserSearchParams, 'userEmail' | 'userPhone'>;
-
-const rules = computed<Record<RuleKey, App.Global.FormRule>>(() => {
-  const { patternRules } = useFormRules(); // inside computed to make locale reactive
-
-  return {
-    userEmail: patternRules.email,
-    userPhone: patternRules.phone
-  };
-});
-
 const defaultModel = jsonClone(toRaw(model.value));
+
+// 将 boolean | null 转换为 Yes/No 选择器的计算属性
+const isActiveComputed = useBooleanYesNoComputed(model, 'is_active');
+const isSuperuserComputed = useBooleanYesNoComputed(model, 'is_superuser');
 
 function resetModel() {
   Object.assign(model.value, defaultModel);
 }
 
 async function reset() {
-  await restoreValidation();
   resetModel();
+  await search();
 }
 
 async function search() {
-  await validate();
+  await nextTick();
   emit('search');
 }
 </script>
 
 <template>
-  <NCard :bordered="false" size="small" class="card-wrapper">
-    <NCollapse>
+  <NCard :bordered="false" size="small" class="w-full card-wrapper">
+    <NCollapse class="w-full" :default-expanded-names="['user-search']">
       <NCollapseItem :title="$t('common.search')" name="user-search">
-        <NForm ref="formRef" :model="model" :rules="rules" label-placement="left" :label-width="80">
+        <NForm :model="model" label-placement="left" label-align="right" label-width="auto">
           <NGrid responsive="screen" item-responsive>
-            <NFormItemGi
-              span="24 s:12 m:6"
-              :label="$t('page.system-manage.users.username')"
-              path="username"
-              class="pr-24px"
-            >
-              <NInput v-model:value="model.username" :placeholder="$t('page.system-manage.users.form.username')" />
+            <NFormItemGi span="24 s:18 m:20 l:18 xl:20" :show-feedback="false">
+              <NGrid responsive="screen" item-responsive>
+                <NFormItemGi span="24 s:12 m:8 l:8 xl:5" :label="$t('common.keyword')" path="keyword" class="pr-24px">
+                  <NInput
+                    v-model:value="model.keyword"
+                    :placeholder="$t('page.system-manage.users.form.keyword')"
+                    clearable
+                    @clear="search"
+                    @keyup.enter="search"
+                  />
+                </NFormItemGi>
+
+                <NFormItemGi
+                  span="0 s:12 m:8 l:8 xl:5"
+                  :label="$t('page.system-manage.users.contact')"
+                  path="contact"
+                  class="pr-24px"
+                >
+                  <NInput
+                    v-model:value="model.contact"
+                    :placeholder="$t('page.system-manage.users.form.contact')"
+                    clearable
+                    @clear="search"
+                    @keyup.enter="search"
+                  />
+                </NFormItemGi>
+
+                <NFormItemGi
+                  span="0 s:8 m:8 l:8 xl:4"
+                  :label="$t('page.system-manage.users.gender')"
+                  path="gender"
+                  class="pr-24px"
+                >
+                  <NSelect
+                    v-model:value="model.gender"
+                    :placeholder="$t('page.system-manage.users.form.gender')"
+                    :options="translateOptions(userGenderOptions)"
+                    clearable
+                    @update:value="search"
+                  />
+                </NFormItemGi>
+
+                <NFormItemGi
+                  span="0 s:8 m:8 l:8 xl:5"
+                  :label="$t('page.system-manage.users.is_superuser')"
+                  path="is_superuser"
+                  class="pr-24px"
+                >
+                  <NSelect
+                    v-model:value="isSuperuserComputed"
+                    :placeholder="$t('page.system-manage.users.form.is_superuser')"
+                    :options="translateOptions(yesOrNoOptions)"
+                    clearable
+                    @update:value="search"
+                  />
+                </NFormItemGi>
+
+                <NFormItemGi
+                  span="0 s:8 m:8 l:8 xl:5"
+                  :label="$t('page.system-manage.users.is_active')"
+                  path="is_active"
+                  class="pr-24px"
+                >
+                  <NSelect
+                    v-model:value="isActiveComputed"
+                    :placeholder="$t('page.system-manage.users.form.is_active')"
+                    :options="translateOptions(yesOrNoOptions)"
+                    clearable
+                    @update:value="search"
+                  />
+                </NFormItemGi>
+
+                <NFormItemGi
+                  span="24 s:8 m:8 l:8 xl:5"
+                  :label="$t('page.system-manage.users.status')"
+                  path="is_forbid"
+                  class="pr-24px"
+                >
+                  <NSelect
+                    v-model:value="model.status"
+                    :placeholder="$t('page.system-manage.users.form.status')"
+                    :options="translateOptions(enableStatusOptions)"
+                    clearable
+                    @clear="search"
+                    @update:value="search"
+                  />
+                </NFormItemGi>
+              </NGrid>
             </NFormItemGi>
-            <NFormItemGi
-              span="24 s:12 m:6"
-              :label="$t('page.system-manage.users.userGender')"
-              path="userGender"
-              class="pr-24px"
-            >
-              <NSelect
-                v-model:value="model.userGender"
-                :placeholder="$t('page.system-manage.users.form.userGender')"
-                :options="translateOptions(userGenderOptions)"
-                clearable
-              />
-            </NFormItemGi>
-            <NFormItemGi
-              span="24 s:12 m:6"
-              :label="$t('page.system-manage.users.nickName')"
-              path="nickName"
-              class="pr-24px"
-            >
-              <NInput v-model:value="model.nickName" :placeholder="$t('page.system-manage.users.form.nickName')" />
-            </NFormItemGi>
-            <NFormItemGi
-              span="24 s:12 m:6"
-              :label="$t('page.system-manage.users.userPhone')"
-              path="userPhone"
-              class="pr-24px"
-            >
-              <NInput v-model:value="model.userPhone" :placeholder="$t('page.system-manage.users.form.userPhone')" />
-            </NFormItemGi>
-            <NFormItemGi
-              span="24 s:12 m:6"
-              :label="$t('page.system-manage.users.userEmail')"
-              path="userEmail"
-              class="pr-24px"
-            >
-              <NInput v-model:value="model.userEmail" :placeholder="$t('page.system-manage.users.form.userEmail')" />
-            </NFormItemGi>
-            <NFormItemGi
-              span="24 s:12 m:6"
-              :label="$t('page.system-manage.users.userStatus')"
-              path="userStatus"
-              class="pr-24px"
-            >
-              <NSelect
-                v-model:value="model.status"
-                :placeholder="$t('page.system-manage.users.form.userStatus')"
-                :options="translateOptions(enableStatusOptions)"
-                clearable
-              />
-            </NFormItemGi>
-            <NFormItemGi span="24 m:12" class="pr-24px">
+
+            <NFormItemGi span="24 s:6 m:4 l:6 xl:4">
               <NSpace class="w-full" justify="end">
-                <NButton @click="reset">
+                <NButton type="default" @click="reset">
                   <template #icon>
                     <icon-ic-round-refresh class="text-icon" />
                   </template>

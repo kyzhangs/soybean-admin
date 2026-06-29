@@ -7,6 +7,7 @@ defineProps<Props>();
 </script>
 
 <template>
+  <span class="hidden">{{ id }}</span>
   <LookForward />
 </template>
 

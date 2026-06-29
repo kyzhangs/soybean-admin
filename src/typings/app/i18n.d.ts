@@ -30,7 +30,6 @@ declare namespace App {
         add: string;
         addSuccess: string;
         backToHome: string;
-        batchDelete: string;
         cancel: string;
         close: string;
         check: string;
@@ -68,6 +67,27 @@ declare namespace App {
           yes: string;
           no: string;
         };
+        keyword: string;
+        create_time: string;
+        update_time: string;
+        enable: string;
+        disable: string;
+        confirmEnable: string;
+        confirmDisable: string;
+        enableSuccess: string;
+        disableSuccess: string;
+        batchOperation: string;
+        confirmBatchOperation: string;
+        batchOperationSuccess: string;
+        batchEnable: string;
+        confirmBatchEnable: string;
+        batchEnableSuccess: string;
+        batchDisable: string;
+        confirmBatchDisable: string;
+        batchDisableSuccess: string;
+        batchDelete: string;
+        confirmBatchDelete: string;
+        batchDeleteSuccess: string;
       };
       request: {
         logout: string;
@@ -404,6 +424,29 @@ declare namespace App {
             };
           };
         };
+        'user-center': {
+          personalInfo: string;
+          accountInfo: string;
+          securitySettings: string;
+          loginPwd: string;
+          loginPwdTip: string;
+          modifyPwd: string;
+          accountStatus: string;
+          accountStatusNormal: string;
+          enabled: string;
+          modalTitle: string;
+          oldPassword: string;
+          newPassword: string;
+          confirmPassword: string;
+          confirmModify: string;
+          successMsg: string;
+          oldPasswordPlaceholder: string;
+          newPasswordPlaceholder: string;
+          confirmPasswordPlaceholder: string;
+          userId: string;
+          roles: string;
+          permissions: string;
+        };
         'system-manage': {
           common: {
             status: {
@@ -413,44 +456,62 @@ declare namespace App {
           };
           roles: {
             title: string;
-            roleName: string;
-            roleCode: string;
-            roleStatus: string;
-            roleDesc: string;
+            add: string;
+            edit: string;
+            permissions: string;
+            permissionMenus: string;
+            permissionButtons: string;
+            permissionApis: string;
+            name: string;
+            code: string;
+            status: string;
+            description: string;
+            home: string;
             form: {
-              roleName: string;
-              roleCode: string;
-              roleStatus: string;
-              roleDesc: string;
+              keyword: string;
+              name: string;
+              code: string;
+              status: string;
+              description: string;
+              home: string;
+              permissionKeyword: string;
             };
-            addRole: string;
-            editRole: string;
-            menuAuth: string;
-            buttonAuth: string;
           };
           users: {
             title: string;
-            username: string;
-            userGender: string;
-            nickName: string;
-            userPhone: string;
-            userEmail: string;
-            userStatus: string;
-            userRole: string;
-            form: {
-              username: string;
-              userGender: string;
-              nickName: string;
-              userPhone: string;
-              userEmail: string;
-              userStatus: string;
-              userRole: string;
-            };
-            addUser: string;
-            editUser: string;
-            gender: {
+            add: string;
+            edit: string;
+            UserGender: {
               male: string;
               female: string;
+              unknown: string;
+            };
+            username: string;
+            gender: string;
+            name: string;
+            phone: string;
+            email: string;
+            is_active: string;
+            is_superuser: string;
+            active_time: string;
+            last_login: string;
+            status: string;
+            roles: string;
+            contact: string;
+            batchResetPassword: string;
+            confirmBatchResetPassword: string;
+            form: {
+              keyword: string;
+              contact: string;
+              username: string;
+              gender: string;
+              name: string;
+              phone: string;
+              email: string;
+              is_active: string;
+              is_superuser: string;
+              status: string;
+              roles: string;
             };
           };
           menus: {
@@ -481,6 +542,7 @@ declare namespace App {
             button: string;
             buttonCode: string;
             buttonDesc: string;
+            bindButtons: string;
             menuStatus: string;
             form: {
               home: string;
@@ -507,6 +569,7 @@ declare namespace App {
               button: string;
               buttonCode: string;
               buttonDesc: string;
+              buttonKeyword: string;
               menuStatus: string;
             };
             addMenu: string;
@@ -519,6 +582,49 @@ declare namespace App {
             iconType: {
               iconify: string;
               local: string;
+            };
+          };
+          apis: {
+            title: string;
+            add: string;
+            edit: string;
+            name: string;
+            summary: string;
+            path: string;
+            method: string;
+            tags: string;
+            status: string;
+            description: string;
+            apiMethod: {
+              get: string;
+              post: string;
+              put: string;
+              patch: string;
+              delete: string;
+            };
+            syncApi: string;
+            confirmSyncApi: string;
+            form: {
+              keyword: string;
+              method: string;
+              status: string;
+              tags: string;
+            };
+          };
+          buttons: {
+            title: string;
+            add: string;
+            edit: string;
+            name: string;
+            code: string;
+            status: string;
+            description: string;
+            form: {
+              keyword: string;
+              name: string;
+              code: string;
+              status: string;
+              description: string;
             };
           };
         };

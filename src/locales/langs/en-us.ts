@@ -11,7 +11,6 @@ const local: App.I18n.Schema = {
     add: 'Add',
     addSuccess: 'Add Success',
     backToHome: 'Back to home',
-    batchDelete: 'Batch Delete',
     cancel: 'Cancel',
     close: 'Close',
     check: 'Check',
@@ -48,7 +47,28 @@ const local: App.I18n.Schema = {
     yesOrNo: {
       yes: 'Yes',
       no: 'No'
-    }
+    },
+    keyword: 'keyword',
+    create_time: 'create_time',
+    update_time: 'update_time',
+    enable: 'Enable',
+    disable: 'Disable',
+    confirmEnable: 'Are you sure you want to enable?',
+    confirmDisable: 'Are you sure you want to disable?',
+    enableSuccess: 'Enable Success',
+    disableSuccess: 'Disable Success',
+    batchOperation: 'Batch Operation',
+    confirmBatchOperation: 'Are you sure you want to batch operation?',
+    batchOperationSuccess: 'Batch operation success',
+    batchEnable: 'Batch Enable',
+    confirmBatchEnable: 'Are you sure you want to batch enable?',
+    batchEnableSuccess: 'Batch enable success',
+    batchDisable: 'Batch Disable',
+    confirmBatchDisable: 'Are you sure you want to batch diable?',
+    batchDisableSuccess: 'batch disable success',
+    batchDelete: 'Batch Delete',
+    confirmBatchDelete: 'Are you sure you want to batch delete?',
+    batchDeleteSuccess: 'Batch delete success'
   },
   request: {
     logout: 'Logout user after request failed',
@@ -231,6 +251,7 @@ const local: App.I18n.Schema = {
     'iframe-page': 'Iframe',
     home: 'Home',
     document: 'Document',
+    document_api: 'Api Document',
     document_project: 'Project Document',
     'document_project-link': 'Project Document(External Link)',
     document_video: 'Video Tutorial',
@@ -269,6 +290,8 @@ const local: App.I18n.Schema = {
     'system-manage_user-detail': 'User Detail',
     'system-manage_roles': 'Roles Manage',
     'system-manage_menus': 'Menus Manage',
+    'system-manage_apis': 'APIs Manage',
+    'system-manage_buttons': 'Buttons Manage',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',
     'multi-menu_first_child': 'Menu One Child',
@@ -522,6 +545,29 @@ const local: App.I18n.Schema = {
         }
       }
     },
+    'user-center': {
+      personalInfo: 'Personal Info',
+      accountInfo: 'Account Info',
+      securitySettings: 'Security Settings',
+      loginPwd: 'Login Password',
+      loginPwdTip: 'Regular password changes help keep your account secure',
+      modifyPwd: 'Change Password',
+      accountStatus: 'Account Status',
+      accountStatusNormal: 'Account is active and running normally',
+      enabled: 'Enabled',
+      modalTitle: 'Change Password',
+      oldPassword: 'Current Password',
+      newPassword: 'New Password',
+      confirmPassword: 'Confirm Password',
+      confirmModify: 'Confirm',
+      successMsg: 'Password changed successfully',
+      oldPasswordPlaceholder: 'Enter current password',
+      newPasswordPlaceholder: 'Enter new password (min 6 characters)',
+      confirmPasswordPlaceholder: 'Re-enter new password',
+      userId: 'User ID',
+      roles: 'Roles',
+      permissions: 'Permissions'
+    },
     'system-manage': {
       common: {
         status: {
@@ -531,44 +577,62 @@ const local: App.I18n.Schema = {
       },
       roles: {
         title: 'Role List',
-        roleName: 'Role Name',
-        roleCode: 'Role Code',
-        roleStatus: 'Role Status',
-        roleDesc: 'Role Description',
-        menuAuth: 'Menu Auth',
-        buttonAuth: 'Button Auth',
+        add: 'Add Role',
+        edit: 'Edit Role',
+        permissions: 'Permission Settings',
+        permissionMenus: 'Menu Permissions',
+        permissionButtons: 'Button Permissions',
+        permissionApis: 'API Permissions',
+        name: 'Role Name',
+        code: 'Role Code',
+        status: 'Role Status',
+        description: 'Role Description',
+        home: 'Role Home',
         form: {
-          roleName: 'Please enter role name',
-          roleCode: 'Please enter role code',
-          roleStatus: 'Please select role status',
-          roleDesc: 'Please enter role description'
-        },
-        addRole: 'Add Role',
-        editRole: 'Edit Role'
+          keyword: 'Please enter role name or code',
+          name: 'Please enter role name',
+          code: 'Please enter role code',
+          status: 'Please select role status',
+          description: 'Please enter role description',
+          home: 'Please select role home',
+          permissionKeyword: 'Enter keyword to filter'
+        }
       },
       users: {
         title: 'User List',
-        username: 'User Name',
-        userGender: 'Gender',
-        nickName: 'Nick Name',
-        userPhone: 'Phone Number',
-        userEmail: 'Email',
-        userStatus: 'User Status',
-        userRole: 'User Role',
-        form: {
-          username: 'Please enter user name',
-          userGender: 'Please select gender',
-          nickName: 'Please enter nick name',
-          userPhone: 'Please enter phone number',
-          userEmail: 'Please enter email',
-          userStatus: 'Please select user status',
-          userRole: 'Please select user role'
-        },
-        addUser: 'Add User',
-        editUser: 'Edit User',
-        gender: {
+        add: 'Add User',
+        edit: 'Edit User',
+        UserGender: {
           male: 'Male',
-          female: 'Female'
+          female: 'Female',
+          unknown: 'Unknown'
+        },
+        username: 'Username',
+        gender: 'Gender',
+        name: 'Name',
+        phone: 'Phone',
+        email: 'Email',
+        is_active: 'Active',
+        is_superuser: 'Is Superuser',
+        active_time: 'Active Time: {active_time}',
+        last_login: 'Last Login',
+        status: 'Status',
+        roles: 'Roles',
+        contact: 'Contact',
+        batchResetPassword: 'Reset Password',
+        confirmBatchResetPassword: 'Confirm reset password?',
+        form: {
+          keyword: 'Please enter name or username',
+          contact: 'Please enter phone or email',
+          username: 'Please enter username',
+          gender: 'Please select gender',
+          name: 'Please enter name',
+          phone: 'Please enter phone',
+          email: 'Please enter email',
+          is_active: 'Please select active status',
+          is_superuser: 'Please select is superuser',
+          status: 'Please select status',
+          roles: 'Please select roles'
         }
       },
       menus: {
@@ -599,6 +663,7 @@ const local: App.I18n.Schema = {
         button: 'Button',
         buttonCode: 'Button Code',
         buttonDesc: 'Button Desc',
+        bindButtons: 'Bind Buttons',
         menuStatus: 'Menu Status',
         form: {
           home: 'Please select home',
@@ -625,6 +690,7 @@ const local: App.I18n.Schema = {
           button: 'Please select whether it is a button',
           buttonCode: 'Please enter button code',
           buttonDesc: 'Please enter button description',
+          buttonKeyword: 'Enter button name or code to filter',
           menuStatus: 'Please select menu status'
         },
         addMenu: 'Add Menu',
@@ -637,6 +703,49 @@ const local: App.I18n.Schema = {
         iconType: {
           iconify: 'Iconify Icon',
           local: 'Local Icon'
+        }
+      },
+      apis: {
+        title: 'API List',
+        add: 'Add API',
+        edit: 'Edit API',
+        name: 'API Name',
+        summary: 'API Summary',
+        path: 'API Path',
+        method: 'Request Method',
+        tags: 'API Tags',
+        status: 'API Status',
+        description: 'API Description',
+        apiMethod: {
+          get: 'GET',
+          post: 'POST',
+          put: 'PUT',
+          patch: 'PATCH',
+          delete: 'DELETE'
+        },
+        syncApi: 'Sync API',
+        confirmSyncApi: 'Are you sure you want to sync the API?',
+        form: {
+          keyword: 'Please enter API name, summary, path or description',
+          method: 'Please select request method',
+          status: 'Please select API status',
+          tags: 'Please select API tags'
+        }
+      },
+      buttons: {
+        title: 'Button List',
+        add: 'Add Button',
+        edit: 'Edit Button',
+        name: 'Button Name',
+        code: 'Button Code',
+        status: 'Button Status',
+        description: 'Button Description',
+        form: {
+          keyword: 'Please enter button name, code or description',
+          name: 'Please enter button name',
+          code: 'Please enter button code',
+          status: 'Please select button status',
+          description: 'Please enter button description'
         }
       }
     }

@@ -1,41 +1,26 @@
 <script setup lang="tsx">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
-import { fetchGetRolePageList, fetchBatchRole } from '@/service/api';
+import { fetchDeleteButton, fetchGetButtonPageList, fetchBatchButton } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
-import { useRouteStore } from '@/store/modules/route';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+import { getTableIndex } from '@/utils/common';
 import { $t } from '@/locales';
-import RoleOperateModal from './modules/role-operate-modal.vue';
-import RolePermissionModal from './modules/role-permission-modal.vue';
-import RoleSearch from './modules/role-search.vue';
+import ButtonSearch from './modules/button-search.vue';
+import ButtonOperateModal from './modules/button-operate-modal.vue';
 
 const appStore = useAppStore();
-const routeStore = useRouteStore();
 
-function flattenMenuOptions(menus: App.Global.Menu[]): CommonType.Option[] {
-  return menus.reduce<CommonType.Option[]>((options, menu) => {
-    options.push({ label: menu.label, value: menu.routeKey });
-    if (menu.children?.length) {
-      options.push(...flattenMenuOptions(menu.children));
-    }
-    return options;
-  }, []);
-}
-
-const menuOptions = computed(() => flattenMenuOptions(routeStore.menus));
-
-const searchParams = ref<Api.SystemManage.RoleSearchParams>({
+const searchParams = ref<Api.SystemManage.ButtonSearchParams>({
   page: 1,
   page_size: 10,
   keyword: null,
-  is_system: null,
   status: null
 });
 
 const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
-  api: () => fetchGetRolePageList(searchParams.value),
+  api: () => fetchGetButtonPageList(searchParams.value),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
     searchParams.value.page = params.page;
@@ -52,72 +37,68 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       title: $t('common.index'),
       width: 64,
       align: 'center',
-      render: (_, index) => index + 1
+      render: (_, index) => getTableIndex(index, searchParams.value)
     },
     {
       key: 'name',
-      title: $t('page.system-manage.roles.name'),
+      title: $t('page.system-manage.buttons.name'),
       align: 'center',
-      minWidth: 120
+      width: 120
     },
     {
       key: 'code',
-      title: $t('page.system-manage.roles.code'),
+      title: $t('page.system-manage.buttons.code'),
       align: 'center',
-      width: 120,
-      render: row => <NTag type="default">{row.code}</NTag>
+      width: 120
     },
     {
       key: 'description',
-      title: $t('page.system-manage.roles.description'),
+      title: $t('page.system-manage.buttons.description'),
       align: 'center',
+      width: 120,
       ellipsis: {
         tooltip: {
-          maxWidth: 450
+          maxWidth: 800
         }
-      },
-      minWidth: 200
+      }
     },
     {
-      key: 'update_time',
-      title: $t('common.update_time'),
+      key: 'create_time',
+      title: $t('common.create_time'),
       align: 'center',
-      width: 200
+      width: 120
     },
     {
       key: 'status',
-      title: $t('page.system-manage.roles.status'),
+      title: $t('page.system-manage.buttons.status'),
       align: 'center',
       width: 100,
       render: row => {
         const tagMap: Record<Api.Common.Status, NaiveUI.ThemeColor> = {
           1: 'success',
-          2: 'warning'
+          2: 'error'
         };
 
         const label = $t(enableStatusRecord[row.status]);
 
-        return <NTag type={tagMap[row.status]}>{label}</NTag>;
+        return <NTag type={tagMap[row.status]}> {label}</NTag>;
       }
     },
     {
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 220,
+      width: 100,
       render: row => (
         <div class="flex-center gap-8px">
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
-          <NButton type="info" ghost size="small" onClick={() => handlePermission(row)}>
-            {$t('page.system-manage.roles.permissions')}
-          </NButton>
           <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
               default: () => $t('common.confirmDelete'),
               trigger: () => (
-                <NButton type="error" ghost size="small" disabled={row.is_system}>
+                <NButton type="error" ghost size="small">
                   {$t('common.delete')}
                 </NButton>
               )
@@ -133,16 +114,19 @@ const {
   drawerVisible,
   operateType,
   editingData,
-  handleAdd,
-  handleEdit,
   checkedRowKeys,
-  onBatchOperate,
-  onDeleted
-  // closeDrawer
+  handleEdit,
+  handleAdd,
+  onBatchOperate
 } = useTableOperate(data, 'id', getData);
 
-const permissionVisible = ref(false);
-const permissionData = ref<Api.SystemManage.Role | null>(null);
+async function handleDelete(button_id: string) {
+  const { error } = await fetchDeleteButton(button_id);
+  if (!error) {
+    getData();
+    window.$message?.success($t('common.deleteSuccess'));
+  }
+}
 
 async function handleBatchOperate(key: string) {
   const ids = checkedRowKeys.value;
@@ -150,44 +134,27 @@ async function handleBatchOperate(key: string) {
   const fieldMap: Record<string, Api.Common.BatchOperateParams['data']> = {
     enable: { field: 'status', value: "1" },
     disable: { field: 'status', value: "2" },
-    delete: { field: 'is_deleted', value: true }
+    delete: { field: 'is_deleted', value: true },
   };
 
   const batchData = fieldMap[key];
   if (!batchData) return;
 
-  const { error } = await fetchBatchRole({ ids, data: batchData });
+  const { error } = await fetchBatchButton({ ids, data: batchData });
   if (!error) {
     onBatchOperate();
   }
 }
 
-function handleDelete(id: string) {
-  // request
-  console.log(id);
-
-  onDeleted();
-}
-
 function edit(id: string) {
   handleEdit(id);
-}
-
-function handlePermission(row: Api.SystemManage.Role) {
-  permissionData.value = row;
-  permissionVisible.value = true;
 }
 </script>
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <RoleSearch v-model:model="searchParams" @search="getDataByPage" />
-    <NCard
-      :title="$t('page.system-manage.roles.title')"
-      :bordered="false"
-      size="small"
-      class="card-wrapper sm:flex-1-hidden"
-    >
+    <ButtonSearch v-model:model="searchParams" @search="getDataByPage" />
+    <NCard :title="$t('page.system-manage.buttons.title')" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderBatchOperation
           v-model:columns="columnChecks"
@@ -204,22 +171,19 @@ function handlePermission(row: Api.SystemManage.Role) {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="702"
         :loading="loading"
         remote
         :row-key="row => row.id"
         :pagination="mobilePagination"
         class="sm:h-full"
       />
-      <RoleOperateModal
-        v-model:visible="drawerVisible"
-        :operate-type="operateType"
-        :row-data="editingData"
-        :menu-options="menuOptions"
-        @submitted="getDataByPage"
-      />
-      <RolePermissionModal v-model:visible="permissionVisible" :row-data="permissionData" @submitted="getDataByPage" />
     </NCard>
+    <ButtonOperateModal
+      v-model:visible="drawerVisible"
+      :operate-type="operateType"
+      :row-data="editingData"
+      @submitted="getDataByPage"
+    />
   </div>
 </template>
 

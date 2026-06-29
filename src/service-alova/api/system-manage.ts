@@ -2,7 +2,7 @@ import { alova } from '../request';
 
 /** get role list */
 export function fetchGetRoleList(params?: Api.SystemManage.RoleSearchParams) {
-  return alova.Get<Api.SystemManage.RoleList>('/systemManage/getRoleList', { params });
+  return alova.Get<Api.SystemManage.Role[]>('/system-manage/roles', { params });
 }
 
 /**
@@ -11,17 +11,17 @@ export function fetchGetRoleList(params?: Api.SystemManage.RoleSearchParams) {
  * these roles are all enabled
  */
 export function fetchGetAllRoles() {
-  return alova.Get<Api.SystemManage.AllRole[]>('/systemManage/getAllRoles');
+  return alova.Get<Api.SystemManage.Role[]>('/systemManage/getAllRoles');
 }
 
 /** get user list */
 export function fetchGetUserList(params?: Api.SystemManage.UserSearchParams) {
-  return alova.Get<Api.SystemManage.UserList>('/systemManage/getUserList', { params });
+  return alova.Get<Api.SystemManage.User[]>('/systemManage/getUserList', { params });
 }
 
 export type UserModel = Pick<
   Api.SystemManage.User,
-  'username' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'userRoles' | 'status'
+  'username' | 'gender' | 'name' | 'phone' | 'email' | 'roles' | 'status'
 >;
 /** add user */
 export function addUser(data: UserModel) {
