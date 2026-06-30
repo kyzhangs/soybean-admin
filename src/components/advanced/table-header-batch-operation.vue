@@ -11,6 +11,7 @@ defineOptions({
 interface Props {
   disabled?: boolean;
   loading?: boolean;
+  showAdd?: boolean;
   defaultActions?: ('enable' | 'disable' | 'delete')[];
   extraActionConfig?: Api.Common.BatchActionConfig[];
 }
@@ -18,6 +19,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   loading: false,
+  showAdd: true,
   defaultActions: () => ['enable', 'disable', 'delete'],
   extraActionConfig: () => []
 });
@@ -125,7 +127,7 @@ function handleSelect(key: string) {
   <NSpace wrap justify="end" class="lt-sm:w-200px">
     <slot name="prefix"></slot>
     <slot name="default">
-      <NButton size="small" ghost type="primary" @click="add">
+      <NButton v-if="props.showAdd" size="small" ghost type="primary" @click="add">
         <template #icon>
           <icon-ic-round-plus class="text-icon" />
         </template>

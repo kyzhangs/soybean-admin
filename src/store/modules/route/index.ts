@@ -190,6 +190,15 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     tabStore.initHomeTab();
   }
 
+  /** Refresh auth routes after current user's permissions change */
+  async function refreshAuthRoute() {
+    setIsInitAuthRoute(false);
+
+    authRoutes.value = [];
+
+    await initAuthRoute();
+  }
+
   /** Init static auth route */
   function initStaticAuthRoute() {
     const { authRoutes: staticAuthRoutes } = createStaticRoutes();
@@ -338,6 +347,7 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     initConstantRoute,
     isInitConstantRoute,
     initAuthRoute,
+    refreshAuthRoute,
     isInitAuthRoute,
     setIsInitAuthRoute,
     getIsAuthRouteExist,

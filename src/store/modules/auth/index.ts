@@ -21,20 +21,26 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   const token = ref('');
 
-  const userInfo: Api.UserCenter.UserInfo = reactive({
-    userId: '',
-    username: '',
-    name: null,
-    gender: '3',
-    email: null,
-    phone: null,
-    status: '1',
-    is_superuser: false,
-    create_time: null,
-    active_time: null,
-    roles: [],
-    buttons: []
-  });
+  function createDefaultUserInfo(): Api.UserCenter.UserInfo {
+    return {
+      userId: '',
+      username: '',
+      name: null,
+      gender: '3',
+      email: null,
+      phone: null,
+      status: '1',
+      is_superuser: false,
+      create_time: null,
+      active_time: null,
+      last_login: null,
+      avatar: null,
+      roles: [],
+      buttons: []
+    };
+  }
+
+  const userInfo: Api.UserCenter.UserInfo = reactive(createDefaultUserInfo());
 
   /** name or username */
   const userDisplayName = computed(() => userInfo.name || userInfo.username);
@@ -161,7 +167,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
     if (!error) {
       // update store
-      Object.assign(userInfo, info);
+      Object.assign(userInfo, createDefaultUserInfo(), info);
 
       return true;
     }

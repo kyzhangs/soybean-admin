@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import { useLoading } from '@sa/hooks';
 import { useAppStore } from '@/store/modules/app';
 import { useAuthStore } from '@/store/modules/auth';
+import { useRouteStore } from '@/store/modules/route';
 import { useTabStore } from '@/store/modules/tab';
 import { useAuth } from '@/hooks/business/auth';
 import { $t } from '@/locales';
@@ -11,6 +12,7 @@ import { $t } from '@/locales';
 const route = useRoute();
 const appStore = useAppStore();
 const authStore = useAuthStore();
+const routeStore = useRouteStore();
 const tabStore = useTabStore();
 const { hasAuth } = useAuth();
 const { loading, startLoading, endLoading } = useLoading();
@@ -51,10 +53,16 @@ async function handleToggleAccount(account: Account) {
   loginAccount.value = account.key;
 
   startLoading();
-  await authStore.login(account.username, account.password, false);
-  tabStore.initTabStore(route);
-  endLoading();
-  appStore.reloadPage();
+  try {
+    await authStore.login(account.username, account.password, false);
+    if (!authStore.isLogin) return;
+
+    await routeStore.refreshAuthRoute();
+    tabStore.initTabStore(route);
+    await appStore.reloadPage();
+  } finally {
+    endLoading();
+  }
 }
 </script>
 

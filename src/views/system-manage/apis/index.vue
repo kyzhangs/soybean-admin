@@ -5,11 +5,14 @@ import { enableStatusRecord } from '@/constants/business';
 import { fetchGetApiPageList, fetchApiSync, fetchUpdateApi, fetchBatchApi } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+import { useAuth } from '@/hooks/business/auth';
 import { $t } from '@/locales';
 import { getTableIndex } from '@/utils/common.js';
 import ApiSearch from './modules/api-search.vue';
 
 const appStore = useAppStore();
+
+const { hasAuth } = useAuth();
 
 const searchParams = ref<Api.SystemManage.ApiSearchParams>({
   page: 1,
@@ -20,7 +23,7 @@ const searchParams = ref<Api.SystemManage.ApiSearchParams>({
 });
 
 const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
-  api: () =>  fetchGetApiPageList(searchParams.value),
+  api: () => fetchGetApiPageList(searchParams.value),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
     searchParams.value.page = params.page;
@@ -151,8 +154,8 @@ async function handleBatchOperate(key: string) {
   const ids = checkedRowKeys.value;
 
   const fieldMap: Record<string, Api.Common.BatchOperateParams['data']> = {
-    enable: { field: 'status', value: "1" },
-    disable: { field: 'status', value: "2" }
+    enable: { field: 'status', value: '1' },
+    disable: { field: 'status', value: '2' }
   };
 
   const batchData = fieldMap[key];
@@ -195,12 +198,13 @@ async function handleApiSync() {
           v-model:columns="columnChecks"
           :disabled="checkedRowKeys.length === 0"
           :loading="loading"
+          :show-add="false"
           :default-actions="['enable', 'disable']"
           @refresh="getData"
           @batch="handleBatchOperate"
         >
           <template #default>
-            <NPopconfirm @positive-click="handleApiSync">
+            <NPopconfirm v-if="hasAuth('B_SYNC_API')" @positive-click="handleApiSync">
               <template #default>
                 {{ $t('page.system-manage.apis.confirmSyncApi') }}
               </template>
