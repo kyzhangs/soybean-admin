@@ -446,6 +446,11 @@ declare namespace App {
           userId: string;
           roles: string;
           permissions: string;
+          activeTime: string;
+          lastLogin: string;
+          superAdmin: string;
+          normalUser: string;
+          unassignedRole: string;
         };
         'system-manage': {
           common: {

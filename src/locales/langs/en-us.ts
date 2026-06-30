@@ -566,7 +566,12 @@ const local: App.I18n.Schema = {
       confirmPasswordPlaceholder: 'Re-enter new password',
       userId: 'User ID',
       roles: 'Roles',
-      permissions: 'Permissions'
+      permissions: 'Permissions',
+      activeTime: 'Active Time',
+      lastLogin: 'Last Login',
+      superAdmin: 'Super Admin',
+      normalUser: 'Normal User',
+      unassignedRole: 'No role assigned'
     },
     'system-manage': {
       common: {

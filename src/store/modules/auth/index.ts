@@ -28,11 +28,16 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     gender: '3',
     email: null,
     phone: null,
+    status: '1',
     is_superuser: false,
+    create_time: null,
     active_time: null,
     roles: [],
     buttons: []
   });
+
+  /** name or username */
+  const userDisplayName = computed(() => userInfo.name || userInfo.username);
 
   /** is super role in static route */
   const isStaticSuper = computed(() => {
@@ -123,7 +128,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
         window.$notification?.success({
           title: $t('page.login.common.loginSuccess'),
-          content: $t('page.login.common.welcomeBack', { username: userInfo.username }),
+          content: $t('page.login.common.welcomeBack', { username: userDisplayName.value }),
           duration: 4500
         });
       }
@@ -180,11 +185,13 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   return {
     token,
     userInfo,
+    userDisplayName,
     isStaticSuper,
     isLogin,
     loginLoading,
     resetStore,
     login,
+    getUserInfo,
     initUserInfo
   };
 });

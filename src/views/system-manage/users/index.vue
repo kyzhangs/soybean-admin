@@ -57,7 +57,13 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'username',
       title: $t('page.system-manage.users.username'),
       align: 'center',
-      minWidth: 100
+      width: 100
+    },
+    {
+      key: 'name',
+      title: $t('page.system-manage.users.name'),
+      align: 'center',
+      width: 100
     },
     {
       key: 'gender',
@@ -78,12 +84,6 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       }
     },
     {
-      key: 'name',
-      title: $t('page.system-manage.users.name'),
-      align: 'center',
-      minWidth: 100
-    },
-    {
       key: 'phone',
       title: $t('page.system-manage.users.phone'),
       align: 'center',
@@ -93,13 +93,13 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'email',
       title: $t('page.system-manage.users.email'),
       align: 'center',
-      minWidth: 200
+      width: 200
     },
     {
       key: 'is_active',
       title: $t('page.system-manage.users.is_active'),
       align: 'center',
-      minWidth: 200,
+      width: 100,
       render: row => {
         const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
           Y: 'primary',
@@ -128,7 +128,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'last_login',
       title: $t('page.system-manage.users.last_login'),
       align: 'center',
-      minWidth: 200
+      width: 200
     },
     {
       key: 'status',

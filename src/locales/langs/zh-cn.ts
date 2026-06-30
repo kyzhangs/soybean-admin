@@ -562,7 +562,12 @@ const local: App.I18n.Schema = {
       confirmPasswordPlaceholder: '请再次输入新密码',
       userId: '用户 ID',
       roles: '角色',
-      permissions: '权限'
+      permissions: '权限',
+      activeTime: '激活时间',
+      lastLogin: '最近登录',
+      superAdmin: '超级管理员',
+      normalUser: '普通用户',
+      unassignedRole: '暂未分配角色'
     },
     'system-manage': {
       common: {
