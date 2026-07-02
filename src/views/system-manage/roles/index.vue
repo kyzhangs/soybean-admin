@@ -1,10 +1,9 @@
 <script setup lang="tsx">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
-import { fetchGetRolePageList, fetchBatchRole } from '@/service/api';
+import { fetchGetRolePageList, fetchBatchRole, fetchGetMenuList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
-import { useRouteStore } from '@/store/modules/route';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
 import RoleOperateModal from './modules/role-operate-modal.vue';
@@ -12,11 +11,12 @@ import RolePermissionModal from './modules/role-permission-modal.vue';
 import RoleSearch from './modules/role-search.vue';
 
 const appStore = useAppStore();
-const routeStore = useRouteStore();
 
-function flattenMenuOptions(menus: App.Global.Menu[]): CommonType.Option[] {
-  return menus.reduce<CommonType.Option[]>((options, menu) => {
-    options.push({ label: menu.label, value: menu.routeKey });
+const menus = ref<Api.SystemManage.Menu[]>([]);
+
+function flattenMenuOptions(menusData: Api.SystemManage.Menu[]): CommonType.Option[] {
+  return menusData.reduce<CommonType.Option[]>((options, menu) => {
+    options.push({ label: menu.title || menu.name, value: menu.name });
     if (menu.children?.length) {
       options.push(...flattenMenuOptions(menu.children));
     }
@@ -24,7 +24,14 @@ function flattenMenuOptions(menus: App.Global.Menu[]): CommonType.Option[] {
   }, []);
 }
 
-const menuOptions = computed(() => flattenMenuOptions(routeStore.menus));
+const menuOptions = computed(() => flattenMenuOptions(menus.value));
+
+async function getMenus() {
+  const { error, data } = await fetchGetMenuList();
+  if (!error) {
+    menus.value = data;
+  }
+}
 
 const searchParams = ref<Api.SystemManage.RoleSearchParams>({
   page: 1,
@@ -177,6 +184,10 @@ function handlePermission(row: Api.SystemManage.Role) {
   permissionData.value = row;
   permissionVisible.value = true;
 }
+
+onMounted(() => {
+  getMenus();
+});
 </script>
 
 <template>

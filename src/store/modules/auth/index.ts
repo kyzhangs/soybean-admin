@@ -86,7 +86,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
    *
    * @returns {boolean} Whether to clear all tabs
    */
-  function checkTabClear(): boolean {
+  async function checkTabClear(): Promise<boolean> {
     if (!userInfo.userId) {
       return false;
     }
@@ -96,7 +96,8 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     // Clear all tabs if current user is different from previous user
     if (!lastLoginUserId || lastLoginUserId !== userInfo.userId) {
       localStg.remove('globalTabs');
-      tabStore.clearTabs();
+
+      await tabStore.clearTabs();
 
       localStg.remove('lastLoginUserId');
       return true;
@@ -109,7 +110,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   /**
    * Login
    *
-   * @param username User name
+   * @param username Username
    * @param password Password
    * @param [redirect=true] Whether to redirect after login. Default is `true`
    */
@@ -122,8 +123,9 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
       const pass = await loginByToken(loginToken);
 
       if (pass) {
+        await routeStore.initAuthRoute();
         // Check if the tab needs to be cleared
-        const isClear = checkTabClear();
+        const isClear = await checkTabClear();
         let needRedirect = redirect;
 
         if (isClear) {
