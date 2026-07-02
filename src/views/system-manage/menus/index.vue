@@ -162,9 +162,9 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 280,
+      width: 200,
       render: row => (
-        <div class="flex-center justify-end gap-8px">
+        <div class="flex-center justify-end gap-8px pr-20px">
           {row.type === '1' && (
             <NButton type="primary" ghost size="small" onClick={() => handleAddChildMenu(row)}>
               {$t('page.system-manage.menus.addChildMenu')}

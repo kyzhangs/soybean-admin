@@ -234,7 +234,7 @@ watch(visible, () => {
 });
 
 watch(
-  () => model.value.title,
+  () => model.value.name,
   () => {
     handleUpdateRoutePathByRouteName();
     handleUpdateI18nKeyByRouteName();
