@@ -79,11 +79,13 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
     {
       key: 'path',
       title: $t('page.system-manage.apis.path'),
-      titleAlign: 'center',
-      align: 'left',
+      align: 'center',
       width: 240,
       ellipsis: {
         tooltip: true
+      },
+      render: row => {
+        return <NTag type="default">{row.path}</NTag>
       }
     },
     {

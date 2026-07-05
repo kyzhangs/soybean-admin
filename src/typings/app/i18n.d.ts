@@ -432,24 +432,10 @@ declare namespace App {
           loginPwdTip: string;
           modifyPwd: string;
           accountStatus: string;
-          accountStatusNormal: string;
-          enabled: string;
-          modalTitle: string;
-          oldPassword: string;
-          newPassword: string;
-          confirmPassword: string;
-          confirmModify: string;
-          successMsg: string;
-          oldPasswordPlaceholder: string;
-          newPasswordPlaceholder: string;
-          confirmPasswordPlaceholder: string;
           userId: string;
           roles: string;
-          permissions: string;
           activeTime: string;
           lastLogin: string;
-          superAdmin: string;
-          normalUser: string;
           unassignedRole: string;
         };
         'system-manage': {
@@ -516,14 +502,10 @@ declare namespace App {
               is_active: string;
               is_superuser: string;
               status: string;
-              roles: string;
             };
           };
           menus: {
-            home: string;
             title: string;
-            id: string;
-            parentId: string;
             menuType: string;
             menuName: string;
             routeName: string;
@@ -533,7 +515,6 @@ declare namespace App {
             page: string;
             i18nKey: string;
             icon: string;
-            localIcon: string;
             iconTypeTitle: string;
             order: string;
             constant: string;
@@ -544,14 +525,9 @@ declare namespace App {
             multiTab: string;
             fixedIndexInTab: string;
             query: string;
-            button: string;
-            buttonCode: string;
-            buttonDesc: string;
             bindButtons: string;
             menuStatus: string;
             form: {
-              home: string;
-              menuType: string;
               menuName: string;
               routeName: string;
               routePath: string;
@@ -562,20 +538,12 @@ declare namespace App {
               icon: string;
               localIcon: string;
               order: string;
-              keepAlive: string;
               href: string;
-              hideInMenu: string;
               activeMenu: string;
-              multiTab: string;
-              fixedInTab: string;
               fixedIndexInTab: string;
               queryKey: string;
               queryValue: string;
-              button: string;
-              buttonCode: string;
-              buttonDesc: string;
               buttonKeyword: string;
-              menuStatus: string;
             };
             addMenu: string;
             editMenu: string;
