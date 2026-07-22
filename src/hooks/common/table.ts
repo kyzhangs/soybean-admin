@@ -200,8 +200,8 @@ export function useTableOperate<TableData>(
   const checkedRowKeys = shallowRef<string[]>([]);
 
   /** the hook after the batch delete operation is completed */
-  async function onBatchOperate() {
-    window.$message?.success($t('common.batchOperationSuccess'));
+  async function onBatchOperate(successMessage: string = $t('common.batchOperationSuccess')) {
+    window.$message?.success(successMessage);
     checkedRowKeys.value = [];
 
     await getData();

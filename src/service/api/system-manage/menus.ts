@@ -14,9 +14,9 @@ export function fetchGetMenuOptions() {
   });
 }
 
-/** batch menus */
-export function fetchBatchOperateMenu(data: { operate: string; ids: string[] }) {
-  return request<any>({
+/** batch operate menus */
+export function fetchBatchMenu(data: Api.Common.BatchOperateParams) {
+  return request<null>({
     url: '/system-manage/menus/batch',
     method: 'POST',
     data

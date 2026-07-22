@@ -489,8 +489,15 @@ declare namespace App {
             status: string;
             roles: string;
             contact: string;
+            resetPassword: string;
+            resetPasswordTitle: string;
+            resetPasswordSuccess: string;
             batchResetPassword: string;
+            batchResetPasswordTitle: string;
+            batchResetPasswordSuccess: string;
             confirmBatchResetPassword: string;
+            newPassword: string;
+            confirmPassword: string;
             form: {
               keyword: string;
               contact: string;
@@ -502,6 +509,8 @@ declare namespace App {
               is_active: string;
               is_superuser: string;
               status: string;
+              newPassword: string;
+              confirmPassword: string;
             };
           };
           menus: {

@@ -43,6 +43,8 @@ declare namespace Api {
       update_time: string;
     } & T;
 
+    type BatchAction = 'ENABLE' | 'DISABLE' | 'DELETE';
+
     interface BatchActionConfig {
       key: string;
       label: string;
@@ -55,11 +57,8 @@ declare namespace Api {
     }
 
     type BatchOperateParams = {
+      operate: BatchAction;
       ids: string[];
-      data: {
-        field: string;
-        value: any;
-      };
     };
   }
 }

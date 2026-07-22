@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { ref, computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { yesOrNoRecord } from '@/constants/common';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
@@ -9,6 +9,7 @@ import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hoo
 import { $t } from '@/locales';
 import { getTableIndex } from '@/utils/common.js';
 import UserOperateModal from './modules/user-operate-modal.vue';
+import UserPasswordResetModal from './modules/user-password-reset-modal.vue';
 import UserSearch from './modules/user-search.vue';
 
 const appStore = useAppStore();
@@ -26,10 +27,10 @@ const searchParams = ref<Api.SystemManage.UserSearchParams>({
 
 const extraActionConfig = computed<Api.Common.BatchActionConfig[]>(() => [
   {
-    key: 'reset-password',
+    key: 'RESET_PASSWORD',
     label: $t('page.system-manage.users.batchResetPassword'),
     icon: 'ph:key',
-    confirmMessage: $t('page.system-manage.users.confirmBatchResetPassword')
+    confirm: false
   }
 ]);
 
@@ -151,11 +152,14 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 130,
+      width: 230,
       render: row => (
         <div class="flex-center gap-8px">
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
+          </NButton>
+          <NButton type="warning" ghost size="small" onClick={() => handleResetPassword(row)}>
+            {$t('page.system-manage.users.resetPassword')}
           </NButton>
           <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
@@ -185,23 +189,52 @@ const {
   // closeDrawer
 } = useTableOperate(data, 'id', getData);
 
-async function handleBatchOperate(key: string) {
-  const ids = checkedRowKeys.value;
+const passwordResetVisible = ref(false);
+const passwordResetMode = ref<'single' | 'batch'>('single');
+const passwordResetUserId = ref('');
+const passwordResetUsername = ref('');
+const batchPasswordIds = ref<string[]>([]);
 
-  const fieldMap: Record<string, Api.Common.BatchOperateParams['data']> = {
-    enable: { field: 'status', value: "1" },
-    disable: { field: 'status', value: "2" },
-    delete: { field: 'is_deleted', value: true },
-    'reset-password': { field: 'password', value: '111111' }
+async function handleBatchOperate(key: string) {
+  if (key === 'RESET_PASSWORD') {
+    passwordResetMode.value = 'batch';
+    passwordResetUserId.value = '';
+    passwordResetUsername.value = '';
+    batchPasswordIds.value = [...checkedRowKeys.value];
+    passwordResetVisible.value = true;
+    return;
+  }
+
+  const actionMap: Record<string, Api.Common.BatchAction> = {
+    ENABLE: 'ENABLE',
+    DISABLE: 'DISABLE',
+    DELETE: 'DELETE'
   };
 
-  const batchData = fieldMap[key];
-  if (!batchData) return;
+  const action = actionMap[key];
+  if (!action) return;
 
-  const { error } = await fetchBatchUser({ ids, data: batchData });
+  const { error } = await fetchBatchUser({ operate: action, ids: checkedRowKeys.value });
   if (!error) {
-    onBatchOperate();
+    await onBatchOperate();
   }
+}
+
+function handleResetPassword(user: Api.SystemManage.User) {
+  passwordResetMode.value = 'single';
+  passwordResetUserId.value = user.id;
+  passwordResetUsername.value = user.username;
+  batchPasswordIds.value = [];
+  passwordResetVisible.value = true;
+}
+
+async function handlePasswordResetSubmitted() {
+  if (passwordResetMode.value === 'batch') {
+    await onBatchOperate($t('page.system-manage.users.batchResetPasswordSuccess'));
+    return;
+  }
+
+  window.$message?.success($t('page.system-manage.users.resetPasswordSuccess'));
 }
 
 /** the enabled role options */
@@ -259,7 +292,7 @@ onMounted(async() => {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="962"
+        :scroll-x="1062"
         :loading="loading"
         remote
         :row-key="row => row.id"
@@ -272,6 +305,14 @@ onMounted(async() => {
         :row-data="editingData"
         :role-options="roleOptions"
         @submitted="getDataByPage"
+      />
+      <UserPasswordResetModal
+        v-model:visible="passwordResetVisible"
+        :mode="passwordResetMode"
+        :user-id="passwordResetUserId"
+        :username="passwordResetUsername"
+        :ids="batchPasswordIds"
+        @submitted="handlePasswordResetSubmitted"
       />
     </NCard>
   </div>

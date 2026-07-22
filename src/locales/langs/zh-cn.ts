@@ -606,8 +606,15 @@ const local: App.I18n.Schema = {
         status: '用户状态',
         roles: '用户角色',
         contact: '联系方式',
-        batchResetPassword: '重置密码',
+        resetPassword: '重置密码',
+        resetPasswordTitle: '重置密码: {username}',
+        resetPasswordSuccess: '密码重置成功',
+        batchResetPassword: '批量重置密码',
+        batchResetPasswordTitle: '批量重置密码（已选择 {count} 个用户）',
+        batchResetPasswordSuccess: '批量重置密码成功',
         confirmBatchResetPassword: '确认重置密码吗?',
+        newPassword: '新密码',
+        confirmPassword: '确认密码',
         form: {
           keyword: '请输入姓名或用户名',
           contact: '请输入手机号或邮箱',
@@ -618,7 +625,9 @@ const local: App.I18n.Schema = {
           email: '请输入邮箱',
           is_active: '请选择激活状态',
           is_superuser: '请选择是否为超管',
-          status: '请选择用户状态'
+          status: '请选择用户状态',
+          newPassword: '请输入新密码',
+          confirmPassword: '请再次输入新密码'
         }
       },
       menus: {

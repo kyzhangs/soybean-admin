@@ -5,7 +5,7 @@ import { NButton, NPopconfirm, NTag, NTooltip } from 'naive-ui';
 import { useBoolean } from '@sa/hooks';
 import { yesOrNoRecord } from '@/constants/common';
 import { enableStatusRecord, menuTypeRecord } from '@/constants/business';
-import { fetchGetMenuOptions, fetchGetMenuList, fetchDeleteMenu } from '@/service/api';
+import { fetchBatchMenu, fetchDeleteMenu, fetchGetMenuList, fetchGetMenuOptions } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { useNaiveTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -192,7 +192,7 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
   ]
 });
 
-const { checkedRowKeys, onDeleted } = useTableOperate(data, 'id', getData);
+const { checkedRowKeys, onBatchOperate, onDeleted } = useTableOperate(data, 'id', getData);
 
 const operateType = ref<OperateType>('add');
 const buttonBindVisible = ref(false);
@@ -203,13 +203,21 @@ function handleAdd() {
   openModal();
 }
 
-// async function handleBatchOperate() {
-//   const ids = checkedRowKeys.value;
-//   const { error, response } = await fetchBatchOperateMenu({ operate, ids });
-//   if (!error) {
-//     onBatchOperate(response.data);
-//   }
-// }
+async function handleBatchOperate(key: string) {
+  const actionMap: Record<string, Api.Common.BatchAction> = {
+    ENABLE: 'ENABLE',
+    DISABLE: 'DISABLE',
+    DELETE: 'DELETE'
+  };
+
+  const action = actionMap[key];
+  if (!action) return;
+
+  const { error } = await fetchBatchMenu({ operate: action, ids: checkedRowKeys.value });
+  if (!error) {
+    await onBatchOperate();
+  }
+}
 
 async function handleDelete(menuId: string) {
   // request
@@ -274,6 +282,7 @@ init();
           :loading="loading"
           @add="handleAdd"
           @refresh="getData"
+          @batch="handleBatchOperate"
         />
       </template>
       <NDataTable

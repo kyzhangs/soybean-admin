@@ -129,20 +129,18 @@ async function handleDelete(button_id: string) {
 }
 
 async function handleBatchOperate(key: string) {
-  const ids = checkedRowKeys.value;
-
-  const fieldMap: Record<string, Api.Common.BatchOperateParams['data']> = {
-    enable: { field: 'status', value: "1" },
-    disable: { field: 'status', value: "2" },
-    delete: { field: 'is_deleted', value: true },
+  const actionMap: Record<string, Api.Common.BatchAction> = {
+    ENABLE: 'ENABLE',
+    DISABLE: 'DISABLE',
+    DELETE: 'DELETE'
   };
 
-  const batchData = fieldMap[key];
-  if (!batchData) return;
+  const action = actionMap[key];
+  if (!action) return;
 
-  const { error } = await fetchBatchButton({ ids, data: batchData });
+  const { error } = await fetchBatchButton({ operate: action, ids: checkedRowKeys.value });
   if (!error) {
-    onBatchOperate();
+    await onBatchOperate();
   }
 }
 

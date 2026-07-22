@@ -153,19 +153,17 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
 const { checkedRowKeys, onBatchOperate } = useTableOperate(data, 'id', getData);
 
 async function handleBatchOperate(key: string) {
-  const ids = checkedRowKeys.value;
-
-  const fieldMap: Record<string, Api.Common.BatchOperateParams['data']> = {
-    enable: { field: 'status', value: '1' },
-    disable: { field: 'status', value: '2' }
+  const actionMap: Record<string, Api.Common.BatchAction> = {
+    ENABLE: 'ENABLE',
+    DISABLE: 'DISABLE'
   };
 
-  const batchData = fieldMap[key];
-  if (!batchData) return;
+  const action = actionMap[key];
+  if (!action) return;
 
-  const { error } = await fetchBatchApi({ ids, data: batchData });
+  const { error } = await fetchBatchApi({ operate: action, ids: checkedRowKeys.value });
   if (!error) {
-    onBatchOperate();
+    await onBatchOperate();
   }
 }
 
@@ -201,7 +199,7 @@ async function handleApiSync() {
           :disabled="checkedRowKeys.length === 0"
           :loading="loading"
           :show-add="false"
-          :default-actions="['enable', 'disable']"
+          :default-actions="['ENABLE', 'DISABLE']"
           @refresh="getData"
           @batch="handleBatchOperate"
         >

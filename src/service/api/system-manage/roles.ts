@@ -24,7 +24,7 @@ export function fetchGetRolePageList(params: Api.SystemManage.RoleSearchParams) 
   });
 }
 
-/** batch role */
+/** batch operate roles */
 export function fetchBatchRole(data: Api.Common.BatchOperateParams) {
   return request<null>({
     url: '/system-manage/roles/batch',

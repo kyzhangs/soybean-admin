@@ -50,6 +50,20 @@ declare namespace Api {
     /** user update params */
     type UserUpdateParams = Pick<User, 'name' | 'gender' | 'email' | 'phone' | 'is_active' | 'status' | 'roles'>;
 
+    type UserPasswordResetParams = {
+      password: string;
+    };
+
+    type UserBatchAction = Common.BatchAction | 'RESET_PASSWORD';
+
+    type UserBatchOperateParams =
+      | (Common.BatchOperateParams & { password?: never })
+      | {
+          operate: 'RESET_PASSWORD';
+          ids: string[];
+          password: string;
+        };
+
     /** user page list */
     type UserPageList = Common.PaginatingQueryRecord<User>;
   }

@@ -22,10 +22,10 @@ export function fetchGetButtonPageList(params: Api.SystemManage.ButtonSearchPara
   });
 }
 
-/** batch button */
+/** batch operate buttons */
 export function fetchBatchButton(data: Api.Common.BatchOperateParams) {
-  return request<Api.SystemManage.ButtonPageList>({
-    url: '/system-manage/buttons/page',
+  return request<null>({
+    url: '/system-manage/buttons/batch',
     method: 'POST',
     data
   });

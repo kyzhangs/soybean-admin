@@ -17,8 +17,8 @@ export function fetchGetUserPageList(params: Api.SystemManage.UserSearchParams) 
   });
 }
 
-/** batch user */
-export function fetchBatchUser(data: Api.Common.BatchOperateParams) {
+/** batch operate users */
+export function fetchBatchUser(data: Api.SystemManage.UserBatchOperateParams) {
   return request<null>({
     url: '/system-manage/users/batch',
     method: 'POST',
@@ -30,6 +30,15 @@ export function fetchBatchUser(data: Api.Common.BatchOperateParams) {
 export function fetchUpdateUser(userId: string, data: Api.SystemManage.UserUpdateParams) {
   return request<Api.SystemManage.User>({
     url: `/system-manage/users/${userId}`,
+    method: 'PUT',
+    data
+  });
+}
+
+/** reset user password */
+export function fetchResetUserPassword(userId: string, data: Api.SystemManage.UserPasswordResetParams) {
+  return request<null>({
+    url: `/system-manage/users/${userId}/reset-password`,
     method: 'PUT',
     data
   });

@@ -12,7 +12,7 @@ interface Props {
   disabled?: boolean;
   loading?: boolean;
   showAdd?: boolean;
-  defaultActions?: ('enable' | 'disable' | 'delete')[];
+  defaultActions?: Api.Common.BatchAction[];
   extraActionConfig?: Api.Common.BatchActionConfig[];
 }
 
@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   loading: false,
   showAdd: true,
-  defaultActions: () => ['enable', 'disable', 'delete'],
+  defaultActions: () => ['ENABLE', 'DISABLE', 'DELETE'],
   extraActionConfig: () => []
 });
 
@@ -35,30 +35,30 @@ const emit = defineEmits<Emits>();
 const allOperations = computed((): Api.Common.BatchActionConfig[] => {
   const defaults: Api.Common.BatchActionConfig[] = [
     {
-      key: 'enable',
+      key: 'ENABLE',
       label: $t('common.batchEnable'),
       icon: 'ph:check-circle',
       confirmMessage: $t('common.confirmBatchEnable'),
       dialogType: 'success'
     },
     {
-      key: 'disable',
+      key: 'DISABLE',
       label: $t('common.batchDisable'),
       icon: 'ph:prohibit',
       confirmMessage: $t('common.confirmBatchDisable'),
       dialogType: 'warning'
     },
     {
-      key: 'delete',
+      key: 'DELETE',
       label: $t('common.batchDelete'),
       icon: 'ph:trash',
-      confirmMessage: $t('common.confirmDelete'),
+      confirmMessage: $t('common.confirmBatchDelete'),
       dialogType: 'error'
     }
   ];
 
   const extras = props.extraActionConfig ?? [];
-  const merged = defaults.filter(op => props.defaultActions.includes(op.key as 'enable' | 'disable' | 'delete'));
+  const merged = defaults.filter(op => props.defaultActions.includes(op.key as Api.Common.BatchAction));
   for (const extra of extras) {
     const idx = merged.findIndex(op => op.key === extra.key);
     if (idx >= 0) {
@@ -104,6 +104,10 @@ function refresh() {
 function handleSelect(key: string) {
   const operation = allOperations.value.find(op => op.key === key);
   if (!operation) {
+    return;
+  }
+
+  if (operation.confirm === false) {
     emit('batch', key);
     return;
   }

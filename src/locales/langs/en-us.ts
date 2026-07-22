@@ -610,8 +610,15 @@ const local: App.I18n.Schema = {
         status: 'Status',
         roles: 'Roles',
         contact: 'Contact',
-        batchResetPassword: 'Reset Password',
+        resetPassword: 'Reset Password',
+        resetPasswordTitle: 'Reset Password for {username}',
+        resetPasswordSuccess: 'Password reset successfully',
+        batchResetPassword: 'Batch Reset Password',
+        batchResetPasswordTitle: 'Reset Passwords ({count} Users Selected)',
+        batchResetPasswordSuccess: 'Passwords reset successfully',
         confirmBatchResetPassword: 'Confirm reset password?',
+        newPassword: 'New Password',
+        confirmPassword: 'Confirm Password',
         form: {
           keyword: 'Please enter name or username',
           contact: 'Please enter phone or email',
@@ -622,7 +629,9 @@ const local: App.I18n.Schema = {
           email: 'Please enter email',
           is_active: 'Please select active status',
           is_superuser: 'Please select is superuser',
-          status: 'Please select status'
+          status: 'Please select status',
+          newPassword: 'Please enter a new password',
+          confirmPassword: 'Please enter the new password again'
         }
       },
       menus: {
