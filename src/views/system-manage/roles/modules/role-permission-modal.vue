@@ -88,6 +88,12 @@ function collectTreeKeys(options: TreeOption[], leafOnly = false): string[] {
   }, []);
 }
 
+const permissionKeySets = computed<Record<keyof Api.SystemManage.RolePermissions, Set<string>>>(() => ({
+  menus: new Set(collectTreeKeys(menuTree.value)),
+  buttons: new Set(collectTreeKeys(buttonTree.value, true)),
+  apis: new Set(collectTreeKeys(apiTree.value, true))
+}));
+
 function handleCheckAll(type: keyof Api.SystemManage.RolePermissions) {
   const treeMap: Record<keyof Api.SystemManage.RolePermissions, TreeOption[]> = {
     menus: menuTree.value,
@@ -141,8 +147,15 @@ function closeModal() {
 async function handleSubmit() {
   if (!roleId.value) return;
 
+  const permissions = Object.fromEntries(
+    Object.entries(model.value).map(([type, keys]) => [
+      type,
+      keys.filter(key => permissionKeySets.value[type as keyof Api.SystemManage.RolePermissions].has(key))
+    ])
+  ) as Api.SystemManage.RolePermissions;
+
   submitting.value = true;
-  const { error } = await fetchUpdateRolePermissions(roleId.value, model.value);
+  const { error } = await fetchUpdateRolePermissions(roleId.value, permissions);
   submitting.value = false;
 
   if (!error) {
@@ -220,6 +233,7 @@ watch(visible, () => {
               v-model:checked-keys="model.buttons"
               checkable
               cascade
+              check-strategy="child"
               block-line
               :data="buttonTree"
               :pattern="buttonPattern"
@@ -250,6 +264,7 @@ watch(visible, () => {
               v-model:checked-keys="model.apis"
               checkable
               cascade
+              check-strategy="child"
               block-line
               :data="apiTree"
               :pattern="apiPattern"

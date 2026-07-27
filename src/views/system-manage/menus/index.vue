@@ -30,7 +30,7 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       key: 'type',
       title: $t('page.system-manage.menus.menuType'),
       align: 'center',
-      width: 100,
+      width: 60,
       render: row => {
         const tagMap: Record<Api.SystemManage.MenuType, NaiveUI.ThemeColor> = {
           1: 'primary',
@@ -63,7 +63,7 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       key: 'title',
       title: $t('page.system-manage.menus.menuName'),
       align: 'center',
-      width: 180,
+      width: 80,
       render: row => {
         return row.i18nKey ? $t(row.i18nKey) : row.title;
       }
@@ -72,7 +72,7 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       key: 'name',
       title: $t('page.system-manage.menus.routeName'),
       align: 'center',
-      width: 120,
+      width: 80,
       render: row => {
         return (
           <NTooltip placement="left-start">
@@ -88,7 +88,7 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       key: 'constant',
       title: $t('page.system-manage.menus.constant'),
       align: 'center',
-      width: 120,
+      width: 64,
       render: row => {
         const constant: CommonType.YesOrNo = row.constant ? 'Y' : 'N';
         const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
@@ -105,7 +105,7 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       key: 'hideInMenu',
       title: $t('page.system-manage.menus.hideInMenu'),
       align: 'center',
-      width: 80,
+      width: 64,
       render: row => {
         const hide: CommonType.YesOrNo = row.hideInMenu ? 'Y' : 'N';
 
@@ -123,7 +123,7 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       key: 'multiTab',
       title: $t('page.system-manage.menus.multiTab'),
       align: 'center',
-      width: 120,
+      width: 64,
       render: row => {
         const multiTab: CommonType.YesOrNo = row.multiTab ? 'Y' : 'N';
         const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
@@ -140,13 +140,13 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       key: 'order',
       title: $t('page.system-manage.menus.order'),
       align: 'center',
-      width: 60
+      width: 64
     },
     {
       key: 'status',
       title: $t('page.system-manage.menus.menuStatus'),
       align: 'center',
-      width: 120,
+      width: 60,
       render: row => {
         const tagMap: Record<Api.Common.Status, NaiveUI.ThemeColor> = {
           1: 'success',
