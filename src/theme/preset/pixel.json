@@ -1,0 +1,46 @@
+{
+  "name": "Pixel Art",
+  "desc": "A sharp 8-bit inspired theme with hard borders and bold colors",
+  "i18nkey": "theme.appearance.preset.pixel",
+  "version": "1.0.0",
+  "styleOnly": true,
+  "uiStyle": "pixel",
+  "recommendColor": false,
+  "themeColor": "#29adff",
+  "otherColor": {
+    "info": "#29adff",
+    "success": "#00a83a",
+    "warning": "#e6a700",
+    "error": "#ff004d"
+  },
+  "themeRadius": 0,
+  "isInfoFollowPrimary": true,
+  "tokens": {
+    "light": {
+      "colors": {
+        "container": "rgb(255, 248, 231)",
+        "layout": "rgb(245, 217, 143)",
+        "inverted": "rgb(26, 28, 44)",
+        "base-text": "rgb(26, 28, 44)"
+      },
+      "boxShadow": {
+        "header": "0 3px 0 rgb(26, 28, 44)",
+        "sider": "3px 0 0 rgb(26, 28, 44)",
+        "tab": "0 3px 0 rgb(26, 28, 44)"
+      }
+    },
+    "dark": {
+      "colors": {
+        "container": "rgb(38, 40, 61)",
+        "layout": "rgb(26, 28, 44)",
+        "inverted": "rgb(9, 10, 19)",
+        "base-text": "rgb(244, 244, 244)"
+      },
+      "boxShadow": {
+        "header": "0 3px 0 rgb(9, 10, 19)",
+        "sider": "3px 0 0 rgb(9, 10, 19)",
+        "tab": "0 3px 0 rgb(9, 10, 19)"
+      }
+    }
+  }
+}

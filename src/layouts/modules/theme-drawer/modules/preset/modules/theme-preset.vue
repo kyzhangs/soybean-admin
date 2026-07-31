@@ -11,6 +11,7 @@ defineOptions({
 
 type ThemePreset = Pick<
   App.Theme.ThemeSetting,
+  | 'uiStyle'
   | 'themeScheme'
   | 'grayscale'
   | 'colourWeakness'
@@ -33,6 +34,8 @@ type ThemePreset = Pick<
   desc: string;
   i18nkey?: string;
   version: string;
+  /** Only apply visual settings and preserve layout-related preferences */
+  styleOnly?: boolean;
   /** Optional NaiveUI theme overrides */
   naiveui?: App.Theme.NaiveUIThemeOverride;
 };
@@ -82,7 +85,27 @@ const getPresetDesc = (preset: ThemePreset): string => {
 
 const applyPreset = (preset: ThemePreset): void => {
   const mergedPreset = defu(preset, themeSettings);
-  const { themeScheme, grayscale, colourWeakness, layout, watermark, naiveui, ...rest } = mergedPreset;
+
+  if (preset.styleOnly) {
+    const { uiStyle, recommendColor, themeColor, themeRadius, otherColor, isInfoFollowPrimary, tokens, naiveui } =
+      mergedPreset;
+
+    themeStore.setUiStyle(uiStyle);
+    Object.assign(themeStore, {
+      recommendColor,
+      themeColor,
+      themeRadius,
+      otherColor: { ...otherColor },
+      isInfoFollowPrimary,
+      tokens: { ...tokens }
+    });
+    themeStore.setNaiveThemeOverrides(naiveui);
+    window.$message?.success($t('theme.appearance.preset.applySuccess'));
+    return;
+  }
+
+  const { uiStyle, themeScheme, grayscale, colourWeakness, layout, watermark, naiveui, ...rest } = mergedPreset;
+  themeStore.setUiStyle(uiStyle);
   themeStore.setThemeScheme(themeScheme);
   themeStore.setGrayscale(grayscale);
   themeStore.setColourWeakness(colourWeakness);

@@ -3,21 +3,22 @@
   "desc": "Default theme preset with balanced settings",
   "i18nkey": "theme.appearance.preset.default",
   "version": "1.0.0",
+  "uiStyle": "default",
   "themeScheme": "light",
   "grayscale": false,
   "colourWeakness": false,
   "recommendColor": false,
-  "themeColor": "#646cff",
+  "themeColor": "#1296db",
   "otherColor": {
     "info": "#2080f0",
     "success": "#52c41a",
     "warning": "#faad14",
     "error": "#f5222d"
   },
-  "themeRadius": 6,
+  "themeRadius": 10,
   "isInfoFollowPrimary": true,
   "layout": {
-    "mode": "vertical",
+    "mode": "horizontal",
     "scrollMode": "content"
   },
   "page": {
@@ -25,9 +26,9 @@
     "animateMode": "fade-slide"
   },
   "header": {
-    "height": 56,
+    "height": 40,
     "breadcrumb": {
-      "visible": true,
+      "visible": false,
       "showIcon": true
     },
     "multilingual": {
@@ -40,9 +41,9 @@
   "tab": {
     "visible": true,
     "cache": true,
-    "height": 44,
+    "height": 32,
     "mode": "chrome",
-    "closeTabByMiddleClick": false
+    "closeTabByMiddleClick": true
   },
   "fixedHeaderAndTab": true,
   "sider": {
@@ -51,18 +52,19 @@
     "collapsedWidth": 64,
     "mixWidth": 90,
     "mixCollapsedWidth": 64,
-    "mixChildMenuWidth": 200
+    "mixChildMenuWidth": 200,
+    "autoSelectFirstMenu": false
   },
   "footer": {
     "visible": true,
     "fixed": false,
-    "height": 48,
+    "height": 40,
     "right": true
   },
   "watermark": {
-    "visible": false,
-    "text": "SoybeanAdmin",
-    "enableUserName": false,
+    "visible": true,
+    "text": "dtp-runner-dev",
+    "enableUserName": true,
     "enableTime": false,
     "timeFormat": "YYYY-MM-DD HH:mm"
   },

@@ -12,7 +12,8 @@ import {
   getNaiveTheme,
   initThemeSettings,
   toggleAuxiliaryColorModes,
-  toggleCssDarkMode
+  toggleCssDarkMode,
+  toggleUiStyle
 } from './shared';
 
 /** Theme store */
@@ -101,6 +102,16 @@ export const useThemeStore = defineStore(SetupStoreId.Theme, () => {
    */
   function setThemeScheme(themeScheme: UnionKey.ThemeScheme) {
     settings.value.themeScheme = themeScheme;
+  }
+
+  /** Set visual style */
+  function setUiStyle(uiStyle: App.Theme.UIStyle) {
+    settings.value.uiStyle = uiStyle;
+  }
+
+  /** Toggle a visual style against the default style */
+  function toggleUiStyleMode(uiStyle: Exclude<App.Theme.UIStyle, 'default'> = 'pixel') {
+    setUiStyle(settings.value.uiStyle === uiStyle ? 'default' : uiStyle);
   }
 
   /**
@@ -238,6 +249,14 @@ export const useThemeStore = defineStore(SetupStoreId.Theme, () => {
 
   // watch store
   scope.run(() => {
+    watch(
+      () => settings.value.uiStyle,
+      val => {
+        toggleUiStyle(val);
+      },
+      { immediate: true }
+    );
+
     // watch dark mode
     watch(
       darkMode,
@@ -291,6 +310,8 @@ export const useThemeStore = defineStore(SetupStoreId.Theme, () => {
     setGrayscale,
     setColourWeakness,
     resetStore,
+    setUiStyle,
+    toggleUiStyleMode,
     setThemeScheme,
     toggleThemeScheme,
     updateThemeColors,

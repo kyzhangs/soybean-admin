@@ -1,0 +1,46 @@
+{
+  "name": "Comic Style",
+  "desc": "A bold comic-book theme with heavy ink lines, halftone dots and punchy colors",
+  "i18nkey": "theme.appearance.preset.comic",
+  "version": "1.0.0",
+  "styleOnly": true,
+  "uiStyle": "comic",
+  "recommendColor": false,
+  "themeColor": "#168aad",
+  "otherColor": {
+    "info": "#168aad",
+    "success": "#198754",
+    "warning": "#d9a400",
+    "error": "#d92d20"
+  },
+  "themeRadius": 0,
+  "isInfoFollowPrimary": true,
+  "tokens": {
+    "light": {
+      "colors": {
+        "container": "rgb(255, 254, 240)",
+        "layout": "rgb(255, 230, 109)",
+        "inverted": "rgb(26, 26, 26)",
+        "base-text": "rgb(26, 26, 26)"
+      },
+      "boxShadow": {
+        "header": "0 4px 0 rgb(26, 26, 26)",
+        "sider": "4px 0 0 rgb(26, 26, 26)",
+        "tab": "0 4px 0 rgb(26, 26, 26)"
+      }
+    },
+    "dark": {
+      "colors": {
+        "container": "rgb(37, 36, 50)",
+        "layout": "rgb(20, 19, 28)",
+        "inverted": "rgb(9, 9, 9)",
+        "base-text": "rgb(255, 254, 240)"
+      },
+      "boxShadow": {
+        "header": "0 4px 0 rgb(9, 9, 9)",
+        "sider": "4px 0 0 rgb(9, 9, 9)",
+        "tab": "0 4px 0 rgb(9, 9, 9)"
+      }
+    }
+  }
+}

@@ -6,8 +6,13 @@ declare namespace App {
     /** NaiveUI theme overrides that can be specified in preset */
     type NaiveUIThemeOverride = import('naive-ui').GlobalThemeOverrides;
 
+    /** Visual style applied on top of the color scheme */
+    type UIStyle = 'default' | 'pixel' | 'comic' | 'hand-drawn-doodle' | 'cyber-anime' | 'neumorphism';
+
     /** Theme setting */
     interface ThemeSetting {
+      /** Visual style */
+      uiStyle: UIStyle;
       /** Theme scheme */
       themeScheme: UnionKey.ThemeScheme;
       /** grayscale mode */

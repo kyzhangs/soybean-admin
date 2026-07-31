@@ -1,0 +1,46 @@
+{
+  "name": "Hand-Drawn Doodle",
+  "desc": "A warm creative theme with notebook paper, sketchy dashed lines and marker colors",
+  "i18nkey": "theme.appearance.preset.handDrawnDoodle",
+  "version": "1.0.0",
+  "styleOnly": true,
+  "uiStyle": "hand-drawn-doodle",
+  "recommendColor": false,
+  "themeColor": "#168f87",
+  "otherColor": {
+    "info": "#2878b5",
+    "success": "#168f87",
+    "warning": "#b88400",
+    "error": "#d43d51"
+  },
+  "themeRadius": 2,
+  "isInfoFollowPrimary": false,
+  "tokens": {
+    "light": {
+      "colors": {
+        "container": "rgb(255, 254, 245)",
+        "layout": "rgb(250, 247, 232)",
+        "inverted": "rgb(44, 44, 44)",
+        "base-text": "rgb(44, 44, 44)"
+      },
+      "boxShadow": {
+        "header": "0 3px 0 rgb(78, 205, 196)",
+        "sider": "3px 0 0 rgb(78, 205, 196)",
+        "tab": "0 3px 0 rgb(78, 205, 196)"
+      }
+    },
+    "dark": {
+      "colors": {
+        "container": "rgb(38, 37, 33)",
+        "layout": "rgb(28, 28, 31)",
+        "inverted": "rgb(17, 17, 18)",
+        "base-text": "rgb(248, 245, 226)"
+      },
+      "boxShadow": {
+        "header": "0 3px 0 rgb(42, 151, 145)",
+        "sider": "3px 0 0 rgb(42, 151, 145)",
+        "tab": "0 3px 0 rgb(42, 151, 145)"
+      }
+    }
+  }
+}

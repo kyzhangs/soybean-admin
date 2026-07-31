@@ -182,6 +182,11 @@ export function toggleCssDarkMode(darkMode = false) {
   }
 }
 
+/** Apply the visual style selector to the document root */
+export function toggleUiStyle(uiStyle: App.Theme.UIStyle) {
+  document.documentElement.dataset.uiStyle = uiStyle;
+}
+
 /**
  * Toggle auxiliary color modes
  *
@@ -260,7 +265,37 @@ export function getNaiveTheme(
     }
   };
 
+  const inkTheme: GlobalThemeOverrides = {
+    common: {
+      borderRadius: '0px',
+      fontWeightStrong: '800'
+    },
+    Button: {
+      borderRadiusTiny: '0px',
+      borderRadiusSmall: '0px',
+      borderRadiusMedium: '0px',
+      borderRadiusLarge: '0px',
+      fontWeight: '700',
+      fontWeightStrong: '800'
+    },
+    Card: {
+      borderRadius: '0px'
+    },
+    Input: {
+      borderRadius: '0px'
+    },
+    Dialog: {
+      borderRadius: '0px'
+    },
+    Popover: {
+      borderRadius: '0px'
+    }
+  };
+
+  const usesSharpGeometry = ['pixel', 'comic', 'cyber-anime'].includes(settings.uiStyle);
+  const styleTheme = usesSharpGeometry ? defu(inkTheme, theme) : theme;
+
   // If there are overrides, merge them with priority
   // overrides has higher priority than auto-generated theme
-  return overrides ? defu(overrides, theme) : theme;
+  return overrides ? defu(overrides, styleTheme) : styleTheme;
 }

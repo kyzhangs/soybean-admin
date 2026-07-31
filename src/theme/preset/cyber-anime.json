@@ -1,0 +1,62 @@
+{
+  "name": "Cyber Anime",
+  "desc": "A futuristic anime theme with mecha HUD frames, holographic scan lines and layered neon glows",
+  "i18nkey": "theme.appearance.preset.cyberAnime",
+  "version": "1.0.0",
+  "styleOnly": true,
+  "uiStyle": "cyber-anime",
+  "recommendColor": false,
+  "themeColor": "#7c3aed",
+  "otherColor": {
+    "info": "#22d3ee",
+    "success": "#06d6a0",
+    "warning": "#f7d046",
+    "error": "#ff2e88"
+  },
+  "themeRadius": 0,
+  "isInfoFollowPrimary": false,
+  "tokens": {
+    "light": {
+      "colors": {
+        "container": "rgb(15, 15, 26)",
+        "layout": "rgb(7, 7, 17)",
+        "inverted": "rgb(6, 6, 16)",
+        "base-text": "rgb(224, 224, 255)"
+      },
+      "boxShadow": {
+        "header": "0 0 10px rgb(124, 58, 237, 0.45), 0 0 24px rgb(34, 211, 238, 0.18)",
+        "sider": "0 0 12px rgb(124, 58, 237, 0.45), 0 0 28px rgb(34, 211, 238, 0.16)",
+        "tab": "0 0 10px rgb(124, 58, 237, 0.4), 0 0 22px rgb(255, 46, 136, 0.14)"
+      }
+    },
+    "dark": {
+      "colors": {
+        "container": "rgb(15, 15, 26)",
+        "layout": "rgb(7, 7, 17)",
+        "inverted": "rgb(6, 6, 16)",
+        "base-text": "rgb(224, 224, 255)"
+      },
+      "boxShadow": {
+        "header": "0 0 10px rgb(124, 58, 237, 0.45), 0 0 24px rgb(34, 211, 238, 0.18)",
+        "sider": "0 0 12px rgb(124, 58, 237, 0.45), 0 0 28px rgb(34, 211, 238, 0.16)",
+        "tab": "0 0 10px rgb(124, 58, 237, 0.4), 0 0 22px rgb(255, 46, 136, 0.14)"
+      }
+    }
+  },
+  "naiveui": {
+    "common": {
+      "bodyColor": "#070711",
+      "cardColor": "#0f0f1a",
+      "modalColor": "#0f0f1a",
+      "popoverColor": "#0f0f1a",
+      "tableColor": "#0f0f1a",
+      "inputColor": "rgba(15, 15, 26, 0.88)",
+      "textColorBase": "#e0e0ff",
+      "textColor1": "#f4f4ff",
+      "textColor2": "rgba(224, 224, 255, 0.86)",
+      "textColor3": "rgba(224, 224, 255, 0.68)",
+      "borderColor": "rgba(124, 58, 237, 0.38)",
+      "dividerColor": "rgba(124, 58, 237, 0.3)"
+    }
+  }
+}

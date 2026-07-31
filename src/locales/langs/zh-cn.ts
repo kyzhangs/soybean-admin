@@ -115,19 +115,27 @@ const local: App.I18n.Schema = {
         applySuccess: '预设应用成功',
         default: {
           name: '默认预设',
-          desc: 'Soybean 默认主题预设'
+          desc: '默认主题预设'
         },
-        dark: {
-          name: '暗色预设',
-          desc: '适用于夜间使用的暗色主题预设'
+        pixel: {
+          name: '像素艺术',
+          desc: '硬边框、硬阴影和鲜明 8-bit 配色的复古主题'
         },
-        compact: {
-          name: '紧凑型',
-          desc: '适用于小屏幕的紧凑布局预设'
+        comic: {
+          name: '漫画风格',
+          desc: '粗墨线、半调网点和高冲击力色彩组成的漫画主题'
         },
-        azir: {
-          name: 'Azir的预设',
-          desc: '是 Azir 比较喜欢的莫兰迪色系冷淡风'
+        handDrawnDoodle: {
+          name: '手绘涂鸦风',
+          desc: '笔记本纸张、手绘虚线和标记笔色彩组成的温暖创意主题'
+        },
+        cyberAnime: {
+          name: '赛博动漫风',
+          desc: '融合机甲 HUD、全息扫描线和多层霓虹光效的未来动漫主题'
+        },
+        neumorphism: {
+          name: '新拟物派',
+          desc: '通过同色表面和明暗双重阴影塑造柔和内凹与外凸质感'
         }
       }
     },

@@ -1,0 +1,46 @@
+{
+  "name": "Neumorphism",
+  "desc": "A soft tactile theme with tonal surfaces and paired light and dark shadows",
+  "i18nkey": "theme.appearance.preset.neumorphism",
+  "version": "1.0.0",
+  "styleOnly": true,
+  "uiStyle": "neumorphism",
+  "recommendColor": false,
+  "themeColor": "#5d78a3",
+  "otherColor": {
+    "info": "#5d78a3",
+    "success": "#4f7d68",
+    "warning": "#9a7137",
+    "error": "#a5535d"
+  },
+  "themeRadius": 16,
+  "isInfoFollowPrimary": true,
+  "tokens": {
+    "light": {
+      "colors": {
+        "container": "rgb(224, 229, 236)",
+        "layout": "rgb(224, 229, 236)",
+        "inverted": "rgb(205, 211, 220)",
+        "base-text": "rgb(55, 65, 81)"
+      },
+      "boxShadow": {
+        "header": "4px 4px 9px rgb(184, 188, 194), -4px -4px 9px rgb(248, 250, 252)",
+        "sider": "5px 5px 11px rgb(184, 188, 194), -5px -5px 11px rgb(248, 250, 252)",
+        "tab": "4px 4px 9px rgb(184, 188, 194), -4px -4px 9px rgb(248, 250, 252)"
+      }
+    },
+    "dark": {
+      "colors": {
+        "container": "rgb(42, 47, 56)",
+        "layout": "rgb(42, 47, 56)",
+        "inverted": "rgb(31, 35, 42)",
+        "base-text": "rgb(220, 224, 231)"
+      },
+      "boxShadow": {
+        "header": "4px 4px 9px rgb(25, 28, 34), -4px -4px 9px rgb(58, 64, 75)",
+        "sider": "5px 5px 11px rgb(25, 28, 34), -5px -5px 11px rgb(58, 64, 75)",
+        "tab": "4px 4px 9px rgb(25, 28, 34), -4px -4px 9px rgb(58, 64, 75)"
+      }
+    }
+  }
+}

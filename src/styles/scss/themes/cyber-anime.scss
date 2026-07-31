@@ -1,0 +1,219 @@
+html[data-ui-style='cyber-anime'] {
+  --cyber-void: #070711;
+  --cyber-panel: rgb(15 15 26 / 92%);
+  --cyber-panel-strong: #0f0f1a;
+  --cyber-purple: #7c3aed;
+  --cyber-cyan: #22d3ee;
+  --cyber-green: #06d6a0;
+  --cyber-pink: #ff2e88;
+  --cyber-text: #e0e0ff;
+  --cyber-text-muted: rgb(224 224 255 / 72%);
+  --cyber-border: rgb(124 58 237 / 42%);
+  --cyber-glow-sm: 0 0 8px rgb(124 58 237 / 38%), 0 0 16px rgb(34 211 238 / 14%);
+  --cyber-glow: 0 0 12px rgb(124 58 237 / 52%), 0 0 25px rgb(34 211 238 / 18%), inset 0 0 18px rgb(124 58 237 / 8%);
+  --cyber-hex-grid: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='96' viewBox='0 0 56 96'%3E%3Cpath d='M28 1 55 16v32L28 63 1 48V16Z M28 63l27 15v17M28 63 1 78v17' fill='none' stroke='%237c3aed' stroke-opacity='.18'/%3E%3C/svg%3E");
+  --cyber-scan-lines: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath d='M0 3.5h4' stroke='%2322d3ee' stroke-opacity='.055'/%3E%3C/svg%3E");
+
+  color: var(--cyber-text);
+  font-family: Rajdhani, 'Arial Narrow', 'Microsoft YaHei', sans-serif;
+
+  body,
+  button,
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+  }
+
+  .bg-layout {
+    background-color: var(--cyber-void);
+    background-image: var(--cyber-scan-lines), var(--cyber-hex-grid);
+    background-size:
+      4px 4px,
+      56px 96px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .n-card-header__main,
+  .n-data-table-th,
+  .n-modal-header,
+  .n-dialog__title {
+    color: var(--cyber-text);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-shadow:
+      0 0 10px rgb(34 211 238 / 32%),
+      0 0 22px rgb(124 58 237 / 24%);
+  }
+
+  .card-wrapper,
+  .n-card,
+  .n-dialog,
+  .n-modal,
+  .n-popover,
+  .n-dropdown-menu,
+  .n-input,
+  .n-input-number,
+  .n-base-selection,
+  .n-date-picker,
+  .n-pagination-item,
+  .n-tabs-tab,
+  .n-tag,
+  .n-checkbox-box,
+  .n-radio__dot,
+  .n-switch__rail,
+  .n-menu-item-content::before,
+  .n-dropdown-option-body::before {
+    border-radius: 0 !important;
+  }
+
+  .card-wrapper,
+  .n-card.n-card--bordered,
+  .n-dialog,
+  .n-modal,
+  .n-popover,
+  .n-dropdown-menu {
+    border: 1px solid var(--cyber-border);
+    background-color: var(--cyber-panel);
+    background-image: var(--cyber-scan-lines);
+    box-shadow: var(--cyber-glow) !important;
+    clip-path: polygon(0 12px, 12px 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+    backdrop-filter: blur(5px);
+  }
+
+  .card-wrapper {
+    transition:
+      border-color 300ms ease-out,
+      box-shadow 300ms ease-out,
+      filter 300ms ease-out;
+  }
+
+  .card-wrapper:hover {
+    border-color: rgb(34 211 238 / 70%);
+    box-shadow:
+      0 0 16px rgb(124 58 237 / 58%),
+      0 0 30px rgb(34 211 238 / 24%),
+      inset 0 0 24px rgb(255 46 136 / 8%) !important;
+    filter: brightness(1.08);
+  }
+
+  .n-button:not(.n-button--quaternary):not(.n-button--text) {
+    border: 1px solid rgb(6 214 160 / 58%) !important;
+    border-radius: 0 !important;
+    box-shadow:
+      0 0 10px rgb(124 58 237 / 46%),
+      0 0 20px rgb(34 211 238 / 18%);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    transition:
+      transform 300ms ease-out,
+      border-color 300ms ease-out,
+      box-shadow 300ms ease-out;
+  }
+
+  .n-button:not(.n-button--quaternary):not(.n-button--text):hover {
+    border-color: var(--cyber-cyan) !important;
+    box-shadow:
+      0 0 14px rgb(124 58 237 / 65%),
+      0 0 28px rgb(34 211 238 / 34%),
+      inset 0 0 12px rgb(6 214 160 / 10%);
+  }
+
+  .n-button:not(.n-button--quaternary):not(.n-button--text):active {
+    transform: scale(0.95);
+  }
+
+  .n-input,
+  .n-base-selection {
+    border: 1px solid var(--cyber-border);
+    background-color: rgb(15 15 26 / 88%);
+    box-shadow: var(--cyber-glow-sm);
+    color: var(--cyber-text);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  }
+
+  .n-input:focus-within,
+  .n-base-selection:focus-within {
+    border-color: rgb(6 214 160 / 70%);
+    box-shadow:
+      0 0 12px rgb(6 214 160 / 34%),
+      0 0 22px rgb(124 58 237 / 26%);
+  }
+
+  .n-data-table {
+    border: 1px solid var(--cyber-border);
+    background-color: var(--cyber-panel-strong);
+    box-shadow: var(--cyber-glow-sm);
+  }
+
+  .n-data-table-th {
+    background-color: rgb(124 58 237 / 18%) !important;
+    color: var(--cyber-cyan) !important;
+  }
+
+  .n-data-table-td {
+    background-color: rgb(15 15 26 / 86%) !important;
+    border-color: rgb(124 58 237 / 22%) !important;
+    color: var(--cyber-text-muted) !important;
+  }
+
+  .n-tag {
+    border: 1px solid rgb(34 211 238 / 50%);
+    box-shadow:
+      0 0 8px rgb(34 211 238 / 25%),
+      0 0 14px rgb(124 58 237 / 16%);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+
+  .n-menu-item-content--selected::before {
+    border: 1px solid rgb(34 211 238 / 55%);
+    background-color: rgb(124 58 237 / 22%) !important;
+    box-shadow:
+      0 0 12px rgb(124 58 237 / 50%),
+      0 0 22px rgb(34 211 238 / 22%);
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+
+  .n-menu-item-content--selected .n-menu-item-content-header,
+  .n-menu-item-content--selected .n-menu-item-content__icon {
+    color: var(--cyber-cyan) !important;
+    font-weight: 800;
+    text-shadow: 0 0 9px rgb(34 211 238 / 52%);
+  }
+
+  .n-tabs-tab--active {
+    color: var(--cyber-cyan) !important;
+    text-shadow:
+      0 0 10px rgb(34 211 238 / 46%),
+      0 0 18px rgb(124 58 237 / 22%);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--cyber-green);
+    outline-offset: 3px;
+    box-shadow:
+      0 0 10px rgb(6 214 160 / 38%),
+      0 0 18px rgb(124 58 237 / 22%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-ui-style='cyber-anime'] *,
+  html[data-ui-style='cyber-anime'] *::before,
+  html[data-ui-style='cyber-anime'] *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

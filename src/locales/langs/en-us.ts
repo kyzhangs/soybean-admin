@@ -117,17 +117,25 @@ const local: App.I18n.Schema = {
           name: 'Default Preset',
           desc: 'Default theme preset with balanced settings'
         },
-        dark: {
-          name: 'Dark Preset',
-          desc: 'Dark theme preset for night time usage'
+        pixel: {
+          name: 'Pixel Art',
+          desc: 'A retro theme with hard borders, hard shadows and bold 8-bit colors'
         },
-        compact: {
-          name: 'Compact Preset',
-          desc: 'Compact layout preset for small screens'
+        comic: {
+          name: 'Comic Style',
+          desc: 'A comic-book theme with heavy ink lines, halftone dots and punchy colors'
         },
-        azir: {
-          name: "Azir's Preset",
-          desc: 'It is a cold and elegant preset that Azir likes'
+        handDrawnDoodle: {
+          name: 'Hand-Drawn Doodle',
+          desc: 'A warm creative theme with notebook paper, sketchy dashed lines and marker colors'
+        },
+        cyberAnime: {
+          name: 'Cyber Anime',
+          desc: 'A futuristic anime theme with mecha HUD frames, holographic scan lines and layered neon glows'
+        },
+        neumorphism: {
+          name: 'Neumorphism',
+          desc: 'A soft tactile theme with tonal surfaces and paired light and dark shadows'
         }
       }
     },
