@@ -80,7 +80,9 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       align: 'center',
       ellipsis: {
         tooltip: {
-          maxWidth: 450
+          contentStyle: {
+            maxWidth: '450px'
+          }
         }
       },
       minWidth: 200

@@ -58,7 +58,9 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       width: 120,
       ellipsis: {
         tooltip: {
-          maxWidth: 800
+          contentStyle: {
+            maxWidth: '450px'
+          }
         }
       }
     },
