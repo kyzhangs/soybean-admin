@@ -18,5 +18,11 @@ declare namespace Api {
       | 'is_superuser'
       | 'avatar'
     > & { userId: string; create_time: string | null; roles: string[]; buttons: string[] };
+
+    interface PasswordChangeParams {
+      old_password: string;
+      new_password: string;
+      confirm_password: string;
+    }
   }
 }

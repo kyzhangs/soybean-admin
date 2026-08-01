@@ -556,12 +556,20 @@ const local: App.I18n.Schema = {
       loginPwd: '登录密码',
       loginPwdTip: '建议定期更换密码以保障账户安全',
       modifyPwd: '修改密码',
+      oldPassword: '原密码',
+      newPassword: '新密码',
+      confirmPassword: '确认新密码',
       accountStatus: '账户状态',
       userId: '用户 ID',
       roles: '角色',
       activeTime: '激活时间',
       lastLogin: '最近登录',
-      unassignedRole: '暂未分配角色'
+      unassignedRole: '暂未分配角色',
+      form: {
+        oldPassword: '请输入原密码',
+        newPassword: '请输入新密码',
+        confirmPassword: '请再次输入新密码'
+      }
     },
     'system-manage': {
       common: {

@@ -431,12 +431,20 @@ declare namespace App {
           loginPwd: string;
           loginPwdTip: string;
           modifyPwd: string;
+          oldPassword: string;
+          newPassword: string;
+          confirmPassword: string;
           accountStatus: string;
           userId: string;
           roles: string;
           activeTime: string;
           lastLogin: string;
           unassignedRole: string;
+          form: {
+            oldPassword: string;
+            newPassword: string;
+            confirmPassword: string;
+          };
         };
         'system-manage': {
           common: {

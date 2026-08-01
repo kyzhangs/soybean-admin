@@ -560,12 +560,20 @@ const local: App.I18n.Schema = {
       loginPwd: 'Login Password',
       loginPwdTip: 'Regular password changes help keep your account secure',
       modifyPwd: 'Change Password',
+      oldPassword: 'Current Password',
+      newPassword: 'New Password',
+      confirmPassword: 'Confirm New Password',
       accountStatus: 'Account Status',
       userId: 'User ID',
       roles: 'Roles',
       activeTime: 'Active Time',
       lastLogin: 'Last Login',
-      unassignedRole: 'No role assigned'
+      unassignedRole: 'No role assigned',
+      form: {
+        oldPassword: 'Please enter the current password',
+        newPassword: 'Please enter a new password',
+        confirmPassword: 'Please enter the new password again'
+      }
     },
     'system-manage': {
       common: {

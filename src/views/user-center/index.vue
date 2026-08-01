@@ -4,6 +4,7 @@ import { enableStatusRecord, userGenderRecord } from '@/constants/business';
 import { fetchGetRoleList } from '@/service/api';
 import { useAuthStore } from '@/store/modules/auth';
 import { $t } from '@/locales';
+import PasswordChangeModal from './modules/password-change-modal.vue';
 
 defineOptions({
   name: 'UserCenter'
@@ -13,6 +14,7 @@ const authStore = useAuthStore();
 const userInfo = authStore.userInfo;
 const loading = ref(false);
 const roles = ref<Api.SystemManage.Role[]>([]);
+const passwordChangeVisible = ref(false);
 
 const genderLabel = computed(() => $t(userGenderRecord[userInfo.gender]));
 const genderTagType = computed(() => {
@@ -152,11 +154,15 @@ onMounted(() => {
               <div class="text-15px font-medium">{{ $t('page.user-center.loginPwd') }}</div>
               <div class="mt-6px text-13px text-#6b7280">{{ $t('page.user-center.loginPwdTip') }}</div>
             </div>
-            <NButton secondary disabled>{{ $t('page.user-center.modifyPwd') }}</NButton>
+            <NButton secondary @click="passwordChangeVisible = true">
+              {{ $t('page.user-center.modifyPwd') }}
+            </NButton>
           </div>
         </NCard>
       </NGi>
     </NGrid>
+
+    <PasswordChangeModal v-model:visible="passwordChangeVisible" />
   </div>
 </template>
 
