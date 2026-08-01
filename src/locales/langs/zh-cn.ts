@@ -358,6 +358,13 @@ const local: App.I18n.Schema = {
         admin: '管理员',
         user: '普通用户'
       },
+      twoFactor: {
+        title: '2FA 验证',
+        help: '请输入认证器应用生成的 6 位动态验证码，或切换使用一次性恢复码',
+        codePlaceholder: '请输入验证码或恢复码',
+        useRecoveryCode: '使用恢复码',
+        useAuthenticatorCode: '使用认证器验证码'
+      },
       codeLogin: {
         title: '验证码登录',
         getCode: '获取验证码',
@@ -569,6 +576,40 @@ const local: App.I18n.Schema = {
         oldPassword: '请输入原密码',
         newPassword: '请输入新密码',
         confirmPassword: '请再次输入新密码'
+      },
+      twoFactor: {
+        title: '双因素认证',
+        tip: '登录时使用认证器动态验证码，为账户增加一层保护',
+        enabled: '已启用',
+        disabled: '未启用',
+        enable: '启用 2FA',
+        disable: '关闭 2FA',
+        password: '当前密码',
+        code: '验证码',
+        reauthenticateTip: '启用双因素认证前，请先验证当前登录密码',
+        disableTip: '关闭后登录将不再需要动态验证码，请验证密码和当前验证码',
+        scanTip: '请使用 Google Authenticator、Microsoft Authenticator 等认证器扫描二维码',
+        qrCode: '双因素认证二维码',
+        manualSecret: '无法扫码时，可手动输入以下密钥',
+        recoveryTip: '请立即保存这些一次性恢复码。每个恢复码只能使用一次，关闭窗口后将不再显示。',
+        confirmEnable: '确认启用',
+        confirmDisable: '确认关闭',
+        copyRecoveryCodes: '复制恢复码',
+        copySuccess: '恢复码已复制',
+        exportRecoveryCodes: '导出恢复码',
+        exportSuccess: '恢复码已导出',
+        clipboardUnsupported: '当前浏览器不支持剪贴板功能',
+        regenerateRecoveryCodes: '重新生成恢复码',
+        regenerateTip: '重新生成后，现有恢复码将立即失效。请输入当前密码和认证器验证码。',
+        next: '下一步',
+        complete: '完成',
+        useRecoveryCode: '使用恢复码',
+        useAuthenticatorCode: '使用认证器验证码',
+        form: {
+          password: '请输入当前密码',
+          code: '请输入验证码或恢复码',
+          totpCode: '请输入认证器中的 6 位验证码'
+        }
       }
     },
     'system-manage': {

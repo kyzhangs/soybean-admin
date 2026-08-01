@@ -7,7 +7,7 @@ import { request } from '../request';
  * @param password Password
  */
 export function fetchLogin(username: string, password: string) {
-  return request<Api.Auth.Token>({
+  return request<Api.Auth.LoginResult>({
     url: '/auth/token',
     method: 'post',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -15,6 +15,15 @@ export function fetchLogin(username: string, password: string) {
       username,
       password
     }
+  });
+}
+
+/** Verify a two-factor login challenge */
+export function fetchVerifyTwoFactor(data: Api.Auth.TwoFactorVerifyParams) {
+  return request<Api.Auth.Token>({
+    url: '/auth/2fa/verify',
+    method: 'post',
+    data
   });
 }
 

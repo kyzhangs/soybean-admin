@@ -4,6 +4,7 @@ import type { Component } from 'vue';
 import { getPaletteColorByNumber, mixColor } from '@sa/color';
 import { loginModuleRecord } from '@/constants/app';
 import { useAppStore } from '@/store/modules/app';
+import { useAuthStore } from '@/store/modules/auth';
 import { useThemeStore } from '@/store/modules/theme';
 import { $t } from '@/locales';
 import PwdLogin from './modules/pwd-login.vue';
@@ -20,6 +21,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const appStore = useAppStore();
+const authStore = useAuthStore();
 const themeStore = useThemeStore();
 
 interface LoginModule {
@@ -36,6 +38,13 @@ const moduleMap: Record<UnionKey.LoginModule, LoginModule> = {
 };
 
 const activeModule = computed(() => moduleMap[props.module || 'pwd-login']);
+const activeModuleLabel = computed<App.I18n.I18nKey>(() => {
+  if ((props.module || 'pwd-login') === 'pwd-login' && authStore.requiresTwoFactor) {
+    return 'page.login.twoFactor.title';
+  }
+
+  return activeModule.value.label;
+});
 
 const bgThemeColor = computed(() =>
   themeStore.darkMode ? getPaletteColorByNumber(themeStore.themeColor, 600) : themeStore.themeColor
@@ -75,7 +84,17 @@ const bgColor = computed(() => {
           </div>
         </header>
         <main class="pt-24px">
-          <h3 class="text-18px text-primary font-medium">{{ $t(activeModule.label) }}</h3>
+          <div class="flex-y-center gap-6px">
+            <h3 class="text-18px text-primary font-medium">{{ $t(activeModuleLabel) }}</h3>
+            <NTooltip v-if="authStore.requiresTwoFactor" placement="right">
+              <template #trigger>
+                <span class="inline-flex cursor-pointer text-18px text-primary">
+                  <SvgIcon icon="mdi:information-outline" />
+                </span>
+              </template>
+              <span>{{ $t('page.login.twoFactor.help') }}</span>
+            </NTooltip>
+          </div>
           <div class="pt-24px">
             <Transition :name="themeStore.page.animateMode" mode="out-in" appear>
               <component :is="activeModule.component" />

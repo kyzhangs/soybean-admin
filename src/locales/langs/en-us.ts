@@ -362,6 +362,13 @@ const local: App.I18n.Schema = {
         admin: 'Admin',
         user: 'User'
       },
+      twoFactor: {
+        title: '2FA Verification',
+        help: 'Enter the 6-digit code from your authenticator app, or switch to a one-time recovery code',
+        codePlaceholder: 'Enter verification or recovery code',
+        useRecoveryCode: 'Use a recovery code',
+        useAuthenticatorCode: 'Use an authenticator code'
+      },
       codeLogin: {
         title: 'Verification Code Login',
         getCode: 'Get verification code',
@@ -573,6 +580,42 @@ const local: App.I18n.Schema = {
         oldPassword: 'Please enter the current password',
         newPassword: 'Please enter a new password',
         confirmPassword: 'Please enter the new password again'
+      },
+      twoFactor: {
+        title: 'Two-Factor Authentication',
+        tip: 'Use an authenticator code when signing in to add another layer of account protection',
+        enabled: 'Enabled',
+        disabled: 'Disabled',
+        enable: 'Enable 2FA',
+        disable: 'Disable 2FA',
+        password: 'Current Password',
+        code: 'Verification Code',
+        reauthenticateTip: 'Verify your current password before enabling two-factor authentication',
+        disableTip: 'Verify your password and current code before disabling two-factor authentication',
+        scanTip: 'Scan the QR code with Google Authenticator, Microsoft Authenticator, or another TOTP app',
+        qrCode: 'Two-factor authentication QR code',
+        manualSecret: 'If you cannot scan the QR code, enter this key manually',
+        recoveryTip:
+          'Save these one-time recovery codes now. Each code can only be used once and will not be shown again.',
+        confirmEnable: 'Enable',
+        confirmDisable: 'Disable',
+        copyRecoveryCodes: 'Copy Recovery Codes',
+        copySuccess: 'Recovery codes copied',
+        exportRecoveryCodes: 'Export Recovery Codes',
+        exportSuccess: 'Recovery codes exported',
+        clipboardUnsupported: 'Clipboard access is not supported by this browser',
+        regenerateRecoveryCodes: 'Regenerate Recovery Codes',
+        regenerateTip:
+          'Existing recovery codes will become invalid immediately. Enter your current password and authenticator code.',
+        next: 'Next',
+        complete: 'Done',
+        useRecoveryCode: 'Use a recovery code',
+        useAuthenticatorCode: 'Use an authenticator code',
+        form: {
+          password: 'Enter your current password',
+          code: 'Enter verification or recovery code',
+          totpCode: 'Enter the 6-digit authenticator code'
+        }
       }
     },
     'system-manage': {

@@ -2,7 +2,7 @@ import { computed, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useLoading } from '@sa/hooks';
-import { fetchGetUserInfo, fetchLogin } from '@/service/api';
+import { fetchGetUserInfo, fetchLogin, fetchVerifyTwoFactor } from '@/service/api';
 import { useRouterPush } from '@/hooks/common/router';
 import { localStg } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
@@ -20,6 +20,8 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const { loading: loginLoading, startLoading, endLoading } = useLoading();
 
   const token = ref('');
+  const twoFactorChallengeToken = ref('');
+  const requiresTwoFactor = computed(() => Boolean(twoFactorChallengeToken.value));
 
   function createDefaultUserInfo(): Api.UserCenter.UserInfo {
     return {
@@ -119,34 +121,59 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   async function login(username: string, password: string, redirect = true) {
     startLoading();
 
-    const { data: loginToken, error } = await fetchLogin(username, password);
+    const { data: loginResult, error } = await fetchLogin(username, password);
 
     if (!error) {
-      const pass = await loginByToken(loginToken);
-
-      if (pass) {
-        await routeStore.initAuthRoute();
-        // Check if the tab needs to be cleared
-        const isClear = await checkTabClear();
-        let needRedirect = redirect;
-
-        if (isClear) {
-          // If the tab needs to be cleared,it means we don't need to redirect.
-          needRedirect = false;
-        }
-        await redirectFromLogin(needRedirect);
-
-        window.$notification?.success({
-          title: $t('page.login.common.loginSuccess'),
-          content: $t('page.login.common.welcomeBack', { username: userDisplayName.value }),
-          duration: 4500
-        });
+      if ('challenge_token' in loginResult) {
+        twoFactorChallengeToken.value = loginResult.challenge_token;
+      } else {
+        await completeLogin(loginResult, redirect);
       }
     } else {
       resetStore();
     }
 
     endLoading();
+  }
+
+  async function verifyTwoFactor(code: string, redirect = true) {
+    if (!twoFactorChallengeToken.value) return;
+
+    startLoading();
+    try {
+      const { data: loginToken, error } = await fetchVerifyTwoFactor({
+        challenge_token: twoFactorChallengeToken.value,
+        code
+      });
+      if (!error) {
+        twoFactorChallengeToken.value = '';
+        await completeLogin(loginToken, redirect);
+      }
+    } finally {
+      endLoading();
+    }
+  }
+
+  function cancelTwoFactor() {
+    twoFactorChallengeToken.value = '';
+  }
+
+  async function completeLogin(loginToken: Api.Auth.Token, redirect = true) {
+    const pass = await loginByToken(loginToken);
+    if (!pass) return;
+
+    await routeStore.initAuthRoute();
+    const isClear = await checkTabClear();
+    const needRedirect = isClear ? false : redirect;
+    await redirectFromLogin(needRedirect);
+
+    window.$notification?.success({
+      title: $t('page.login.common.loginSuccess'),
+      content: $t('page.login.common.welcomeBack', {
+        username: userDisplayName.value
+      }),
+      duration: 4500
+    });
   }
 
   async function loginByToken(loginToken: Api.Auth.Token) {
@@ -199,8 +226,11 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     isStaticSuper,
     isLogin,
     loginLoading,
+    requiresTwoFactor,
     resetStore,
     login,
+    verifyTwoFactor,
+    cancelTwoFactor,
     getUserInfo,
     initUserInfo
   };

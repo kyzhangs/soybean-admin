@@ -11,5 +11,17 @@ declare namespace Api {
       refresh_token: string;
       expires_in: number;
     }
+
+    interface TwoFactorChallenge {
+      challenge_token: string;
+      expires_in: number;
+    }
+
+    type LoginResult = Token | TwoFactorChallenge;
+
+    interface TwoFactorVerifyParams {
+      challenge_token: string;
+      code: string;
+    }
   }
 }

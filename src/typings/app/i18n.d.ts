@@ -234,6 +234,13 @@ declare namespace App {
             admin: string;
             user: string;
           };
+          twoFactor: {
+            title: string;
+            help: string;
+            codePlaceholder: string;
+            useRecoveryCode: string;
+            useAuthenticatorCode: string;
+          };
           codeLogin: {
             title: string;
             getCode: string;
@@ -444,6 +451,40 @@ declare namespace App {
             oldPassword: string;
             newPassword: string;
             confirmPassword: string;
+          };
+          twoFactor: {
+            title: string;
+            tip: string;
+            enabled: string;
+            disabled: string;
+            enable: string;
+            disable: string;
+            password: string;
+            code: string;
+            reauthenticateTip: string;
+            disableTip: string;
+            scanTip: string;
+            qrCode: string;
+            manualSecret: string;
+            recoveryTip: string;
+            confirmEnable: string;
+            confirmDisable: string;
+            copyRecoveryCodes: string;
+            copySuccess: string;
+            exportRecoveryCodes: string;
+            exportSuccess: string;
+            clipboardUnsupported: string;
+            regenerateRecoveryCodes: string;
+            regenerateTip: string;
+            next: string;
+            complete: string;
+            useRecoveryCode: string;
+            useAuthenticatorCode: string;
+            form: {
+              password: string;
+              code: string;
+              totpCode: string;
+            };
           };
         };
         'system-manage': {
