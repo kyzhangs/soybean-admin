@@ -42,3 +42,33 @@ export function fetchUpdateApi(apiId: string, data: Api.SystemManage.ApiUpdatePa
     data
   });
 }
+
+export function fetchAddApiWhitelist(apiId: string) {
+  return request<null>({
+    url: `/system-manage/apis/${apiId}/whitelist`,
+    method: 'POST'
+  });
+}
+
+export function fetchRemoveApiWhitelist(apiId: string) {
+  return request<null>({
+    url: `/system-manage/apis/${apiId}/whitelist`,
+    method: 'DELETE'
+  });
+}
+
+export function fetchBatchAddApiWhitelist(data: Api.SystemManage.ApiWhitelistBatchParams) {
+  return request<null>({
+    url: '/system-manage/apis/whitelist/batch-add',
+    method: 'POST',
+    data
+  });
+}
+
+export function fetchBatchRemoveApiWhitelist(data: Api.SystemManage.ApiWhitelistBatchParams) {
+  return request<null>({
+    url: '/system-manage/apis/whitelist/batch-remove',
+    method: 'POST',
+    data
+  });
+}

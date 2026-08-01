@@ -635,11 +635,23 @@ declare namespace App {
             };
             syncApi: string;
             confirmSyncApi: string;
+            addWhitelist: string;
+            confirmAddWhitelist: string;
+            addWhitelistSuccess: string;
+            removeWhitelist: string;
+            confirmRemoveWhitelist: string;
+            removeWhitelistSuccess: string;
+            whitelistApi: string;
+            batchAddWhitelist: string;
+            batchRemoveWhitelist: string;
+            confirmBatchAddWhitelist: string;
+            confirmBatchRemoveWhitelist: string;
             form: {
               keyword: string;
               method: string;
               status: string;
               tags: string;
+              whitelistApi: string;
             };
           };
           buttons: {

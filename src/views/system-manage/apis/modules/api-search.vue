@@ -25,7 +25,8 @@ function resetModel() {
     keyword: null,
     method: null,
     tags: null,
-    status: null
+    status: null,
+    is_whitelisted: null
   });
 }
 
@@ -43,6 +44,10 @@ async function reset() {
 }
 
 const tagOptions = ref<Api.SystemManage.ApiTagOption[]>([]);
+const whitelistOptions = [
+  { label: $t('common.yesOrNo.yes'), value: 'true' },
+  { label: $t('common.yesOrNo.no'), value: 'false' }
+];
 
 async function handleGetTagOptions() {
   const { error, data } = await fetchGetApiTags();
@@ -61,7 +66,7 @@ async function handleGetTagOptions() {
           <NGrid responsive="screen" item-responsive>
             <NFormItemGi span="24 s:18 m:18 l:19 xl:20" :show-feedback="false">
               <NGrid responsive="screen" item-responsive>
-                <NFormItemGi span="24 s:7 m:6 l:6 xl:6" :label="$t('common.keyword')" path="keyword" class="pr-24px">
+                <NFormItemGi span="12 s:8 m:8 l:8 xl:8" :label="$t('common.keyword')" path="keyword" class="pr-24px">
                   <NInput
                     v-model:value="model.keyword"
                     :placeholder="$t('page.system-manage.apis.form.keyword')"
@@ -71,7 +76,7 @@ async function handleGetTagOptions() {
                   />
                 </NFormItemGi>
                 <NFormItemGi
-                  span="12 s:5 m:5 l:5 xl:5"
+                  span="12 s:6 m:6 l:8 xl:8"
                   :label="$t('page.system-manage.apis.method')"
                   path="method"
                   class="pr-24px"
@@ -86,7 +91,7 @@ async function handleGetTagOptions() {
                 </NFormItemGi>
 
                 <NFormItemGi
-                  span="12 s:5 m:5 l:5 xl:4"
+                  span="12 s:6 m:6 l:8 xl:8"
                   :label="$t('page.system-manage.apis.status')"
                   path="status"
                   class="pr-24px"
@@ -101,7 +106,22 @@ async function handleGetTagOptions() {
                 </NFormItemGi>
 
                 <NFormItemGi
-                  span="12 s:5 m:7 l:7 xl:7"
+                  span="12 s:8 m:8 l:8 xl:8"
+                  :label="$t('page.system-manage.apis.whitelistApi')"
+                  path="is_whitelisted"
+                  class="pr-24px"
+                >
+                  <NSelect
+                    v-model:value="model.is_whitelisted"
+                    :placeholder="$t('page.system-manage.apis.form.whitelistApi')"
+                    :options="whitelistOptions"
+                    clearable
+                    @update:value="search"
+                  />
+                </NFormItemGi>
+
+                <NFormItemGi
+                  span="24 s:14 m:8 l:8 xl:8"
                   :label="$t('page.system-manage.apis.tags')"
                   path="tags"
                   class="pr-24px"

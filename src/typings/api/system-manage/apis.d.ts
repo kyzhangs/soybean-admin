@@ -22,6 +22,8 @@ declare namespace Api {
       path: string;
       /** api method */
       method: ApiMethod;
+      /** whether the api is in the whitelist */
+      is_whitelisted: boolean;
     }> &
       CommonType.RecordNullable<{
         /** api summary */
@@ -40,6 +42,7 @@ declare namespace Api {
         Pick<Api.SystemManage.Api, 'method' | 'status'> & {
           keyword: string;
           tags: string;
+          is_whitelisted: string;
         }
     >;
 
@@ -47,6 +50,10 @@ declare namespace Api {
     type ApiPageList = Common.PaginatingQueryRecord<Api>;
 
     type ApiUpdateParams = Pick<Role, 'status'>;
+
+    type ApiWhitelistBatchParams = {
+      ids: string[];
+    };
 
     type ApiTree = {
       label: string;

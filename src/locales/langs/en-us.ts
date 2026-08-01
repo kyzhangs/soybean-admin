@@ -766,11 +766,23 @@ const local: App.I18n.Schema = {
         },
         syncApi: 'Sync API',
         confirmSyncApi: 'Are you sure you want to sync the API?',
+        addWhitelist: 'Add to whitelist',
+        confirmAddWhitelist: 'Add this API to the whitelist? It will be accessible without signing in.',
+        addWhitelistSuccess: 'API added to the whitelist',
+        removeWhitelist: 'Remove from whitelist',
+        confirmRemoveWhitelist: 'Remove this API from the whitelist? Authentication and permission checks will resume.',
+        removeWhitelistSuccess: 'API removed from the whitelist',
+        whitelistApi: 'Whitelist',
+        batchAddWhitelist: 'Add selected to whitelist',
+        batchRemoveWhitelist: 'Remove selected',
+        confirmBatchAddWhitelist: 'Add the selected APIs to the whitelist?',
+        confirmBatchRemoveWhitelist: 'Remove the selected APIs from the whitelist?',
         form: {
           keyword: 'Please enter API name, summary, path or description',
           method: 'Please select request method',
           status: 'Please select API status',
-          tags: 'Please select API tags'
+          tags: 'Please select API tags',
+          whitelistApi: 'Please select whether this is a whitelist API'
         }
       },
       buttons: {

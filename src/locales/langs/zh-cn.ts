@@ -760,11 +760,23 @@ const local: App.I18n.Schema = {
         },
         syncApi: '同步接口',
         confirmSyncApi: '确认同步接口吗？',
+        addWhitelist: '加入白名单',
+        confirmAddWhitelist: '确认将该接口加入白名单吗？加入后无需登录即可访问。',
+        addWhitelistSuccess: '接口已加入白名单',
+        removeWhitelist: '移出白名单',
+        confirmRemoveWhitelist: '确认将该接口移出白名单吗？移出后将恢复登录和权限校验。',
+        removeWhitelistSuccess: '接口已移出白名单',
+        whitelistApi: '白名单',
+        batchAddWhitelist: '批量加入白名单',
+        batchRemoveWhitelist: '批量移出白名单',
+        confirmBatchAddWhitelist: '确认将选中的接口加入白名单吗？',
+        confirmBatchRemoveWhitelist: '确认将选中的接口移出白名单吗？',
         form: {
           keyword: '请输入接口名称、摘要、路径或描述',
           method: '请选择请求方法',
           status: '请选择接口状态',
-          tags: '请选择接口标签'
+          tags: '请选择接口标签',
+          whitelistApi: '请选择是否为白名单接口'
         }
       },
       buttons: {

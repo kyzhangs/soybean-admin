@@ -1,8 +1,17 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { NButton, NPopconfirm, NTag, NTooltip } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
-import { fetchGetApiPageList, fetchApiSync, fetchUpdateApi, fetchBatchApi } from '@/service/api';
+import {
+  fetchAddApiWhitelist,
+  fetchApiSync,
+  fetchBatchAddApiWhitelist,
+  fetchBatchApi,
+  fetchBatchRemoveApiWhitelist,
+  fetchGetApiPageList,
+  fetchRemoveApiWhitelist,
+  fetchUpdateApi
+} from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { useAuth } from '@/hooks/business/auth';
@@ -19,7 +28,31 @@ const searchParams = ref<Api.SystemManage.ApiSearchParams>({
   page_size: 10,
   keyword: null,
   method: null,
-  tags: null
+  tags: null,
+  is_whitelisted: null
+});
+
+const whitelistBatchActionConfig = computed<Api.Common.BatchActionConfig[]>(() => {
+  const actions: Api.Common.BatchActionConfig[] = [];
+  if (hasAuth('B_ADD_API_WHITELIST')) {
+    actions.push({
+      key: 'ADD_WHITELIST',
+      label: $t('page.system-manage.apis.batchAddWhitelist'),
+      icon: 'ph:shield-check',
+      confirmMessage: $t('page.system-manage.apis.confirmBatchAddWhitelist'),
+      dialogType: 'warning'
+    });
+  }
+  if (hasAuth('B_REMOVE_API_WHITELIST')) {
+    actions.push({
+      key: 'REMOVE_WHITELIST',
+      label: $t('page.system-manage.apis.batchRemoveWhitelist'),
+      icon: 'ph:shield-slash',
+      confirmMessage: $t('page.system-manage.apis.confirmBatchRemoveWhitelist'),
+      dialogType: 'error'
+    });
+  }
+  return actions;
 });
 
 const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagination } = useNaivePaginatedTable({
@@ -135,18 +168,41 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 100,
+      width: 220,
       render: row => (
-        <NPopconfirm onPositiveClick={() => handleUpdateStatus(row)}>
-          {{
-            default: () => (row.status === '1' ? $t('common.confirmDisable') : $t('common.confirmEnable')),
-            trigger: () => (
-              <NButton type={row.status === '1' ? 'error' : 'primary'} ghost size="small">
-                {row.status === '1' ? $t('common.disable') : $t('common.enable')}
-              </NButton>
-            )
-          }}
-        </NPopconfirm>
+        <div class="flex-center gap-8px">
+          {hasAuth(row.is_whitelisted ? 'B_REMOVE_API_WHITELIST' : 'B_ADD_API_WHITELIST') && (
+            <NPopconfirm onPositiveClick={() => handleWhitelist(row)}>
+              {{
+                default: () =>
+                  $t(
+                    row.is_whitelisted
+                      ? 'page.system-manage.apis.confirmRemoveWhitelist'
+                      : 'page.system-manage.apis.confirmAddWhitelist'
+                  ),
+                trigger: () => (
+                  <NButton type={row.is_whitelisted ? 'error' : 'warning'} ghost size="small">
+                    {$t(
+                      row.is_whitelisted
+                        ? 'page.system-manage.apis.removeWhitelist'
+                        : 'page.system-manage.apis.addWhitelist'
+                    )}
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          )}
+          <NPopconfirm onPositiveClick={() => handleUpdateStatus(row)}>
+            {{
+              default: () => (row.status === '1' ? $t('common.confirmDisable') : $t('common.confirmEnable')),
+              trigger: () => (
+                <NButton type={row.status === '1' ? 'error' : 'primary'} ghost size="small">
+                  {row.status === '1' ? $t('common.disable') : $t('common.enable')}
+                </NButton>
+              )
+            }}
+          </NPopconfirm>
+        </div>
       )
     }
   ]
@@ -155,6 +211,15 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
 const { checkedRowKeys, onBatchOperate } = useTableOperate(data, 'id', getData);
 
 async function handleBatchOperate(key: string) {
+  if (key === 'ADD_WHITELIST' || key === 'REMOVE_WHITELIST') {
+    const request = key === 'ADD_WHITELIST' ? fetchBatchAddApiWhitelist : fetchBatchRemoveApiWhitelist;
+    const { error } = await request({ ids: checkedRowKeys.value });
+    if (!error) {
+      await onBatchOperate();
+    }
+    return;
+  }
+
   const actionMap: Record<string, Api.Common.BatchAction> = {
     ENABLE: 'ENABLE',
     DISABLE: 'DISABLE'
@@ -189,6 +254,22 @@ async function handleApiSync() {
     getData();
   }
 }
+
+async function handleWhitelist(row: Api.SystemManage.Api) {
+  const { error } = row.is_whitelisted
+    ? await fetchRemoveApiWhitelist(row.id)
+    : await fetchAddApiWhitelist(row.id);
+  if (!error) {
+    window.$message?.success(
+      $t(
+        row.is_whitelisted
+          ? 'page.system-manage.apis.removeWhitelistSuccess'
+          : 'page.system-manage.apis.addWhitelistSuccess'
+      )
+    );
+    await getData();
+  }
+}
 </script>
 
 <template>
@@ -202,6 +283,7 @@ async function handleApiSync() {
           :loading="loading"
           :show-add="false"
           :default-actions="['ENABLE', 'DISABLE']"
+          :extra-action-config="whitelistBatchActionConfig"
           @refresh="getData"
           @batch="handleBatchOperate"
         >
