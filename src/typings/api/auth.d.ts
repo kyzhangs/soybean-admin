@@ -23,5 +23,15 @@ declare namespace Api {
       challenge_token: string;
       code: string;
     }
+
+    interface PasskeyOptions {
+      flow_id: string;
+      public_key: import('@simplewebauthn/browser').PublicKeyCredentialRequestOptionsJSON;
+    }
+
+    interface PasskeyVerifyParams {
+      flow_id: string;
+      credential: import('@simplewebauthn/browser').AuthenticationResponseJSON;
+    }
   }
 }

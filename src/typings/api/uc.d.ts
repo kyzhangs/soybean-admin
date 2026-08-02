@@ -61,5 +61,26 @@ declare namespace Api {
       password: string;
       code: string;
     }
+
+    interface PasskeyRegistrationOptions {
+      flow_id: string;
+      public_key: import('@simplewebauthn/browser').PublicKeyCredentialCreationOptionsJSON;
+    }
+
+    interface PasskeyRegistrationVerifyParams {
+      flow_id: string;
+      credential: import('@simplewebauthn/browser').RegistrationResponseJSON;
+      name: string;
+    }
+
+    interface Passkey {
+      id: string;
+      name: string;
+      device_type: string | null;
+      backed_up: boolean;
+      transports: string[] | null;
+      last_used_at: string | null;
+      create_time: string;
+    }
   }
 }

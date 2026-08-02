@@ -358,6 +358,14 @@ const local: App.I18n.Schema = {
         admin: '管理员',
         user: '普通用户'
       },
+      passkey: {
+        title: 'Passkey 登录',
+        accountTab: '账号登录',
+        biometricTab: '生物识别',
+        login: '点击开启识别登录',
+        unsupported: '当前浏览器或运行环境不支持 Passkey，请使用 HTTPS 或切换到密码登录',
+        failed: 'Passkey 验证失败，请重试'
+      },
       twoFactor: {
         title: '2FA 验证',
         help: '请输入认证器应用生成的 6 位动态验证码，或切换使用一次性恢复码',
@@ -609,6 +617,43 @@ const local: App.I18n.Schema = {
           password: '请输入当前密码',
           code: '请输入验证码或恢复码',
           totpCode: '请输入认证器中的 6 位验证码'
+        }
+      },
+      passkey: {
+        title: '生物识别',
+        tip: '绑定后可在登录页使用指纹、面容或设备屏幕锁直接登录',
+        bind: '添加生物识别',
+        name: '设备名称',
+        password: '当前密码',
+        boundCount: '已绑定 {count} 个',
+        reauthenticateTip: '请输入当前密码，然后按照系统提示完成设备验证',
+        bindSuccess: '生物识别绑定成功',
+        bindFailed: '生物识别绑定失败，请重试',
+        registrationError: {
+          cancelled: '已取消生物识别或验证已超时',
+          invalidDomain: '当前域名不支持生物识别，请检查访问地址',
+          invalidRpId: '生物识别域名配置错误，请联系管理员',
+          invalidUserId: '账户标识不符合生物识别要求，请联系管理员',
+          invalidOptions: '生物识别参数配置错误，请联系管理员',
+          deviceError: '设备无法完成生物识别，请稍后重试',
+          discoverableCredentialUnsupported: '当前设备不支持免用户名登录所需的生物识别凭据',
+          userVerificationUnsupported: '当前设备未配置指纹、面容或屏幕锁',
+          alreadyRegistered: '该设备已绑定生物识别',
+          algorithmUnsupported: '当前设备不支持系统要求的生物识别算法',
+          verificationFailed: '设备验证失败，请重试',
+          deviceUnsupported: '当前设备或浏览器不支持生物识别',
+          insecureContext: '当前访问环境不满足安全要求，请使用 HTTPS'
+        },
+        delete: '删除',
+        deleteTitle: '删除生物识别',
+        deleteTip: '删除“{name}”后，该设备将无法再用于生物识别登录。请输入当前密码确认。',
+        deleteSuccess: '生物识别已删除',
+        addedAt: '添加时间',
+        lastUsedAt: '最近使用',
+        neverUsed: '尚未使用',
+        form: {
+          name: '请输入便于识别的设备名称',
+          password: '请输入当前密码'
         }
       }
     },

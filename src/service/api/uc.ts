@@ -54,3 +54,35 @@ export function fetchRegenerateTwoFactorRecoveryCodes(data: Api.UserCenter.TwoFa
     data
   });
 }
+
+/** Get Passkeys bound to the current account */
+export function fetchGetPasskeys() {
+  return request<Api.UserCenter.Passkey[]>({ url: '/uc/passkeys' });
+}
+
+/** Create a Passkey registration challenge after password reauthentication */
+export function fetchPasskeyRegistrationOptions(password: string) {
+  return request<Api.UserCenter.PasskeyRegistrationOptions>({
+    url: '/uc/passkeys/register/options',
+    method: 'post',
+    data: { password }
+  });
+}
+
+/** Verify and bind a Passkey */
+export function fetchVerifyPasskeyRegistration(data: Api.UserCenter.PasskeyRegistrationVerifyParams) {
+  return request<Api.UserCenter.Passkey>({
+    url: '/uc/passkeys/register/verify',
+    method: 'post',
+    data
+  });
+}
+
+/** Delete a biometric credential after password reauthentication */
+export function fetchDeletePasskey(passkeyId: string, password: string) {
+  return request<null>({
+    url: `/uc/passkeys/${passkeyId}`,
+    method: 'delete',
+    data: { password }
+  });
+}

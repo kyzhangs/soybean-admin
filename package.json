@@ -55,6 +55,7 @@
     "@sa/hooks": "workspace:*",
     "@sa/materials": "workspace:*",
     "@sa/utils": "workspace:*",
+    "@simplewebauthn/browser": "13.3.0",
     "@visactor/vchart": "2.0.19",
     "@visactor/vchart-theme": "1.12.3",
     "@visactor/vtable-editors": "1.23.3",

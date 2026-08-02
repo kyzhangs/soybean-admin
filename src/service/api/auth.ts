@@ -27,6 +27,23 @@ export function fetchVerifyTwoFactor(data: Api.Auth.TwoFactorVerifyParams) {
   });
 }
 
+/** Create a username-less Passkey authentication challenge */
+export function fetchPasskeyLoginOptions() {
+  return request<Api.Auth.PasskeyOptions>({
+    url: '/auth/passkey/options',
+    method: 'post'
+  });
+}
+
+/** Verify a Passkey assertion and return project tokens */
+export function fetchVerifyPasskey(data: Api.Auth.PasskeyVerifyParams) {
+  return request<Api.Auth.Token>({
+    url: '/auth/passkey/verify',
+    method: 'post',
+    data
+  });
+}
+
 /**
  * Refresh token
  *

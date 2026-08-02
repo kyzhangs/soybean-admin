@@ -17,6 +17,7 @@ export const themeSchemaOptions = transformRecordToOption(themeSchemaRecord);
 
 export const loginModuleRecord: Record<UnionKey.LoginModule, App.I18n.I18nKey> = {
   'pwd-login': 'page.login.pwdLogin.title',
+  'passkey-login': 'page.login.passkey.title',
   'code-login': 'page.login.codeLogin.title',
   register: 'page.login.register.title',
   'reset-pwd': 'page.login.resetPwd.title',

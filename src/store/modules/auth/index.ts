@@ -2,7 +2,14 @@ import { computed, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useLoading } from '@sa/hooks';
-import { fetchGetUserInfo, fetchLogin, fetchVerifyTwoFactor } from '@/service/api';
+import { startAuthentication } from '@simplewebauthn/browser';
+import {
+  fetchGetUserInfo,
+  fetchLogin,
+  fetchPasskeyLoginOptions,
+  fetchVerifyPasskey,
+  fetchVerifyTwoFactor
+} from '@/service/api';
 import { useRouterPush } from '@/hooks/common/router';
 import { localStg } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
@@ -154,6 +161,31 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     }
   }
 
+  async function loginWithPasskey(redirect = true) {
+    if (loginLoading.value) return;
+
+    startLoading();
+    try {
+      const { data: options, error: optionsError } = await fetchPasskeyLoginOptions();
+      if (optionsError) return;
+
+      const credential = await startAuthentication({ optionsJSON: options.public_key });
+      const { data: loginToken, error } = await fetchVerifyPasskey({
+        flow_id: options.flow_id,
+        credential
+      });
+      if (!error) {
+        await completeLogin(loginToken, redirect);
+      }
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === 'NotAllowedError')) {
+        window.$message?.error($t('page.login.passkey.failed'));
+      }
+    } finally {
+      endLoading();
+    }
+  }
+
   function cancelTwoFactor() {
     twoFactorChallengeToken.value = '';
   }
@@ -229,6 +261,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     requiresTwoFactor,
     resetStore,
     login,
+    loginWithPasskey,
     verifyTwoFactor,
     cancelTwoFactor,
     getUserInfo,

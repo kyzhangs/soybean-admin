@@ -234,6 +234,14 @@ declare namespace App {
             admin: string;
             user: string;
           };
+          passkey: {
+            title: string;
+            accountTab: string;
+            biometricTab: string;
+            login: string;
+            unsupported: string;
+            failed: string;
+          };
           twoFactor: {
             title: string;
             help: string;
@@ -484,6 +492,43 @@ declare namespace App {
               password: string;
               code: string;
               totpCode: string;
+            };
+          };
+          passkey: {
+            title: string;
+            tip: string;
+            bind: string;
+            name: string;
+            password: string;
+            boundCount: string;
+            reauthenticateTip: string;
+            bindSuccess: string;
+            bindFailed: string;
+            registrationError: {
+              cancelled: string;
+              invalidDomain: string;
+              invalidRpId: string;
+              invalidUserId: string;
+              invalidOptions: string;
+              deviceError: string;
+              discoverableCredentialUnsupported: string;
+              userVerificationUnsupported: string;
+              alreadyRegistered: string;
+              algorithmUnsupported: string;
+              verificationFailed: string;
+              deviceUnsupported: string;
+              insecureContext: string;
+            };
+            delete: string;
+            deleteTitle: string;
+            deleteTip: string;
+            deleteSuccess: string;
+            addedAt: string;
+            lastUsedAt: string;
+            neverUsed: string;
+            form: {
+              name: string;
+              password: string;
             };
           };
         };

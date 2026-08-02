@@ -362,6 +362,14 @@ const local: App.I18n.Schema = {
         admin: 'Admin',
         user: 'User'
       },
+      passkey: {
+        title: 'Passkey Login',
+        accountTab: 'Account Login',
+        biometricTab: 'Biometrics',
+        login: 'Click to start biometric login',
+        unsupported: 'Passkeys are unavailable in this browser or context. Use HTTPS or switch to password login.',
+        failed: 'Passkey verification failed. Please try again.'
+      },
       twoFactor: {
         title: '2FA Verification',
         help: 'Enter the 6-digit code from your authenticator app, or switch to a one-time recovery code',
@@ -615,6 +623,45 @@ const local: App.I18n.Schema = {
           password: 'Enter your current password',
           code: 'Enter verification or recovery code',
           totpCode: 'Enter the 6-digit authenticator code'
+        }
+      },
+      passkey: {
+        title: 'Biometrics',
+        tip: 'Bind a Passkey to sign in directly with your fingerprint, face, or device screen lock',
+        bind: 'Add Biometrics',
+        name: 'Device Name',
+        password: 'Current Password',
+        boundCount: '{count} bound',
+        reauthenticateTip: 'Enter your current password, then follow the system prompt to verify this device',
+        bindSuccess: 'Biometrics bound successfully',
+        bindFailed: 'Failed to bind biometrics. Please try again.',
+        registrationError: {
+          cancelled: 'Biometric verification was cancelled or timed out',
+          invalidDomain: 'Biometrics are unavailable on the current domain. Check the access URL.',
+          invalidRpId: 'The biometric domain is misconfigured. Contact the administrator.',
+          invalidUserId: 'The account identifier does not meet biometric requirements. Contact the administrator.',
+          invalidOptions: 'The biometric options are misconfigured. Contact the administrator.',
+          deviceError: 'The device could not complete biometric verification. Please try again later.',
+          discoverableCredentialUnsupported:
+            'This device does not support the discoverable credential required for username-free sign-in.',
+          userVerificationUnsupported: 'No fingerprint, face recognition, or screen lock is configured on this device.',
+          alreadyRegistered: 'Biometrics are already bound on this device.',
+          algorithmUnsupported: 'This device does not support the required biometric algorithm.',
+          verificationFailed: 'Device verification failed. Please try again.',
+          deviceUnsupported: 'This device or browser does not support biometrics.',
+          insecureContext: 'The current environment is not secure. Please use HTTPS.'
+        },
+        delete: 'Delete',
+        deleteTitle: 'Delete Biometrics',
+        deleteTip:
+          'After deleting “{name}”, this device can no longer be used for biometric login. Enter your password to confirm.',
+        deleteSuccess: 'Biometrics deleted',
+        addedAt: 'Added',
+        lastUsedAt: 'Last Used',
+        neverUsed: 'Never used',
+        form: {
+          name: 'Enter a recognizable device name',
+          password: 'Enter your current password'
         }
       }
     },

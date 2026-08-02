@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
-import { fetchGetRoleList, fetchGetTwoFactorStatus } from '@/service/api';
+import { fetchGetPasskeys, fetchGetRoleList, fetchGetTwoFactorStatus } from '@/service/api';
 import { useAuthStore } from '@/store/modules/auth';
 import { $t } from '@/locales';
 import PasswordChangeModal from './modules/password-change-modal.vue';
+import PasskeyDeleteModal from './modules/passkey-delete-modal.vue';
+import PasskeyModal from './modules/passkey-modal.vue';
 import TwoFactorModal from './modules/two-factor-modal.vue';
 
 defineOptions({
@@ -16,6 +18,10 @@ const userInfo = authStore.userInfo;
 const loading = ref(false);
 const roles = ref<Api.SystemManage.Role[]>([]);
 const passwordChangeVisible = ref(false);
+const passkeyVisible = ref(false);
+const passkeyDeleteVisible = ref(false);
+const passkeys = ref<Api.UserCenter.Passkey[]>([]);
+const selectedPasskey = ref<Api.UserCenter.Passkey | null>(null);
 const twoFactorVisible = ref(false);
 const twoFactorAction = ref<'toggle' | 'regenerate'>('toggle');
 const twoFactorStatus = ref<Api.Common.Status>('2');
@@ -43,6 +49,13 @@ const statusTagType = computed(() => {
 });
 const statusLabel = computed(() => $t(enableStatusRecord[userInfo.status]));
 const twoFactorEnabled = computed(() => twoFactorStatus.value === '1');
+const passkeyCards = computed(() =>
+  passkeys.value.map(passkey => ({
+    passkey,
+    addedAt: passkey.create_time || $t('common.noData'),
+    lastUsedAt: passkey.last_used_at || $t('page.user-center.passkey.neverUsed')
+  }))
+);
 
 function valueOrEmpty(value: string | null | undefined) {
   return value || $t('common.noData');
@@ -50,10 +63,11 @@ function valueOrEmpty(value: string | null | undefined) {
 
 async function refreshUserInfo() {
   loading.value = true;
-  const [, roleRes, twoFactorStatusRes] = await Promise.all([
+  const [, roleRes, twoFactorStatusRes, passkeyRes] = await Promise.all([
     authStore.getUserInfo(),
     fetchGetRoleList(),
-    fetchGetTwoFactorStatus()
+    fetchGetTwoFactorStatus(),
+    fetchGetPasskeys()
   ]);
 
   if (!roleRes.error) {
@@ -61,6 +75,9 @@ async function refreshUserInfo() {
   }
   if (!twoFactorStatusRes.error) {
     twoFactorStatus.value = twoFactorStatusRes.data.status;
+  }
+  if (!passkeyRes.error) {
+    passkeys.value = passkeyRes.data;
   }
 
   loading.value = false;
@@ -72,6 +89,18 @@ async function handleTwoFactorChanged() {
   if (!error) {
     twoFactorStatus.value = data.status;
   }
+}
+
+async function handlePasskeyChanged() {
+  const { data, error } = await fetchGetPasskeys();
+  if (!error) {
+    passkeys.value = data;
+  }
+}
+
+function openPasskeyDelete(passkey: Api.UserCenter.Passkey) {
+  selectedPasskey.value = passkey;
+  passkeyDeleteVisible.value = true;
 }
 
 function openTwoFactorModal(action: 'toggle' | 'regenerate') {
@@ -192,9 +221,59 @@ onMounted(() => {
           </NButton>
         </div>
       </div>
+      <NDivider />
+      <div>
+        <div class="flex flex-wrap items-center justify-between gap-16px">
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-8px text-15px font-medium">
+              {{ $t('page.user-center.passkey.title') }}
+              <NTag :type="passkeys.length ? 'success' : 'default'" size="small">
+                {{ $t('page.user-center.passkey.boundCount', { count: passkeys.length }) }}
+              </NTag>
+            </div>
+            <div class="mt-6px text-13px text-#6b7280">{{ $t('page.user-center.passkey.tip') }}</div>
+          </div>
+          <NButton class="shrink-0" type="primary" secondary @click="passkeyVisible = true">
+            {{ $t('page.user-center.passkey.bind') }}
+          </NButton>
+        </div>
+
+        <NGrid v-if="passkeyCards.length" responsive="screen" item-responsive :x-gap="12" :y-gap="12" class="mt-12px">
+          <NGi v-for="card in passkeyCards" :key="card.passkey.id" span="24 s:12">
+            <NCard size="small" embedded class="h-full">
+              <div class="flex items-start justify-between gap-12px">
+                <div class="min-w-0 flex-y-center gap-8px text-15px font-medium">
+                  <SvgIcon icon="mdi:fingerprint" class="shrink-0 text-20px text-primary" />
+                  <span class="truncate">{{ card.passkey.name }}</span>
+                </div>
+                <NButton text type="error" size="tiny" class="shrink-0" @click="openPasskeyDelete(card.passkey)">
+                  <template #icon><SvgIcon icon="mdi:trash-can-outline" /></template>
+                  {{ $t('page.user-center.passkey.delete') }}
+                </NButton>
+              </div>
+              <div class="mt-12px flex-col-stretch gap-8px text-13px">
+                <div class="flex items-start justify-between gap-12px">
+                  <span class="shrink-0 text-#6b7280">{{ $t('page.user-center.passkey.addedAt') }}</span>
+                  <span class="break-all text-right">{{ card.addedAt }}</span>
+                </div>
+                <div class="flex items-start justify-between gap-12px">
+                  <span class="shrink-0 text-#6b7280">{{ $t('page.user-center.passkey.lastUsedAt') }}</span>
+                  <span class="break-all text-right">{{ card.lastUsedAt }}</span>
+                </div>
+              </div>
+            </NCard>
+          </NGi>
+        </NGrid>
+      </div>
     </NCard>
 
     <PasswordChangeModal v-model:visible="passwordChangeVisible" />
+    <PasskeyModal v-model:visible="passkeyVisible" @submitted="handlePasskeyChanged" />
+    <PasskeyDeleteModal
+      v-model:visible="passkeyDeleteVisible"
+      :passkey="selectedPasskey"
+      @submitted="handlePasskeyChanged"
+    />
     <TwoFactorModal
       v-model:visible="twoFactorVisible"
       :enabled="twoFactorEnabled"
