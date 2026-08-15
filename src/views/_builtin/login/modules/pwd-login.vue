@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { useMessage } from 'naive-ui';
 import { useAuthStore } from '@/store/modules/auth';
 import { useRouterPush } from '@/hooks/common/router';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
@@ -13,6 +14,7 @@ defineOptions({
 
 const authStore = useAuthStore();
 const route = useRoute();
+const message = useMessage();
 const { toggleLoginModule } = useRouterPush();
 const { formRef, validate } = useNaiveForm();
 
@@ -87,8 +89,16 @@ async function loadAuthProviders() {
 function handleProviderLogin(provider: Api.Authx.PublicAuthProvider) {
   const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/';
   const callbackUrl = `${window.location.origin}/login/callback`;
-  authStore.setAuthProvider(provider);
   window.location.assign(getAuthProviderLoginUrl(provider.code, redirect, callbackUrl));
+}
+
+function handleCasLogin() {
+  if (!casProvider.value) {
+    message.warning($t('page.login.cas.disabled'));
+    return;
+  }
+
+  handleProviderLogin(casProvider.value);
 }
 
 onMounted(loadAuthProviders);
@@ -146,10 +156,9 @@ onMounted(loadAuthProviders);
       </NButton>
       <template v-else>
         <a
-          v-if="casProvider"
           href="#"
           class="flex items-center justify-center gap-6px text-primary transition-colors hover:text-primary-hover hover:underline"
-          @click.prevent="handleProviderLogin(casProvider)"
+          @click.prevent="handleCasLogin"
         >
           <span>{{ $t('page.login.cas.login') }}</span>
         </a>

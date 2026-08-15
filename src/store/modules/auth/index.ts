@@ -201,15 +201,13 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     try {
       const { data, error } = await fetchAuthProviderExchange(loginTicket);
       if (error) return false;
-      return await completeLogin(data, true, data.redirect);
+      return await completeLogin(data, true, data.redirect, {
+        code: data.provider_code,
+        protocol: data.provider_protocol
+      });
     } finally {
       endLoading();
     }
-  }
-
-  function setAuthProvider(provider: Api.Authx.PublicAuthProvider) {
-    authProvider.value = { code: provider.code, protocol: provider.protocol };
-    localStg.set('authProvider', authProvider.value);
   }
 
   function clearAuthProvider() {
@@ -233,9 +231,21 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     twoFactorChallengeToken.value = '';
   }
 
-  async function completeLogin(loginToken: Api.Authx.Token, redirect = true, redirectPath?: string) {
+  async function completeLogin(
+    loginToken: Api.Authx.Token,
+    redirect = true,
+    redirectPath?: string,
+    provider?: Pick<Api.Authx.PublicAuthProvider, 'code' | 'protocol'>
+  ) {
     const pass = await loginByToken(loginToken);
     if (!pass) return false;
+
+    if (provider) {
+      authProvider.value = provider;
+      localStg.set('authProvider', authProvider.value);
+    } else {
+      clearAuthProvider();
+    }
 
     await routeStore.initAuthRoute();
     const isClear = await checkTabClear();
@@ -312,7 +322,6 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     login,
     loginWithPasskey,
     loginWithCasTicket,
-    setAuthProvider,
     logout,
     verifyTwoFactor,
     cancelTwoFactor,

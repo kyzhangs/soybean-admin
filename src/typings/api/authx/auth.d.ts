@@ -43,6 +43,8 @@ declare namespace Api {
 
     interface CasExchangeResult extends Token {
       redirect: string;
+      provider_code: string;
+      provider_protocol: AuthProtocol;
     }
 
     interface PublicAuthProvider {
