@@ -310,10 +310,9 @@ watch(visible, () => {
         {{ $t('page.user-center.twoFactor.recoveryTip') }}
       </NAlert>
       <div class="relative">
-        <pre
-          class="m-0 rd-6px bg-#f3f4f6 p-16px text-center leading-28px dark:bg-#1f2937"
-          v-text="recoveryCodes.join('\n')"
-        ></pre>
+        <pre class="m-0 rd-6px bg-#f3f4f6 p-16px text-center leading-28px dark:bg-#1f2937">{{
+          recoveryCodes.join('\n')
+        }}</pre>
         <NButton
           class="absolute right-8px top-8px"
           quaternary
