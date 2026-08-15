@@ -82,5 +82,17 @@ declare namespace Api {
       last_used_at: string | null;
       create_time: string;
     }
+
+    interface AuthIdentity {
+      id: string;
+      provider_code: string;
+      provider_name: string;
+      provider_icon: string | null;
+      username: string | null;
+      email: string | null;
+      avatar: string | null;
+      last_login_at: string | null;
+      create_time: string;
+    }
   }
 }

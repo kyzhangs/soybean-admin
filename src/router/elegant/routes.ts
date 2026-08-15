@@ -85,6 +85,15 @@ export const generatedRoutes: GeneratedRoute[] = [
     ]
   },
   {
+    name: 'authx',
+    path: '/authx',
+    component: 'layout.base$view.authx',
+    meta: {
+      title: 'authx',
+      i18nKey: 'route.authx'
+    }
+  },
+  {
     name: 'function',
     path: '/function',
     component: 'layout.base',
@@ -228,7 +237,7 @@ export const generatedRoutes: GeneratedRoute[] = [
   },
   {
     name: 'login',
-    path: '/login/:module(pwd-login|passkey-login|code-login|register|reset-pwd|bind-wechat)?',
+    path: '/login/:module(pwd-login|passkey-login|callback|code-login|register|reset-pwd|bind-wechat)?',
     component: 'layout.blank$view.login',
     props: true,
     meta: {

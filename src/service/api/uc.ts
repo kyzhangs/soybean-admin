@@ -5,6 +5,14 @@ export function fetchGetUserInfo() {
   return request<Api.UserCenter.UserInfo>({ url: '/uc/profile' });
 }
 
+export function fetchGetAuthIdentities() {
+  return request<Api.UserCenter.AuthIdentity[]>({ url: '/uc/auth-identities' });
+}
+
+export function fetchDeleteAuthIdentity(identityId: string) {
+  return request<null>({ url: `/uc/auth-identities/${identityId}`, method: 'delete' });
+}
+
 /** Change current user's password */
 export function fetchChangePassword(data: Api.UserCenter.PasswordChangeParams) {
   return request<null>({

@@ -18,6 +18,8 @@ declare namespace StorageType {
     mixSiderFixed: CommonType.YesOrNo;
     /** The refresh token */
     refreshToken: string;
+    /** The authentication provider used by the current login session */
+    authProvider: Pick<Api.Authx.PublicAuthProvider, 'code' | 'protocol'>;
     /** The theme color */
     themeColor: string;
     /** The dark mode */

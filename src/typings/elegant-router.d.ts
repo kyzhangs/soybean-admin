@@ -40,6 +40,7 @@ declare module "@elegant-router/types" {
     "alova": "/alova";
     "alova_request": "/alova/request";
     "alova_scenes": "/alova/scenes";
+    "authx": "/authx";
     "function": "/function";
     "function_hide-child": "/function/hide-child";
     "function_hide-child_one": "/function/hide-child/one";
@@ -52,7 +53,7 @@ declare module "@elegant-router/types" {
     "function_toggle-auth": "/function/toggle-auth";
     "home": "/home";
     "iframe-page": "/iframe-page/:url";
-    "login": "/login/:module(pwd-login|passkey-login|code-login|register|reset-pwd|bind-wechat)?";
+    "login": "/login/:module(pwd-login|passkey-login|callback|code-login|register|reset-pwd|bind-wechat)?";
     "multi-menu": "/multi-menu";
     "multi-menu_first": "/multi-menu/first";
     "multi-menu_first_child": "/multi-menu/first/child";
@@ -151,6 +152,7 @@ declare module "@elegant-router/types" {
     | "500"
     | "about"
     | "alova"
+    | "authx"
     | "function"
     | "home"
     | "iframe-page"
@@ -186,6 +188,7 @@ declare module "@elegant-router/types" {
     | "about"
     | "alova_request"
     | "alova_scenes"
+    | "authx"
     | "function_hide-child_one"
     | "function_hide-child_three"
     | "function_hide-child_two"

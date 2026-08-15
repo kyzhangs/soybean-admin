@@ -4,8 +4,11 @@ import { defineStore } from 'pinia';
 import { useLoading } from '@sa/hooks';
 import { startAuthentication } from '@simplewebauthn/browser';
 import {
+  fetchAuthProviderExchange,
   fetchGetUserInfo,
   fetchLogin,
+  fetchLogout,
+  getAuthProviderLogoutUrl,
   fetchPasskeyLoginOptions,
   fetchVerifyPasskey,
   fetchVerifyTwoFactor
@@ -23,12 +26,14 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const authStore = useAuthStore();
   const routeStore = useRouteStore();
   const tabStore = useTabStore();
-  const { toLogin, redirectFromLogin } = useRouterPush(false);
+  const { routerPush, toLogin, redirectFromLogin } = useRouterPush(false);
   const { loading: loginLoading, startLoading, endLoading } = useLoading();
 
   const token = ref('');
+  const authProvider = ref(localStg.get('authProvider'));
   const twoFactorChallengeToken = ref('');
   const requiresTwoFactor = computed(() => Boolean(twoFactorChallengeToken.value));
+  const canGlobalLogout = computed(() => authProvider.value?.protocol === 'cas');
 
   function createDefaultUserInfo(): Api.UserCenter.UserInfo {
     return {
@@ -67,14 +72,15 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const isLogin = computed(() => Boolean(token.value));
 
   /** Reset auth store */
-  async function resetStore() {
+  async function resetStore(redirectToLogin = true) {
     recordUserId();
 
     clearAuthStorage();
 
     authStore.$reset();
+    clearAuthProvider();
 
-    if (!route.meta.constant) {
+    if (redirectToLogin && !route.meta.constant) {
       await toLogin();
     }
 
@@ -126,6 +132,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
    * @param [redirect=true] Whether to redirect after login. Default is `true`
    */
   async function login(username: string, password: string, redirect = true) {
+    clearAuthProvider();
     startLoading();
 
     const { data: loginResult, error } = await fetchLogin(username, password);
@@ -164,12 +171,15 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   async function loginWithPasskey(redirect = true) {
     if (loginLoading.value) return;
 
+    clearAuthProvider();
     startLoading();
     try {
       const { data: options, error: optionsError } = await fetchPasskeyLoginOptions();
       if (optionsError) return;
 
-      const credential = await startAuthentication({ optionsJSON: options.public_key });
+      const credential = await startAuthentication({
+        optionsJSON: options.public_key
+      });
       const { data: loginToken, error } = await fetchVerifyPasskey({
         flow_id: options.flow_id,
         credential
@@ -186,18 +196,55 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     }
   }
 
+  async function loginWithCasTicket(loginTicket: string) {
+    startLoading();
+    try {
+      const { data, error } = await fetchAuthProviderExchange(loginTicket);
+      if (error) return false;
+      return await completeLogin(data, true, data.redirect);
+    } finally {
+      endLoading();
+    }
+  }
+
+  function setAuthProvider(provider: Api.Authx.PublicAuthProvider) {
+    authProvider.value = { code: provider.code, protocol: provider.protocol };
+    localStg.set('authProvider', authProvider.value);
+  }
+
+  function clearAuthProvider() {
+    authProvider.value = null;
+    localStg.remove('authProvider');
+  }
+
+  async function logout(globalLogout = false) {
+    const providerCode = canGlobalLogout.value ? authProvider.value?.code : undefined;
+    const logoutUrl =
+      globalLogout && providerCode ? getAuthProviderLogoutUrl(providerCode, window.location.origin) : undefined;
+    try {
+      await fetchLogout();
+    } finally {
+      await resetStore(!logoutUrl);
+      if (logoutUrl) window.location.assign(logoutUrl);
+    }
+  }
+
   function cancelTwoFactor() {
     twoFactorChallengeToken.value = '';
   }
 
-  async function completeLogin(loginToken: Api.Auth.Token, redirect = true) {
+  async function completeLogin(loginToken: Api.Authx.Token, redirect = true, redirectPath?: string) {
     const pass = await loginByToken(loginToken);
-    if (!pass) return;
+    if (!pass) return false;
 
     await routeStore.initAuthRoute();
     const isClear = await checkTabClear();
     const needRedirect = isClear ? false : redirect;
-    await redirectFromLogin(needRedirect);
+    if (redirectPath) {
+      await routerPush(redirectPath);
+    } else {
+      await redirectFromLogin(needRedirect);
+    }
 
     window.$notification?.success({
       title: $t('page.login.common.loginSuccess'),
@@ -206,9 +253,10 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
       }),
       duration: 4500
     });
+    return true;
   }
 
-  async function loginByToken(loginToken: Api.Auth.Token) {
+  async function loginByToken(loginToken: Api.Authx.Token) {
     // 1. stored in the localStorage, the later requests need it in headers
     localStg.set('token', loginToken.access_token);
     localStg.set('refreshToken', loginToken.refresh_token);
@@ -257,11 +305,15 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     userDisplayName,
     isStaticSuper,
     isLogin,
+    canGlobalLogout,
     loginLoading,
     requiresTwoFactor,
     resetStore,
     login,
     loginWithPasskey,
+    loginWithCasTicket,
+    setAuthProvider,
+    logout,
     verifyTwoFactor,
     cancelTwoFactor,
     getUserInfo,

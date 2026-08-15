@@ -242,6 +242,16 @@ declare namespace App {
             unsupported: string;
             failed: string;
           };
+          cas: {
+            login: string;
+            disabled: string;
+            callbackTitle: string;
+            exchanging: string;
+            failed: string;
+            identityNotBound: string;
+            back: string;
+            globalLogout: string;
+          };
           twoFactor: {
             title: string;
             help: string;

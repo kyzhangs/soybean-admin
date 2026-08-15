@@ -294,6 +294,7 @@ const local: App.I18n.Schema = {
     'system-manage_user-detail': '用户详情',
     'system-manage_roles': '角色管理',
     'system-manage_menus': '菜单管理',
+    authx: '认证配置',
     'system-manage_apis': '接口管理',
     'system-manage_buttons': '按钮管理',
     'multi-menu': '多级菜单',
@@ -365,6 +366,16 @@ const local: App.I18n.Schema = {
         login: '点击开启识别登录',
         unsupported: '当前浏览器或运行环境不支持 Passkey，请使用 HTTPS 或切换到密码登录',
         failed: 'Passkey 验证失败，请重试'
+      },
+      cas: {
+        login: '统一身份认证登录',
+        disabled: '未启用统一身份认证登录',
+        callbackTitle: '统一身份认证',
+        exchanging: '正在完成统一身份认证…',
+        failed: '统一身份认证票据无效或已过期，请重新登录',
+        identityNotBound: '统一身份认证已通过，但该身份尚未绑定本地账号',
+        back: '返回登录',
+        globalLogout: '是否同时退出统一身份认证及关联系统？'
       },
       twoFactor: {
         title: '2FA 验证',

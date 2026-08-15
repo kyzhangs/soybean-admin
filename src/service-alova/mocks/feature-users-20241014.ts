@@ -30,14 +30,14 @@ export default defineMock({
       data: null
     };
   },
-  '[POST]/auth/sendCaptcha': () => {
+  '[POST]/authx/sendCaptcha': () => {
     return {
       code: '0000',
       msg: 'success',
       data: null
     };
   },
-  '[POST]/auth/verifyCaptcha': () => {
+  '[POST]/authx/verifyCaptcha': () => {
     return {
       code: '0000',
       msg: 'success',

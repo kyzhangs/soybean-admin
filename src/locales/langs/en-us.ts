@@ -298,6 +298,7 @@ const local: App.I18n.Schema = {
     'system-manage_user-detail': 'User Detail',
     'system-manage_roles': 'Roles Manage',
     'system-manage_menus': 'Menus Manage',
+    authx: 'Authentication',
     'system-manage_apis': 'APIs Manage',
     'system-manage_buttons': 'Buttons Manage',
     'multi-menu': 'Multi Menu',
@@ -369,6 +370,16 @@ const local: App.I18n.Schema = {
         login: 'Click to start biometric login',
         unsupported: 'Passkeys are unavailable in this browser or context. Use HTTPS or switch to password login.',
         failed: 'Passkey verification failed. Please try again.'
+      },
+      cas: {
+        login: 'Single Sign-On',
+        disabled: 'Single sign-on is not enabled',
+        callbackTitle: 'Single Sign-On',
+        exchanging: 'Completing single sign-on…',
+        failed: 'The single sign-on ticket is invalid or expired. Please sign in again.',
+        identityNotBound: 'Single sign-on succeeded, but this identity is not linked to a local account.',
+        back: 'Back to login',
+        globalLogout: 'Also sign out of single sign-on and connected systems?'
       },
       twoFactor: {
         title: '2FA Verification',

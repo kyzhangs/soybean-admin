@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
-import { fetchGetPasskeys, fetchGetRoleList, fetchGetTwoFactorStatus } from '@/service/api';
+import {
+  fetchAuthBindingFlow,
+  fetchDeleteAuthIdentity,
+  fetchGetAuthIdentities,
+  fetchGetPasskeys,
+  fetchGetRoleList,
+  fetchGetTwoFactorStatus,
+  fetchPublicAuthProviders
+} from '@/service/api';
 import { useAuthStore } from '@/store/modules/auth';
 import { $t } from '@/locales';
 import PasswordChangeModal from './modules/password-change-modal.vue';
@@ -14,6 +23,7 @@ defineOptions({
 });
 
 const authStore = useAuthStore();
+const route = useRoute();
 const userInfo = authStore.userInfo;
 const loading = ref(false);
 const roles = ref<Api.SystemManage.Role[]>([]);
@@ -25,6 +35,9 @@ const selectedPasskey = ref<Api.UserCenter.Passkey | null>(null);
 const twoFactorVisible = ref(false);
 const twoFactorAction = ref<'toggle' | 'regenerate'>('toggle');
 const twoFactorStatus = ref<Api.Common.Status>('2');
+const authIdentities = ref<Api.UserCenter.AuthIdentity[]>([]);
+const authProviders = ref<Api.Authx.PublicAuthProvider[]>([]);
+const bindingProviderCode = ref('');
 
 const genderLabel = computed(() => $t(userGenderRecord[userInfo.gender]));
 const genderTagType = computed(() => {
@@ -56,6 +69,10 @@ const passkeyCards = computed(() =>
     lastUsedAt: passkey.last_used_at || $t('page.user-center.passkey.neverUsed')
   }))
 );
+const boundProviderCodes = computed(() => new Set(authIdentities.value.map(identity => identity.provider_code)));
+const bindableProviders = computed(() =>
+  authProviders.value.filter(provider => provider.protocol === 'oauth2' && !boundProviderCodes.value.has(provider.code))
+);
 
 function valueOrEmpty(value: string | null | undefined) {
   return value || $t('common.noData');
@@ -63,11 +80,13 @@ function valueOrEmpty(value: string | null | undefined) {
 
 async function refreshUserInfo() {
   loading.value = true;
-  const [, roleRes, twoFactorStatusRes, passkeyRes] = await Promise.all([
+  const [, roleRes, twoFactorStatusRes, passkeyRes, identityRes, providerRes] = await Promise.all([
     authStore.getUserInfo(),
     fetchGetRoleList(),
     fetchGetTwoFactorStatus(),
-    fetchGetPasskeys()
+    fetchGetPasskeys(),
+    fetchGetAuthIdentities(),
+    fetchPublicAuthProviders()
   ]);
 
   if (!roleRes.error) {
@@ -79,8 +98,30 @@ async function refreshUserInfo() {
   if (!passkeyRes.error) {
     passkeys.value = passkeyRes.data;
   }
+  if (!identityRes.error) authIdentities.value = identityRes.data;
+  if (!providerRes.error) authProviders.value = providerRes.data;
 
   loading.value = false;
+}
+
+async function bindAuthProvider(providerCode: string) {
+  bindingProviderCode.value = providerCode;
+  try {
+    const callbackUrl = `${window.location.origin}/user-center`;
+    const { data, error } = await fetchAuthBindingFlow(providerCode, callbackUrl);
+    if (!error) window.location.assign(data.authorization_url);
+  } finally {
+    bindingProviderCode.value = '';
+  }
+}
+
+async function unbindAuthIdentity(identityId: string) {
+  const { error } = await fetchDeleteAuthIdentity(identityId);
+  if (!error) {
+    window.$message?.success('解绑成功');
+    const { data, error: refreshError } = await fetchGetAuthIdentities();
+    if (!refreshError) authIdentities.value = data;
+  }
 }
 
 async function handleTwoFactorChanged() {
@@ -109,6 +150,13 @@ function openTwoFactorModal(action: 'toggle' | 'regenerate') {
 }
 
 onMounted(() => {
+  if (route.query.binding === 'success') {
+    window.$message?.success('外部账号绑定成功');
+    window.history.replaceState({}, '', route.path);
+  } else if (route.query.error) {
+    window.$message?.error(`外部账号绑定失败（${String(route.query.error)}）`);
+    window.history.replaceState({}, '', route.path);
+  }
   refreshUserInfo();
 });
 </script>
@@ -220,6 +268,48 @@ onMounted(() => {
             {{ twoFactorEnabled ? $t('page.user-center.twoFactor.disable') : $t('page.user-center.twoFactor.enable') }}
           </NButton>
         </div>
+      </div>
+      <NDivider />
+      <div>
+        <div class="flex flex-wrap items-center justify-between gap-16px">
+          <div class="min-w-0 flex-1">
+            <div class="text-15px font-medium">第三方账号</div>
+            <div class="mt-6px text-13px text-#6b7280">绑定后可直接使用对应的 OAuth2 账号登录</div>
+          </div>
+          <NSpace>
+            <NButton
+              v-for="provider in bindableProviders"
+              :key="provider.code"
+              type="primary"
+              secondary
+              :loading="bindingProviderCode === provider.code"
+              @click="bindAuthProvider(provider.code)"
+            >
+              绑定 {{ provider.name }}
+            </NButton>
+          </NSpace>
+        </div>
+        <NGrid v-if="authIdentities.length" responsive="screen" item-responsive :x-gap="12" :y-gap="12" class="mt-12px">
+          <NGi v-for="identity in authIdentities" :key="identity.id" span="24 s:12">
+            <NCard size="small" embedded>
+              <div class="flex items-center justify-between gap-12px">
+                <div class="min-w-0 flex items-center gap-10px">
+                  <SvgIcon :icon="identity.provider_icon || 'mdi:account-key-outline'" class="text-22px text-primary" />
+                  <div class="min-w-0">
+                    <div class="font-medium">{{ identity.provider_name }}</div>
+                    <div class="truncate text-12px text-#6b7280">
+                      {{ identity.username || identity.email || '已绑定' }}
+                    </div>
+                  </div>
+                </div>
+                <NPopconfirm @positive-click="unbindAuthIdentity(identity.id)">
+                  <template #trigger><NButton text type="error" size="small">解绑</NButton></template>
+                  确认解绑该第三方账号？
+                </NPopconfirm>
+              </div>
+            </NCard>
+          </NGi>
+        </NGrid>
       </div>
       <NDivider />
       <div>

@@ -1,10 +1,13 @@
 declare namespace Api {
   /**
-   * namespace Auth
+   * namespace Authx
    *
-   * backend api module: "auth"
+   * backend api module: "authx"
    */
-  namespace Auth {
+  namespace Authx {
+    interface BindingFlow {
+      authorization_url: string;
+    }
     interface Token {
       token_type: string;
       access_token: string;
@@ -32,6 +35,22 @@ declare namespace Api {
     interface PasskeyVerifyParams {
       flow_id: string;
       credential: import('@simplewebauthn/browser').AuthenticationResponseJSON;
+    }
+
+    interface CasConfig {
+      enabled: boolean;
+    }
+
+    interface CasExchangeResult extends Token {
+      redirect: string;
+    }
+
+    interface PublicAuthProvider {
+      code: string;
+      name: string;
+      protocol: AuthProtocol;
+      icon: string | null;
+      sort: number;
     }
   }
 }

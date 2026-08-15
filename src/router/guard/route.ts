@@ -12,6 +12,12 @@ import { getRouteName } from '@/router/elegant/transform';
  */
 export function createRouteGuard(router: Router) {
   router.beforeEach(async (to, from) => {
+    const sanitizedLocation = removeCasServiceTicket(to);
+
+    if (sanitizedLocation) {
+      return sanitizedLocation;
+    }
+
     const location = await initRoute(to);
 
     if (location) {
@@ -54,6 +60,26 @@ export function createRouteGuard(router: Router) {
     // switch route normally
     return handleRouteSwitch(to, from);
   });
+}
+
+/** Remove an accidentally exposed CAS Service Ticket from non-callback URLs. */
+function removeCasServiceTicket(to: RouteLocationNormalized): RouteLocationRaw | null {
+  const ticket = to.query.ticket;
+  const isCasServiceTicket = typeof ticket === 'string' && ticket.startsWith('ST-');
+
+  if (!isCasServiceTicket) {
+    return null;
+  }
+
+  const query = { ...to.query };
+  delete query.ticket;
+
+  return {
+    path: to.path,
+    query,
+    hash: to.hash,
+    replace: true
+  };
 }
 
 /**

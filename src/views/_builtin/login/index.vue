@@ -10,6 +10,7 @@ import { useRouterPush } from '@/hooks/common/router';
 import { $t } from '@/locales';
 import PwdLogin from './modules/pwd-login.vue';
 import PasskeyLogin from './modules/passkey-login.vue';
+import Callback from './modules/callback.vue';
 import CodeLogin from './modules/code-login.vue';
 import Register from './modules/register.vue';
 import ResetPwd from './modules/reset-pwd.vue';
@@ -35,6 +36,7 @@ interface LoginModule {
 const moduleMap: Record<UnionKey.LoginModule, LoginModule> = {
   'pwd-login': { label: loginModuleRecord['pwd-login'], component: PwdLogin },
   'passkey-login': { label: loginModuleRecord['passkey-login'], component: PasskeyLogin },
+  callback: { label: loginModuleRecord['callback'], component: Callback },
   'code-login': { label: loginModuleRecord['code-login'], component: CodeLogin },
   register: { label: loginModuleRecord.register, component: Register },
   'reset-pwd': { label: loginModuleRecord['reset-pwd'], component: ResetPwd },

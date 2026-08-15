@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
-import { loginModuleRecord } from '@/constants/app';
+import { computed, onMounted, reactive, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/store/modules/auth';
 import { useRouterPush } from '@/hooks/common/router';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
+import { fetchPublicAuthProviders, getAuthProviderLoginUrl } from '@/service/api';
 
 defineOptions({
   name: 'PwdLogin'
 });
 
 const authStore = useAuthStore();
+const route = useRoute();
 const { toggleLoginModule } = useRouterPush();
 const { formRef, validate } = useNaiveForm();
 
@@ -26,6 +28,9 @@ const model: FormModel = reactive({
   twoFactorCode: ''
 });
 const useRecoveryCode = ref(false);
+const authProviders = ref<Api.Authx.PublicAuthProvider[]>([]);
+const casProvider = computed(() => authProviders.value.find(provider => provider.protocol === 'cas'));
+const oauth2Providers = computed(() => authProviders.value.filter(provider => provider.protocol === 'oauth2'));
 const twoFactorOtp = computed<string[]>({
   get: () => model.twoFactorCode.slice(0, useRecoveryCode.value ? 16 : 6).split(''),
   set: value => {
@@ -74,39 +79,19 @@ function toggleRecoveryCode() {
   useRecoveryCode.value = !useRecoveryCode.value;
 }
 
-type AccountKey = 'super' | 'admin' | 'user';
-
-interface Account {
-  key: AccountKey;
-  label: string;
-  username: string;
-  password: string;
+async function loadAuthProviders() {
+  const { data, error } = await fetchPublicAuthProviders();
+  if (!error) authProviders.value = data;
 }
 
-const accounts = computed<Account[]>(() => [
-  {
-    key: 'super',
-    label: $t('page.login.pwdLogin.superAdmin'),
-    username: 'sysadmin',
-    password: '111111'
-  },
-  {
-    key: 'admin',
-    label: $t('page.login.pwdLogin.admin'),
-    username: 'admin',
-    password: '111111'
-  },
-  {
-    key: 'user',
-    label: $t('page.login.pwdLogin.user'),
-    username: 'user',
-    password: '111111'
-  }
-]);
-
-async function handleAccountLogin(account: Account) {
-  await authStore.login(account.username, account.password);
+function handleProviderLogin(provider: Api.Authx.PublicAuthProvider) {
+  const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/';
+  const callbackUrl = `${window.location.origin}/login/callback`;
+  authStore.setAuthProvider(provider);
+  window.location.assign(getAuthProviderLoginUrl(provider.code, redirect, callbackUrl));
 }
+
+onMounted(loadAuthProviders);
 </script>
 
 <template>
@@ -160,20 +145,39 @@ async function handleAccountLogin(account: Account) {
         }}
       </NButton>
       <template v-else>
-        <div class="flex-y-center justify-between gap-12px">
-          <NButton class="flex-1" block @click="toggleLoginModule('code-login')">
-            {{ $t(loginModuleRecord['code-login']) }}
-          </NButton>
-          <NButton class="flex-1" block @click="toggleLoginModule('register')">
-            {{ $t(loginModuleRecord.register) }}
-          </NButton>
-        </div>
-        <NDivider class="text-14px text-#666 !m-0">{{ $t('page.login.pwdLogin.otherAccountLogin') }}</NDivider>
-        <div class="flex-center gap-12px">
-          <NButton v-for="item in accounts" :key="item.key" type="primary" @click="handleAccountLogin(item)">
-            {{ item.label }}
-          </NButton>
-        </div>
+        <a
+          v-if="casProvider"
+          href="#"
+          class="flex items-center justify-center gap-6px text-primary transition-colors hover:text-primary-hover hover:underline"
+          @click.prevent="handleProviderLogin(casProvider)"
+        >
+          <span>{{ $t('page.login.cas.login') }}</span>
+        </a>
+        <!--
+          <div class="flex-y-center justify-between gap-12px">
+            <NButton class="flex-1" block @click="toggleLoginModule('code-login')">
+              {{ $t(loginModuleRecord['code-login']) }}
+            </NButton>
+            <NButton class="flex-1" block @click="toggleLoginModule('register')">
+              {{ $t(loginModuleRecord.register) }}
+            </NButton>
+          </div>
+        -->
+        <template v-if="oauth2Providers.length">
+          <NDivider class="text-14px text-#666 !m-0">{{ $t('page.login.pwdLogin.otherAccountLogin') }}</NDivider>
+          <div class="flex-center flex-wrap gap-12px">
+            <NButton
+              v-for="provider in oauth2Providers"
+              :key="provider.code"
+              secondary
+              strong
+              @click="handleProviderLogin(provider)"
+            >
+              <template v-if="provider.icon" #icon><SvgIcon :icon="provider.icon" /></template>
+              {{ provider.name }}
+            </NButton>
+          </div>
+        </template>
       </template>
     </NSpace>
   </NForm>

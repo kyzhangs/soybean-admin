@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, h, ref } from 'vue';
 import type { VNode } from 'vue';
+import { NCheckbox } from 'naive-ui';
 import { useAuthStore } from '@/store/modules/auth';
 import { useRouterPush } from '@/hooks/common/router';
 import { useSvgIcon } from '@/hooks/common/icon';
@@ -13,6 +14,7 @@ defineOptions({
 const authStore = useAuthStore();
 const { routerPushByKey, toLogin } = useRouterPush();
 const { SvgIconVNode } = useSvgIcon();
+const globalLogout = ref(false);
 
 function loginOrRegister() {
   toLogin();
@@ -52,14 +54,30 @@ const options = computed(() => {
   return opts;
 });
 
-function logout() {
-  window.$dialog?.info({
+async function logout() {
+  globalLogout.value = false;
+  window.$dialog?.warning({
     title: $t('common.tip'),
-    content: $t('common.logoutConfirm'),
+    content: () =>
+      h('div', { class: 'flex flex-col gap-12px' }, [
+        h('span', $t('common.logoutConfirm')),
+        authStore.canGlobalLogout
+          ? h(
+              NCheckbox,
+              {
+                checked: globalLogout.value,
+                'onUpdate:checked': (checked: boolean) => {
+                  globalLogout.value = checked;
+                }
+              },
+              () => $t('page.login.cas.globalLogout')
+            )
+          : null
+      ]),
     positiveText: $t('common.confirm'),
     negativeText: $t('common.cancel'),
     onPositiveClick: () => {
-      authStore.resetStore();
+      return authStore.logout(globalLogout.value);
     }
   });
 }
