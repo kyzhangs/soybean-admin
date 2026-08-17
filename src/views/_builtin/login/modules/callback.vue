@@ -12,6 +12,9 @@ const authStore = useAuthStore();
 const { toLogin } = useRouterPush();
 const failed = ref(false);
 const authExceptionMessages: Record<string, string> = {
+  '100121': '账号未激活',
+  '100122': '账号已删除，请联系管理员',
+  '100123': '账号已禁用，请联系管理员',
   '100160': '统一身份认证未启用',
   '100161': '统一身份认证流程无效或已过期',
   '100162': '统一身份认证票据丢失',
