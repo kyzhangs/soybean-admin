@@ -3,7 +3,6 @@ declare namespace Api {
     type AuthProtocol = 'cas' | 'oauth2';
 
     type CasProviderSettings = {
-      issuer: string;
       authorization_url: string;
       validation_url: string;
       logout_url: string | null;
@@ -38,8 +37,8 @@ declare namespace Api {
       protocol: AuthProtocol;
       icon: string | null;
       sort: number;
-      auto_bind_by_username: boolean;
-      auto_create_user: boolean;
+      auto_bind: boolean;
+      auto_provision: boolean;
       verify_tls: boolean;
       timeout: number;
       settings: AuthProviderSettings;
@@ -58,8 +57,8 @@ declare namespace Api {
       | 'icon'
       | 'sort'
       | 'status'
-      | 'auto_bind_by_username'
-      | 'auto_create_user'
+      | 'auto_bind'
+      | 'auto_provision'
       | 'verify_tls'
       | 'timeout'
       | 'settings'

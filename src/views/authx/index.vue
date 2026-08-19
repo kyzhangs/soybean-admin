@@ -144,8 +144,8 @@ onMounted(getData);
               <div class="mt-5px font-500">{{ provider.sort }}</div>
             </div>
             <div>
-              <div class="text-gray-500">自动创建用户</div>
-              <div class="mt-5px font-500">{{ provider.auto_create_user ? '允许' : '关闭' }}</div>
+              <div class="text-gray-500">自动开通用户</div>
+              <div class="mt-5px font-500">{{ provider.auto_provision ? '允许' : '关闭' }}</div>
             </div>
             <div>
               <div class="text-gray-500">客户端密钥</div>

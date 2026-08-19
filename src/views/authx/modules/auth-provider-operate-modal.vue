@@ -23,7 +23,6 @@ const title = computed(() => (isEdit.value ? '编辑认证提供方' : '新增�
 
 type FormModel = Omit<Api.Authx.AuthProviderCreateParams, 'settings'> & {
   provider_type: 'generic' | 'github';
-  issuer: string;
   authorization_url: string;
   validation_url: string;
   token_url: string;
@@ -52,12 +51,11 @@ function createDefaultModel(): FormModel {
     icon: null,
     sort: 0,
     status: '2',
-    auto_bind_by_username: false,
-    auto_create_user: false,
+    auto_bind: false,
+    auto_provision: false,
     verify_tls: true,
-    timeout: 5,
+    timeout: 60,
     provider_type: 'generic',
-    issuer: '',
     authorization_url: '',
     validation_url: '',
     token_url: '',
@@ -90,13 +88,6 @@ const rules: Record<string, App.Global.FormRule> = {
   },
   name: { ...defaultRequiredRule, key: 'basic' },
   protocol: { ...defaultRequiredRule, key: 'basic' },
-  issuer: {
-    required: true,
-    key: 'protocol',
-    trigger: ['blur', 'input'],
-    validator: () => model.value.protocol !== 'cas' || Boolean(model.value.issuer),
-    message: '请输入 CAS 基础地址'
-  },
   authorization_url: { ...defaultRequiredRule, key: 'protocol' },
   callback_url: { ...defaultRequiredRule, key: 'protocol' },
   validation_url: {
@@ -148,8 +139,8 @@ function initModel() {
     icon: row.icon,
     sort: row.sort,
     status: row.status,
-    auto_bind_by_username: row.auto_bind_by_username,
-    auto_create_user: row.auto_create_user,
+    auto_bind: row.auto_bind,
+    auto_provision: row.auto_provision,
     verify_tls: row.verify_tls,
     timeout: row.timeout
   });
@@ -161,7 +152,6 @@ function initModel() {
 function buildSettings(): Api.Authx.AuthProviderSettings {
   if (model.value.protocol === 'cas') {
     return {
-      issuer: model.value.issuer,
       authorization_url: model.value.authorization_url,
       validation_url: model.value.validation_url,
       logout_url: model.value.logout_url || null,
@@ -205,8 +195,8 @@ async function submit() {
       icon: model.value.icon,
       sort: model.value.sort,
       status: model.value.status,
-      auto_bind_by_username: model.value.auto_bind_by_username,
-      auto_create_user: model.value.auto_create_user,
+      auto_bind: model.value.auto_bind,
+      auto_provision: model.value.auto_provision,
       verify_tls: model.value.verify_tls,
       timeout: model.value.timeout,
       settings: buildSettings()
@@ -269,9 +259,6 @@ watch(visible, value => {
       </NGrid>
 
       <NGrid v-show="currentStep === 2" :cols="24" :x-gap="16">
-        <NFormItemGi v-if="model.protocol === 'cas'" :span="24" label="Issuer / CAS 基础地址" path="issuer">
-          <NInput v-model:value="model.issuer" placeholder="https://cas.example.com/cas" />
-        </NFormItemGi>
         <NFormItemGi :span="24" label="授权/登录地址" path="authorization_url">
           <NInput v-model:value="model.authorization_url" />
         </NFormItemGi>
@@ -349,10 +336,10 @@ watch(visible, value => {
           <NFormItemGi :span="8" label="启用 PKCE"><NSwitch v-model:value="model.use_pkce" /></NFormItemGi>
         </template>
 
-        <NFormItemGi :span="8" label="按用户名自动绑定">
-          <NSwitch v-model:value="model.auto_bind_by_username" />
+        <NFormItemGi :span="8" label="自动绑定本地用户">
+          <NSwitch v-model:value="model.auto_bind" />
         </NFormItemGi>
-        <NFormItemGi :span="8" label="自动创建普通用户"><NSwitch v-model:value="model.auto_create_user" /></NFormItemGi>
+        <NFormItemGi :span="8" label="自动开通用户"><NSwitch v-model:value="model.auto_provision" /></NFormItemGi>
         <NFormItemGi :span="8" label="校验 TLS"><NSwitch v-model:value="model.verify_tls" /></NFormItemGi>
         <NFormItemGi :span="8" label="请求超时（秒）">
           <NInputNumber v-model:value="model.timeout" :min="0.5" :max="60" :step="0.5" class="w-full" />
