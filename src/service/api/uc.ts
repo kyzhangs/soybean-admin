@@ -6,11 +6,11 @@ export function fetchGetUserInfo() {
 }
 
 export function fetchGetAuthIdentities() {
-  return request<Api.UserCenter.AuthIdentity[]>({ url: '/uc/auth-identities' });
+  return request<Api.UserCenter.AuthIdentity[]>({ url: '/uc/identities' });
 }
 
 export function fetchDeleteAuthIdentity(identityId: string) {
-  return request<null>({ url: `/uc/auth-identities/${identityId}`, method: 'delete' });
+  return request<null>({ url: `/uc/identities/${identityId}`, method: 'delete' });
 }
 
 /** Change current user's password */

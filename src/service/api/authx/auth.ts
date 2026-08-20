@@ -64,10 +64,10 @@ export function getAuthProviderLoginUrl(providerCode: string, redirect: string, 
 
 export function fetchAuthBindingFlow(providerCode: string, callbackUrl: string) {
   return request<Api.Authx.BindingFlow>({
-    url: `/authx/${encodeURIComponent(providerCode)}/binding-flow`,
+    url: '/uc/identities/binding',
     method: 'post',
     withCredentials: true,
-    data: { callback_url: callbackUrl }
+    data: { provider_code: providerCode, callback_url: callbackUrl }
   });
 }
 
