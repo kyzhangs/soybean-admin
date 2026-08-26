@@ -54,7 +54,19 @@ export function formatDateTime(
   };
 
   try {
-    return new Intl.DateTimeFormat(locale, options).format(instant);
+    const formatter = new Intl.DateTimeFormat(locale, options);
+    if (!locale.toLowerCase().startsWith('zh') || display === 'time') {
+      return formatter.format(instant);
+    }
+
+    const parts = Object.fromEntries(
+      formatter
+        .formatToParts(instant)
+        .filter(part => part.type !== 'literal')
+        .map(part => [part.type, part.value])
+    );
+    const formattedDate = `${parts.year}-${parts.month}-${parts.day}`;
+    return display === 'date' ? formattedDate : `${formattedDate} ${parts.hour}:${parts.minute}:${parts.second}`;
   } catch {
     return EMPTY_VALUE;
   }
