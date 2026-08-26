@@ -17,6 +17,7 @@ declare namespace Api {
       | 'last_login'
       | 'is_superuser'
       | 'avatar'
+      | 'timezone'
     > & {
       userId: string;
       create_time: string | null;
@@ -28,6 +29,10 @@ declare namespace Api {
       old_password: string;
       new_password: string;
       confirm_password: string;
+    }
+
+    interface TimezoneUpdateParams {
+      timezone: string | null;
     }
 
     interface TwoFactorSetupParams {

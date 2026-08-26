@@ -5,6 +5,10 @@ export function fetchGetUserInfo() {
   return request<Api.UserCenter.UserInfo>({ url: '/uc/profile' });
 }
 
+export function fetchUpdateTimezone(data: Api.UserCenter.TimezoneUpdateParams) {
+  return request<Api.UserCenter.UserInfo>({ url: '/uc/profile/timezone', method: 'PUT', data });
+}
+
 export function fetchGetAuthIdentities() {
   return request<Api.UserCenter.AuthIdentity[]>({ url: '/uc/identities' });
 }

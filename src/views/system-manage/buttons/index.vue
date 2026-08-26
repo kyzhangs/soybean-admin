@@ -4,13 +4,16 @@ import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
 import { fetchDeleteButton, fetchGetButtonPageList, fetchBatchButton } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
+import { useAuthStore } from '@/store/modules/auth';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { getTableIndex } from '@/utils/common';
 import { $t } from '@/locales';
+import { formatDateTime } from '@/utils/datetime';
 import ButtonSearch from './modules/button-search.vue';
 import ButtonOperateModal from './modules/button-operate-modal.vue';
 
 const appStore = useAppStore();
+const authStore = useAuthStore();
 
 const searchParams = ref<Api.SystemManage.ButtonSearchParams>({
   page: 1,
@@ -68,7 +71,8 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       key: 'create_time',
       title: $t('common.create_time'),
       align: 'center',
-      width: 120
+      width: 200,
+      render: row => formatDateTime(row.create_time, authStore.userInfo.timezone, 'datetime', appStore.locale)
     },
     {
       key: 'status',

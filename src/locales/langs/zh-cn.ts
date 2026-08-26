@@ -728,6 +728,13 @@ const local: App.I18n.Schema = {
       activeTime: '激活时间',
       lastLogin: '最近登录',
       unassignedRole: '暂未分配角色',
+      timezone: {
+        title: '时区设置',
+        label: '显示时区',
+        followDevice: '跟随设备',
+        tip: '当前按 {timezone} 显示；定时任务在跟随设备时使用系统默认时区或 UTC',
+        saveSuccess: '时区设置已保存'
+      },
       form: {
         oldPassword: '请输入原密码',
         newPassword: '请输入新密码',

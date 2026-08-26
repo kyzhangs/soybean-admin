@@ -10,10 +10,13 @@ import {
   fetchGetRoleList,
   fetchGetTwoFactorStatus,
   fetchPublicAuthProviders,
-  fetchSyncAuthIdentity
+  fetchSyncAuthIdentity,
+  fetchUpdateTimezone
 } from '@/service/api';
 import { useAuthStore } from '@/store/modules/auth';
+import { useAppStore } from '@/store/modules/app';
 import { $t } from '@/locales';
+import { formatDateTime, getTimeZoneOptions, resolveTimeZone } from '@/utils/datetime';
 import PasswordChangeModal from './modules/password-change-modal.vue';
 import PasskeyDeleteModal from './modules/passkey-delete-modal.vue';
 import PasskeyModal from './modules/passkey-modal.vue';
@@ -24,6 +27,7 @@ defineOptions({
 });
 
 const authStore = useAuthStore();
+const appStore = useAppStore();
 const route = useRoute();
 const userInfo = authStore.userInfo;
 const loading = ref(false);
@@ -40,6 +44,15 @@ const authIdentities = ref<Api.UserCenter.AuthIdentity[]>([]);
 const authProviders = ref<Api.Authx.PublicAuthProvider[]>([]);
 const bindingProviderCode = ref('');
 const syncingIdentityId = ref('');
+const timezoneSaving = ref(false);
+const DEVICE_TIMEZONE = '__device__';
+const timezoneValue = ref(DEVICE_TIMEZONE);
+const timezoneOptions = computed(() => [
+  { label: $t('page.user-center.timezone.followDevice'), value: DEVICE_TIMEZONE },
+  ...getTimeZoneOptions()
+]);
+const selectedTimezone = computed(() => (timezoneValue.value === DEVICE_TIMEZONE ? null : timezoneValue.value));
+const effectiveTimezone = computed(() => resolveTimeZone(selectedTimezone.value));
 
 const genderLabel = computed(() => $t(userGenderRecord[userInfo.gender]));
 const genderTagType = computed(() => {
@@ -67,8 +80,10 @@ const twoFactorEnabled = computed(() => twoFactorStatus.value === '1');
 const passkeyCards = computed(() =>
   passkeys.value.map(passkey => ({
     passkey,
-    addedAt: passkey.create_time || $t('common.noData'),
-    lastUsedAt: passkey.last_used_at || $t('page.user-center.passkey.neverUsed')
+    addedAt: formatDateTime(passkey.create_time, selectedTimezone.value, 'datetime', appStore.locale),
+    lastUsedAt: passkey.last_used_at
+      ? formatDateTime(passkey.last_used_at, selectedTimezone.value, 'datetime', appStore.locale)
+      : $t('page.user-center.passkey.neverUsed')
   }))
 );
 const boundProviderCodes = computed(() => new Set(authIdentities.value.map(identity => identity.provider_code)));
@@ -102,8 +117,22 @@ async function refreshUserInfo() {
   }
   if (!identityRes.error) authIdentities.value = identityRes.data;
   if (!providerRes.error) authProviders.value = providerRes.data;
+  timezoneValue.value = userInfo.timezone || DEVICE_TIMEZONE;
 
   loading.value = false;
+}
+
+async function updateTimezone(value: string) {
+  timezoneValue.value = value;
+  timezoneSaving.value = true;
+  const { error } = await fetchUpdateTimezone({ timezone: selectedTimezone.value });
+  if (!error) {
+    await authStore.getUserInfo();
+    window.$message?.success($t('page.user-center.timezone.saveSuccess'));
+  } else {
+    timezoneValue.value = userInfo.timezone || DEVICE_TIMEZONE;
+  }
+  timezoneSaving.value = false;
 }
 
 async function bindAuthProvider(providerCode: string) {
@@ -233,17 +262,36 @@ onMounted(() => {
               <NTag :type="statusTagType" size="small">{{ statusLabel }}</NTag>
             </NDescriptionsItem>
             <NDescriptionsItem :label="$t('common.create_time')">
-              {{ valueOrEmpty(userInfo.create_time) }}
+              {{ formatDateTime(userInfo.create_time, selectedTimezone, 'datetime', appStore.locale) }}
             </NDescriptionsItem>
             <NDescriptionsItem :label="$t('page.user-center.activeTime')">
-              {{ valueOrEmpty(userInfo.active_time) }}
+              {{ formatDateTime(userInfo.active_time, selectedTimezone, 'datetime', appStore.locale) }}
             </NDescriptionsItem>
             <NDescriptionsItem :label="$t('page.user-center.lastLogin')">
-              {{ valueOrEmpty(userInfo.last_login) }}
+              {{ formatDateTime(userInfo.last_login, selectedTimezone, 'datetime', appStore.locale) }}
             </NDescriptionsItem>
           </NDescriptions>
         </NGi>
       </NGrid>
+    </NCard>
+
+    <NCard :title="$t('page.user-center.timezone.title')" :bordered="false" size="small" class="card-wrapper">
+      <div class="flex flex-wrap items-center justify-between gap-16px">
+        <div class="min-w-0 flex-1">
+          <div class="text-15px font-medium">{{ $t('page.user-center.timezone.label') }}</div>
+          <div class="mt-6px text-13px text-#6b7280">
+            {{ $t('page.user-center.timezone.tip', { timezone: effectiveTimezone }) }}
+          </div>
+        </div>
+        <NSelect
+          :value="timezoneValue"
+          :options="timezoneOptions"
+          filterable
+          class="w-280px"
+          :loading="timezoneSaving"
+          @update:value="updateTimezone"
+        />
+      </div>
     </NCard>
 
     <NCard

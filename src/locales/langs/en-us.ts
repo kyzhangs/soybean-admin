@@ -732,6 +732,13 @@ const local: App.I18n.Schema = {
       activeTime: 'Active Time',
       lastLogin: 'Last Login',
       unassignedRole: 'No role assigned',
+      timezone: {
+        title: 'Time Zone',
+        label: 'Display time zone',
+        followDevice: 'Follow device',
+        tip: 'Times are displayed in {timezone}; scheduled jobs use the system default or UTC in device mode',
+        saveSuccess: 'Time zone saved'
+      },
       form: {
         oldPassword: 'Please enter the current password',
         newPassword: 'Please enter a new password',

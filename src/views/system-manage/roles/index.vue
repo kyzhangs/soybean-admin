@@ -4,13 +4,16 @@ import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
 import { fetchGetRolePageList, fetchBatchRole, fetchGetMenuList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
+import { useAuthStore } from '@/store/modules/auth';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
+import { formatDateTime } from '@/utils/datetime';
 import RoleOperateModal from './modules/role-operate-modal.vue';
 import RolePermissionModal from './modules/role-permission-modal.vue';
 import RoleSearch from './modules/role-search.vue';
 
 const appStore = useAppStore();
+const authStore = useAuthStore();
 
 const menus = ref<Api.SystemManage.Menu[]>([]);
 
@@ -91,7 +94,8 @@ const { columns, columnChecks, data, loading, getData, getDataByPage, mobilePagi
       key: 'update_time',
       title: $t('common.update_time'),
       align: 'center',
-      width: 200
+      width: 200,
+      render: row => formatDateTime(row.update_time, authStore.userInfo.timezone, 'datetime', appStore.locale)
     },
     {
       key: 'status',

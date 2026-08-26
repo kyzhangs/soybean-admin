@@ -28,6 +28,7 @@ declare namespace Api {
         active_time: string;
         last_login: string;
         avatar: string;
+        timezone: string;
       }> & {
         roles: string[];
       };
@@ -44,11 +45,14 @@ declare namespace Api {
     /** user create params */
     type UserCreateParams = Pick<
       User,
-      'username' | 'name' | 'gender' | 'email' | 'phone' | 'is_active' | 'status' | 'roles'
+      'username' | 'name' | 'gender' | 'email' | 'phone' | 'is_active' | 'status' | 'roles' | 'timezone'
     >;
 
     /** user update params */
-    type UserUpdateParams = Pick<User, 'name' | 'gender' | 'email' | 'phone' | 'is_active' | 'status' | 'roles'>;
+    type UserUpdateParams = Pick<
+      User,
+      'name' | 'gender' | 'email' | 'phone' | 'is_active' | 'status' | 'roles' | 'timezone'
+    >;
 
     type UserPasswordResetParams = {
       password: string;

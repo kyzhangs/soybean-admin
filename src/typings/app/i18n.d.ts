@@ -601,6 +601,13 @@ declare namespace App {
           activeTime: string;
           lastLogin: string;
           unassignedRole: string;
+          timezone: {
+            title: string;
+            label: string;
+            followDevice: string;
+            tip: string;
+            saveSuccess: string;
+          };
           form: {
             oldPassword: string;
             newPassword: string;
