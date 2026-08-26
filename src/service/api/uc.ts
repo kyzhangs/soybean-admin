@@ -13,6 +13,13 @@ export function fetchDeleteAuthIdentity(identityId: string) {
   return request<null>({ url: `/uc/identities/${identityId}`, method: 'delete' });
 }
 
+export function fetchSyncAuthIdentity(identityId: string) {
+  return request<null>({
+    url: `/uc/identities/${identityId}/sync`,
+    method: 'post'
+  });
+}
+
 /** Change current user's password */
 export function fetchChangePassword(data: Api.UserCenter.PasswordChangeParams) {
   return request<null>({

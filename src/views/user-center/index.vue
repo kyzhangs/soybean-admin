@@ -9,7 +9,8 @@ import {
   fetchGetPasskeys,
   fetchGetRoleList,
   fetchGetTwoFactorStatus,
-  fetchPublicAuthProviders
+  fetchPublicAuthProviders,
+  fetchSyncAuthIdentity
 } from '@/service/api';
 import { useAuthStore } from '@/store/modules/auth';
 import { $t } from '@/locales';
@@ -38,6 +39,7 @@ const twoFactorStatus = ref<Api.Common.Status>('2');
 const authIdentities = ref<Api.UserCenter.AuthIdentity[]>([]);
 const authProviders = ref<Api.Authx.PublicAuthProvider[]>([]);
 const bindingProviderCode = ref('');
+const syncingIdentityId = ref('');
 
 const genderLabel = computed(() => $t(userGenderRecord[userInfo.gender]));
 const genderTagType = computed(() => {
@@ -118,9 +120,22 @@ async function bindAuthProvider(providerCode: string) {
 async function unbindAuthIdentity(identityId: string) {
   const { error } = await fetchDeleteAuthIdentity(identityId);
   if (!error) {
-    window.$message?.success('解绑成功');
+    window.$message?.success($t('page.user-center.authIdentity.unbindSuccess'));
     const { data, error: refreshError } = await fetchGetAuthIdentities();
     if (!refreshError) authIdentities.value = data;
+  }
+}
+
+async function syncAuthIdentity(identityId: string) {
+  syncingIdentityId.value = identityId;
+  try {
+    const { error } = await fetchSyncAuthIdentity(identityId);
+    if (!error) {
+      window.$message?.success($t('page.user-center.authIdentity.syncSuccess'));
+      await refreshUserInfo();
+    }
+  } finally {
+    syncingIdentityId.value = '';
   }
 }
 
@@ -151,10 +166,10 @@ function openTwoFactorModal(action: 'toggle' | 'regenerate') {
 
 onMounted(() => {
   if (route.query.binding === 'success') {
-    window.$message?.success('外部账号绑定成功');
+    window.$message?.success($t('page.user-center.authIdentity.bindSuccess'));
     window.history.replaceState({}, '', route.path);
   } else if (route.query.error) {
-    window.$message?.error(`外部账号绑定失败（${String(route.query.error)}）`);
+    window.$message?.error($t('page.user-center.authIdentity.bindFailed', { error: String(route.query.error) }));
     window.history.replaceState({}, '', route.path);
   }
   refreshUserInfo();
@@ -273,8 +288,8 @@ onMounted(() => {
       <div>
         <div class="flex flex-wrap items-center justify-between gap-16px">
           <div class="min-w-0 flex-1">
-            <div class="text-15px font-medium">第三方账号</div>
-            <div class="mt-6px text-13px text-#6b7280">绑定后可直接使用对应的 OAuth2 账号登录</div>
+            <div class="text-15px font-medium">{{ $t('page.user-center.authIdentity.title') }}</div>
+            <div class="mt-6px text-13px text-#6b7280">{{ $t('page.user-center.authIdentity.tip') }}</div>
           </div>
           <NSpace>
             <NButton
@@ -285,7 +300,7 @@ onMounted(() => {
               :loading="bindingProviderCode === provider.code"
               @click="bindAuthProvider(provider.code)"
             >
-              绑定 {{ provider.name }}
+              {{ $t('page.user-center.authIdentity.bind', { provider: provider.name }) }}
             </NButton>
           </NSpace>
         </div>
@@ -298,14 +313,29 @@ onMounted(() => {
                   <div class="min-w-0">
                     <div class="font-medium">{{ identity.provider_name }}</div>
                     <div class="truncate text-12px text-#6b7280">
-                      {{ identity.username || identity.email || '已绑定' }}
+                      {{ identity.username || identity.email || $t('page.user-center.authIdentity.bound') }}
                     </div>
                   </div>
                 </div>
-                <NPopconfirm @positive-click="unbindAuthIdentity(identity.id)">
-                  <template #trigger><NButton text type="error" size="small">解绑</NButton></template>
-                  确认解绑该第三方账号？
-                </NPopconfirm>
+                <NSpace size="small">
+                  <NButton
+                    text
+                    type="primary"
+                    size="small"
+                    :loading="syncingIdentityId === identity.id"
+                    @click="syncAuthIdentity(identity.id)"
+                  >
+                    {{ $t('page.user-center.authIdentity.sync') }}
+                  </NButton>
+                  <NPopconfirm @positive-click="unbindAuthIdentity(identity.id)">
+                    <template #trigger>
+                      <NButton text type="error" size="small">
+                        {{ $t('page.user-center.authIdentity.unbind') }}
+                      </NButton>
+                    </template>
+                    {{ $t('page.user-center.authIdentity.unbindConfirm') }}
+                  </NPopconfirm>
+                </NSpace>
               </div>
             </NCard>
           </NGi>

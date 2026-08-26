@@ -377,6 +377,38 @@ const local: App.I18n.Schema = {
         back: '返回登录',
         globalLogout: '是否同时退出统一身份认证及关联系统？'
       },
+      callback: {
+        exchanging: '正在完成身份认证…',
+        failed: '身份认证失败或登录凭证已过期，请重新登录',
+        back: '返回登录',
+        error: {
+          accountInactive: '账号未激活',
+          accountDeleted: '账号已删除，请联系管理员',
+          accountDisabled: '账号已禁用，请联系管理员',
+          casDisabled: '统一身份认证未启用',
+          casFlowInvalid: '统一身份认证流程无效或已过期',
+          casTicketMissing: '统一身份认证票据丢失',
+          casUnavailable: '统一身份认证服务暂时不可用',
+          casTicketValidationFailed: '统一身份认证票据验证失败',
+          casResponseInvalid: '统一身份认证验证响应格式无效',
+          casSubjectMissing: '统一身份认证未返回稳定身份标识',
+          casIdentityNotBound: '统一身份认证尚未绑定本地账号',
+          casTicketInvalid: '统一身份认证票据无效或已过期',
+          casLogoutInvalid: '统一身份认证退出通知格式无效',
+          casRateLimited: '统一身份认证请求过于频繁，请稍后重试',
+          providerNotFound: '认证提供方不存在',
+          providerDisabled: '认证提供方未启用',
+          providerConfigInvalid: '认证提供方配置无效',
+          authFlowInvalid: '认证登录流程无效或已过期',
+          authRateLimited: '认证登录请求过于频繁，请稍后重试',
+          authTicketInvalid: '认证登录票据无效或已过期',
+          externalIdentityNotBound: '外部身份尚未绑定本地账号',
+          providerCallbackInvalid: '认证提供方回调无效',
+          providerUnavailable: '认证提供方暂时不可用',
+          externalAccountBoundElsewhere: '该外部账号已绑定其他用户',
+          providerAlreadyBound: '当前用户已绑定该认证提供方'
+        }
+      },
       twoFactor: {
         title: '2FA 验证',
         help: '请输入认证器应用生成的 6 位动态验证码，或切换使用一次性恢复码',
@@ -575,6 +607,111 @@ const local: App.I18n.Schema = {
         }
       }
     },
+    authx: {
+      title: '认证提供方',
+      description: '集中管理外部身份认证服务及登录策略',
+      addProvider: '新增提供方',
+      empty: '暂无认证提供方',
+      protocol: '认证协议',
+      sort: '排序',
+      autoProvision: '自动开通用户',
+      allowed: '允许',
+      off: '关闭',
+      clientSecret: '客户端密钥',
+      configured: '已配置',
+      notConfigured: '未配置',
+      notApplicable: '不适用',
+      validate: '校验',
+      deleteConfirm: '确认删除该认证提供方？',
+      status: {
+        enabled: '已启用',
+        disabled: '已停用'
+      },
+      message: {
+        validateSuccess: '配置校验通过',
+        enabled: '已启用',
+        disabled: '已停用',
+        deleteSuccess: '删除成功'
+      },
+      form: {
+        addTitle: '新增认证提供方',
+        editTitle: '编辑认证提供方',
+        genericOauth2: '通用 OAuth2',
+        githubTip:
+          '选择 GitHub 类型时，授权、Token 和用户信息地址将使用官方默认值。只需填写 Client ID 和 Client Secret，回调地址可直接使用系统默认。',
+        useDefaultCallback: '使用系统默认回调地址',
+        testAndRead: '测试并读取用户属性',
+        section: {
+          basic: '基础信息',
+          basicTip: '先确定服务名称、编码和协议，后续字段会自动联动。',
+          access: '接入配置',
+          accessTip: '按协议类型填写端点与回调；OAuth2 可使用 GitHub 快速模式。',
+          identity: '身份映射',
+          identityTip: '先测试再映射，可直接选取返回属性名。',
+          advanced: '高级设置',
+          advancedTip: '用户信息字段映射、属性测试及用户自动绑定等低频配置，按需展开设置。'
+        },
+        label: {
+          name: '名称',
+          code: '编码',
+          protocol: '协议',
+          icon: '图标',
+          sort: '排序',
+          authorizationUrl: '授权/登录地址',
+          validationUrl: 'Ticket 验证地址',
+          oauth2Type: 'OAuth2 类型',
+          tokenUrl: 'Token 地址',
+          userinfoUrl: '用户信息地址',
+          clientId: 'Client ID',
+          clientSecret: 'Client Secret',
+          scopes: 'Scopes（逗号分隔）',
+          callbackUrl: '回调地址',
+          backendCallbackUrl: '后端回调地址',
+          logoutUrl: '退出地址',
+          casVersion: 'CAS 版本',
+          subjectAttribute: '稳定身份属性',
+          principalFallback: '允许 Principal 回退',
+          slo: '启用 SLO',
+          pkce: '启用 PKCE',
+          fieldMapping: '用户信息字段映射',
+          username: '用户名',
+          personName: '姓名',
+          phone: '手机号',
+          email: '邮箱',
+          avatar: '头像',
+          other: '其他配置',
+          liveAttributes: '获取实时属性',
+          rawUserInfo: '原始用户信息',
+          autoBind: '自动绑定本地用户',
+          autoProvision: '自动开通用户'
+        },
+        placeholder: {
+          code: '如 cas、github',
+          icon: '如 mdi:github',
+          githubPreset: '已按 GitHub 默认规则填充',
+          authorizationUrl: '请输入授权/登录地址',
+          clientSecretConfigured: '已配置，留空保持不变',
+          clientSecret: '请输入 Client Secret',
+          callbackUrl: '默认填入后端回调地址',
+          subjectAttribute: '请先测试并选择稳定身份属性'
+        },
+        validation: {
+          code: '请输入小写字母开头的编码，仅支持小写字母、数字、下划线和中划线',
+          validationUrl: '请输入 Ticket 验证地址',
+          tokenUrl: '请输入 Token 地址',
+          userinfoUrl: '请输入用户信息地址',
+          clientId: '请输入 Client ID',
+          userIdField: '请输入用户唯一标识字段'
+        },
+        message: {
+          profileLoaded: '已读取到测试返回属性',
+          profileMissing: '测试返回缺少原始用户属性',
+          createSuccess: '创建成功',
+          updateSuccess: '更新成功',
+          saveBeforeTest: '请先保存提供方后再测试属性映射'
+        }
+      }
+    },
     'user-center': {
       personalInfo: '个人信息',
       accountInfo: '账户信息',
@@ -595,6 +732,19 @@ const local: App.I18n.Schema = {
         oldPassword: '请输入原密码',
         newPassword: '请输入新密码',
         confirmPassword: '请再次输入新密码'
+      },
+      authIdentity: {
+        title: '第三方账号',
+        tip: '绑定后可直接使用对应的 OAuth2 账号登录',
+        bind: '绑定 {provider}',
+        bound: '已绑定',
+        bindSuccess: '外部账号绑定成功',
+        bindFailed: '外部账号绑定失败（{error}）',
+        sync: '同步外部信息',
+        syncSuccess: '外部用户信息同步成功',
+        unbind: '解绑',
+        unbindConfirm: '确认解绑该第三方账号？',
+        unbindSuccess: '解绑成功'
       },
       twoFactor: {
         title: '双因素认证',

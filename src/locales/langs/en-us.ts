@@ -381,6 +381,38 @@ const local: App.I18n.Schema = {
         back: 'Back to login',
         globalLogout: 'Also sign out of single sign-on and connected systems?'
       },
+      callback: {
+        exchanging: 'Completing authentication…',
+        failed: 'Authentication failed or the login credential has expired. Please sign in again.',
+        back: 'Back to Login',
+        error: {
+          accountInactive: 'The account has not been activated',
+          accountDeleted: 'The account has been deleted. Contact the administrator.',
+          accountDisabled: 'The account has been disabled. Contact the administrator.',
+          casDisabled: 'Single sign-on is not enabled',
+          casFlowInvalid: 'The single sign-on flow is invalid or expired',
+          casTicketMissing: 'The single sign-on ticket is missing',
+          casUnavailable: 'The single sign-on service is temporarily unavailable',
+          casTicketValidationFailed: 'Failed to validate the single sign-on ticket',
+          casResponseInvalid: 'The single sign-on validation response is invalid',
+          casSubjectMissing: 'Single sign-on did not return a stable identity',
+          casIdentityNotBound: 'The single sign-on identity is not linked to a local account',
+          casTicketInvalid: 'The single sign-on ticket is invalid or expired',
+          casLogoutInvalid: 'The single sign-on logout notification is invalid',
+          casRateLimited: 'Too many single sign-on requests. Please try again later.',
+          providerNotFound: 'The authentication provider does not exist',
+          providerDisabled: 'The authentication provider is disabled',
+          providerConfigInvalid: 'The authentication provider configuration is invalid',
+          authFlowInvalid: 'The authentication flow is invalid or expired',
+          authRateLimited: 'Too many authentication requests. Please try again later.',
+          authTicketInvalid: 'The authentication ticket is invalid or expired',
+          externalIdentityNotBound: 'The external identity is not linked to a local account',
+          providerCallbackInvalid: 'The authentication provider callback is invalid',
+          providerUnavailable: 'The authentication provider is temporarily unavailable',
+          externalAccountBoundElsewhere: 'This external account is linked to another user',
+          providerAlreadyBound: 'The current user has already linked this authentication provider'
+        }
+      },
       twoFactor: {
         title: '2FA Verification',
         help: 'Enter the 6-digit code from your authenticator app, or switch to a one-time recovery code',
@@ -579,6 +611,111 @@ const local: App.I18n.Schema = {
         }
       }
     },
+    authx: {
+      title: 'Authentication Providers',
+      description: 'Manage external identity services and sign-in policies in one place',
+      addProvider: 'Add Provider',
+      empty: 'No authentication providers',
+      protocol: 'Protocol',
+      sort: 'Sort Order',
+      autoProvision: 'Auto-Provision Users',
+      allowed: 'Allowed',
+      off: 'Off',
+      clientSecret: 'Client Secret',
+      configured: 'Configured',
+      notConfigured: 'Not Configured',
+      notApplicable: 'Not Applicable',
+      validate: 'Validate',
+      deleteConfirm: 'Are you sure you want to delete this authentication provider?',
+      status: {
+        enabled: 'Enabled',
+        disabled: 'Disabled'
+      },
+      message: {
+        validateSuccess: 'Configuration validated successfully',
+        enabled: 'Provider enabled',
+        disabled: 'Provider disabled',
+        deleteSuccess: 'Provider deleted successfully'
+      },
+      form: {
+        addTitle: 'Add Authentication Provider',
+        editTitle: 'Edit Authentication Provider',
+        genericOauth2: 'Generic OAuth2',
+        githubTip:
+          'GitHub uses the official authorization, token, and user info endpoints. Enter only the Client ID and Client Secret; the system callback URL can be used directly.',
+        useDefaultCallback: 'Use System Callback URL',
+        testAndRead: 'Test and Read User Attributes',
+        section: {
+          basic: 'Basic Information',
+          basicTip: 'Set the service name, code, and protocol first; dependent fields update automatically.',
+          access: 'Connection Settings',
+          accessTip: 'Configure endpoints and callbacks by protocol. OAuth2 supports a GitHub preset.',
+          identity: 'Identity Mapping',
+          identityTip: 'Test the provider first, then select attributes returned by the test.',
+          advanced: 'Advanced Settings',
+          advancedTip: 'Expand optional settings for profile mapping, attribute testing, and automatic user binding.'
+        },
+        label: {
+          name: 'Name',
+          code: 'Code',
+          protocol: 'Protocol',
+          icon: 'Icon',
+          sort: 'Sort Order',
+          authorizationUrl: 'Authorization / Sign-In URL',
+          validationUrl: 'Ticket Validation URL',
+          oauth2Type: 'OAuth2 Type',
+          tokenUrl: 'Token URL',
+          userinfoUrl: 'User Info URL',
+          clientId: 'Client ID',
+          clientSecret: 'Client Secret',
+          scopes: 'Scopes (comma-separated)',
+          callbackUrl: 'Callback URL',
+          backendCallbackUrl: 'Backend Callback URL',
+          logoutUrl: 'Logout URL',
+          casVersion: 'CAS Version',
+          subjectAttribute: 'Stable Identity Attribute',
+          principalFallback: 'Allow Principal Fallback',
+          slo: 'Enable SLO',
+          pkce: 'Enable PKCE',
+          fieldMapping: 'User Profile Field Mapping',
+          username: 'Username',
+          personName: 'Name',
+          phone: 'Phone',
+          email: 'Email',
+          avatar: 'Avatar',
+          other: 'Other Settings',
+          liveAttributes: 'Live Attributes',
+          rawUserInfo: 'Raw User Information',
+          autoBind: 'Auto-Bind Local Users',
+          autoProvision: 'Auto-Provision Users'
+        },
+        placeholder: {
+          code: 'For example: cas or github',
+          icon: 'For example: mdi:github',
+          githubPreset: 'Filled from the GitHub preset',
+          authorizationUrl: 'Enter the authorization or sign-in URL',
+          clientSecretConfigured: 'Configured; leave blank to keep unchanged',
+          clientSecret: 'Enter the Client Secret',
+          callbackUrl: 'Uses the backend callback URL by default',
+          subjectAttribute: 'Test first, then select a stable identity attribute'
+        },
+        validation: {
+          code: 'Start with a lowercase letter and use only lowercase letters, numbers, underscores, or hyphens',
+          validationUrl: 'Enter the Ticket validation URL',
+          tokenUrl: 'Enter the Token URL',
+          userinfoUrl: 'Enter the user info URL',
+          clientId: 'Enter the Client ID',
+          userIdField: 'Select the unique user identifier field'
+        },
+        message: {
+          profileLoaded: 'Test attributes loaded successfully',
+          profileMissing: 'The test response does not contain raw user attributes',
+          createSuccess: 'Provider created successfully',
+          updateSuccess: 'Provider updated successfully',
+          saveBeforeTest: 'Save the provider before testing attribute mapping'
+        }
+      }
+    },
     'user-center': {
       personalInfo: 'Personal Info',
       accountInfo: 'Account Info',
@@ -599,6 +736,19 @@ const local: App.I18n.Schema = {
         oldPassword: 'Please enter the current password',
         newPassword: 'Please enter a new password',
         confirmPassword: 'Please enter the new password again'
+      },
+      authIdentity: {
+        title: 'Third-Party Accounts',
+        tip: 'Link an OAuth2 account to use it for direct sign-in',
+        bind: 'Link {provider}',
+        bound: 'Linked',
+        bindSuccess: 'External account linked successfully',
+        bindFailed: 'Failed to link external account ({error})',
+        sync: 'Sync Profile',
+        syncSuccess: 'External profile synced successfully',
+        unbind: 'Unlink',
+        unbindConfirm: 'Are you sure you want to unlink this third-party account?',
+        unbindSuccess: 'Account unlinked successfully'
       },
       twoFactor: {
         title: 'Two-Factor Authentication',

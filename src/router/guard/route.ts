@@ -31,6 +31,8 @@ export function createRouteGuard(router: Router) {
     const noAuthorizationRoute: RouteKey = '403';
 
     const isLogin = Boolean(localStg.get('token'));
+    const isProfileTestCallback =
+      to.name === loginRoute && to.params.module === 'callback' && to.query.test_profile === '1';
     const needLogin = !to.meta.constant;
     const routeRoles = to.meta.roles || [];
 
@@ -38,7 +40,7 @@ export function createRouteGuard(router: Router) {
     const hasAuth = authStore.isStaticSuper || !routeRoles.length || hasRole;
 
     // if it is login route when logged in, then switch to the root page
-    if (to.name === loginRoute && isLogin) {
+    if (to.name === loginRoute && isLogin && !isProfileTestCallback) {
       return { name: rootRoute };
     }
 

@@ -89,6 +89,8 @@ declare namespace Api {
       provider_name: string;
       provider_icon: string | null;
       username: string | null;
+      name: string | null;
+      phone: string | null;
       email: string | null;
       avatar: string | null;
       last_login_at: string | null;

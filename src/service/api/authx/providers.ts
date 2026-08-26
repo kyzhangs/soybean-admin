@@ -31,3 +31,12 @@ export function fetchUpdateAuthProviderStatus(id: string, status: Api.Common.Sta
 export function fetchTestAuthProvider(id: string) {
   return request<null>({ url: `/authx/providers/${id}/test`, method: 'POST' });
 }
+
+export function fetchTestAuthProviderProfile(id: string, callbackUrl: string) {
+  return request<Api.Authx.AuthProviderProfileTestFlow>({
+    url: `/authx/providers/${id}/test-profile`,
+    method: 'POST',
+    withCredentials: true,
+    data: { callback_url: callbackUrl }
+  });
+}

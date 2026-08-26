@@ -6,6 +6,7 @@ import {
   fetchTestAuthProvider,
   fetchUpdateAuthProviderStatus
 } from '@/service/api';
+import { $t } from '@/locales';
 import AuthProviderOperateModal from './modules/auth-provider-operate-modal.vue';
 
 defineOptions({ name: 'Authx' });
@@ -46,7 +47,7 @@ function handleAdd() {
   drawerVisible.value = true;
 }
 
-function handleEdit(provider: Api.Authx.AuthProvider) {
+function openProviderConfig(provider: Api.Authx.AuthProvider) {
   operateType.value = 'edit';
   editingData.value = provider;
   drawerVisible.value = true;
@@ -54,14 +55,14 @@ function handleEdit(provider: Api.Authx.AuthProvider) {
 
 async function testProvider(id: string) {
   const { error } = await fetchTestAuthProvider(id);
-  if (!error) window.$message?.success('配置校验通过');
+  if (!error) window.$message?.success($t('page.authx.message.validateSuccess'));
 }
 
 async function toggleStatus(provider: Api.Authx.AuthProvider) {
   const status: Api.Common.Status = provider.status === '1' ? '2' : '1';
   const { error } = await fetchUpdateAuthProviderStatus(provider.id, status);
   if (!error) {
-    window.$message?.success(status === '1' ? '已启用' : '已停用');
+    window.$message?.success(status === '1' ? $t('page.authx.message.enabled') : $t('page.authx.message.disabled'));
     await getData();
   }
 }
@@ -69,7 +70,7 @@ async function toggleStatus(provider: Api.Authx.AuthProvider) {
 async function deleteProvider(id: string) {
   const { error } = await fetchDeleteAuthProvider(id);
   if (!error) {
-    window.$message?.success('删除成功');
+    window.$message?.success($t('page.authx.message.deleteSuccess'));
     if (providers.value.length === 1 && pagination.value.page > 1) pagination.value.page -= 1;
     await getData();
   }
@@ -87,24 +88,26 @@ onMounted(getData);
   <div class="min-h-500px flex-col-stretch gap-16px">
     <div class="flex flex-wrap items-center justify-between gap-12px">
       <div>
-        <h2 class="m-0 text-20px font-600">认证提供方</h2>
-        <p class="mb-0 mt-6px text-13px text-gray-500">集中管理外部身份认证服务及登录策略</p>
+        <h2 class="m-0 text-20px font-600">{{ $t('page.authx.title') }}</h2>
+        <p class="mb-0 mt-6px text-13px text-gray-500">{{ $t('page.authx.description') }}</p>
       </div>
       <NSpace>
         <NButton secondary :loading="loading" @click="getData">
           <template #icon><SvgIcon icon="mdi:refresh" /></template>
-          刷新
+          {{ $t('common.refresh') }}
         </NButton>
         <NButton type="primary" @click="handleAdd">
           <template #icon><SvgIcon icon="mdi:plus" /></template>
-          新增提供方
+          {{ $t('page.authx.addProvider') }}
         </NButton>
       </NSpace>
     </div>
 
     <NSpin :show="loading">
-      <NEmpty v-if="!loading && providers.length === 0" description="暂无认证提供方" class="py-80px">
-        <template #extra><NButton type="primary" @click="handleAdd">新增提供方</NButton></template>
+      <NEmpty v-if="!loading && providers.length === 0" :description="$t('page.authx.empty')" class="py-80px">
+        <template #extra>
+          <NButton type="primary" @click="handleAdd">{{ $t('page.authx.addProvider') }}</NButton>
+        </template>
       </NEmpty>
 
       <div v-else class="grid grid-cols-1 gap-16px lg:grid-cols-3 md:grid-cols-2 xl:grid-cols-4">
@@ -126,7 +129,7 @@ onMounted(getData);
                   <p class="mb-0 mt-4px truncate font-mono text-12px text-gray-500">{{ provider.code }}</p>
                 </div>
                 <NTag :type="provider.status === '1' ? 'success' : 'default'" size="small" round>
-                  {{ provider.status === '1' ? '已启用' : '已停用' }}
+                  {{ provider.status === '1' ? $t('page.authx.status.enabled') : $t('page.authx.status.disabled') }}
                 </NTag>
               </div>
             </div>
@@ -136,22 +139,28 @@ onMounted(getData);
 
           <div class="grid grid-cols-2 gap-12px text-13px">
             <div>
-              <div class="text-gray-500">认证协议</div>
+              <div class="text-gray-500">{{ $t('page.authx.protocol') }}</div>
               <div class="mt-5px font-500">{{ protocolMeta[provider.protocol].label }}</div>
             </div>
             <div>
-              <div class="text-gray-500">排序</div>
+              <div class="text-gray-500">{{ $t('page.authx.sort') }}</div>
               <div class="mt-5px font-500">{{ provider.sort }}</div>
             </div>
             <div>
-              <div class="text-gray-500">自动开通用户</div>
-              <div class="mt-5px font-500">{{ provider.auto_provision ? '允许' : '关闭' }}</div>
+              <div class="text-gray-500">{{ $t('page.authx.autoProvision') }}</div>
+              <div class="mt-5px font-500">
+                {{ provider.auto_provision ? $t('page.authx.allowed') : $t('page.authx.off') }}
+              </div>
             </div>
             <div>
-              <div class="text-gray-500">客户端密钥</div>
+              <div class="text-gray-500">{{ $t('page.authx.clientSecret') }}</div>
               <div class="mt-5px font-500">
                 {{
-                  provider.protocol === 'oauth2' ? (provider.client_secret_configured ? '已配置' : '未配置') : '不适用'
+                  provider.protocol === 'oauth2'
+                    ? provider.client_secret_configured
+                      ? $t('page.authx.configured')
+                      : $t('page.authx.notConfigured')
+                    : $t('page.authx.notApplicable')
                 }}
               </div>
             </div>
@@ -160,22 +169,24 @@ onMounted(getData);
           <template #footer>
             <div class="flex items-center justify-between gap-8px">
               <NSpace :size="6">
-                <NButton size="small" quaternary type="primary" @click="handleEdit(provider)">编辑</NButton>
-                <NButton size="small" quaternary @click="testProvider(provider.id)">校验</NButton>
+                <NButton size="small" quaternary @click="openProviderConfig(provider)">{{ $t('common.edit') }}</NButton>
+                <NButton size="small" quaternary @click="testProvider(provider.id)">
+                  {{ $t('page.authx.validate') }}
+                </NButton>
                 <NButton
                   size="small"
                   quaternary
                   :type="provider.status === '1' ? 'warning' : 'success'"
                   @click="toggleStatus(provider)"
                 >
-                  {{ provider.status === '1' ? '停用' : '启用' }}
+                  {{ provider.status === '1' ? $t('common.disable') : $t('common.enable') }}
                 </NButton>
               </NSpace>
               <NPopconfirm @positive-click="deleteProvider(provider.id)">
                 <template #trigger>
                   <NButton size="small" quaternary type="error"><SvgIcon icon="mdi:delete-outline" /></NButton>
                 </template>
-                确认删除该认证提供方？
+                {{ $t('page.authx.deleteConfirm') }}
               </NPopconfirm>
             </div>
           </template>

@@ -11,6 +11,11 @@ declare namespace Api {
       slo_enabled: boolean;
       slo_trusted_networks: string[];
       subject_attribute: string | null;
+      username_field: string | null;
+      name_field: string | null;
+      phone_field: string | null;
+      email_field: string | null;
+      avatar_field: string | null;
       principal_fallback_enabled: boolean;
     };
 
@@ -25,7 +30,10 @@ declare namespace Api {
       use_pkce: boolean;
       user_id_field: string;
       username_field: string | null;
+      name_field: string | null;
+      phone_field: string | null;
       email_field: string | null;
+      avatar_field: string | null;
       provider_type: 'generic' | 'github';
     };
 
@@ -65,5 +73,9 @@ declare namespace Api {
     >;
 
     type AuthProviderUpdateParams = Partial<AuthProviderCreateParams>;
+
+    type AuthProviderProfileTestFlow = {
+      authorization_url: string;
+    };
   }
 }

@@ -252,6 +252,38 @@ declare namespace App {
             back: string;
             globalLogout: string;
           };
+          callback: {
+            exchanging: string;
+            failed: string;
+            back: string;
+            error: {
+              accountInactive: string;
+              accountDeleted: string;
+              accountDisabled: string;
+              casDisabled: string;
+              casFlowInvalid: string;
+              casTicketMissing: string;
+              casUnavailable: string;
+              casTicketValidationFailed: string;
+              casResponseInvalid: string;
+              casSubjectMissing: string;
+              casIdentityNotBound: string;
+              casTicketInvalid: string;
+              casLogoutInvalid: string;
+              casRateLimited: string;
+              providerNotFound: string;
+              providerDisabled: string;
+              providerConfigInvalid: string;
+              authFlowInvalid: string;
+              authRateLimited: string;
+              authTicketInvalid: string;
+              externalIdentityNotBound: string;
+              providerCallbackInvalid: string;
+              providerUnavailable: string;
+              externalAccountBoundElsewhere: string;
+              providerAlreadyBound: string;
+            };
+          };
           twoFactor: {
             title: string;
             help: string;
@@ -449,6 +481,110 @@ declare namespace App {
             };
           };
         };
+        authx: {
+          title: string;
+          description: string;
+          addProvider: string;
+          empty: string;
+          protocol: string;
+          sort: string;
+          autoProvision: string;
+          allowed: string;
+          off: string;
+          clientSecret: string;
+          configured: string;
+          notConfigured: string;
+          notApplicable: string;
+          validate: string;
+          deleteConfirm: string;
+          status: {
+            enabled: string;
+            disabled: string;
+          };
+          message: {
+            validateSuccess: string;
+            enabled: string;
+            disabled: string;
+            deleteSuccess: string;
+          };
+          form: {
+            addTitle: string;
+            editTitle: string;
+            genericOauth2: string;
+            githubTip: string;
+            useDefaultCallback: string;
+            testAndRead: string;
+            section: {
+              basic: string;
+              basicTip: string;
+              access: string;
+              accessTip: string;
+              identity: string;
+              identityTip: string;
+              advanced: string;
+              advancedTip: string;
+            };
+            label: {
+              name: string;
+              code: string;
+              protocol: string;
+              icon: string;
+              sort: string;
+              authorizationUrl: string;
+              validationUrl: string;
+              oauth2Type: string;
+              tokenUrl: string;
+              userinfoUrl: string;
+              clientId: string;
+              clientSecret: string;
+              scopes: string;
+              callbackUrl: string;
+              backendCallbackUrl: string;
+              logoutUrl: string;
+              casVersion: string;
+              subjectAttribute: string;
+              principalFallback: string;
+              slo: string;
+              pkce: string;
+              fieldMapping: string;
+              username: string;
+              personName: string;
+              phone: string;
+              email: string;
+              avatar: string;
+              other: string;
+              liveAttributes: string;
+              rawUserInfo: string;
+              autoBind: string;
+              autoProvision: string;
+            };
+            placeholder: {
+              code: string;
+              icon: string;
+              githubPreset: string;
+              authorizationUrl: string;
+              clientSecretConfigured: string;
+              clientSecret: string;
+              callbackUrl: string;
+              subjectAttribute: string;
+            };
+            validation: {
+              code: string;
+              validationUrl: string;
+              tokenUrl: string;
+              userinfoUrl: string;
+              clientId: string;
+              userIdField: string;
+            };
+            message: {
+              profileLoaded: string;
+              profileMissing: string;
+              createSuccess: string;
+              updateSuccess: string;
+              saveBeforeTest: string;
+            };
+          };
+        };
         'user-center': {
           personalInfo: string;
           accountInfo: string;
@@ -469,6 +605,19 @@ declare namespace App {
             oldPassword: string;
             newPassword: string;
             confirmPassword: string;
+          };
+          authIdentity: {
+            title: string;
+            tip: string;
+            bind: string;
+            bound: string;
+            bindSuccess: string;
+            bindFailed: string;
+            sync: string;
+            syncSuccess: string;
+            unbind: string;
+            unbindConfirm: string;
+            unbindSuccess: string;
           };
           twoFactor: {
             title: string;
