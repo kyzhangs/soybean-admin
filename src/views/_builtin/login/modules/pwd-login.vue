@@ -25,8 +25,8 @@ interface FormModel {
 }
 
 const model: FormModel = reactive({
-  username: 'sysadmin',
-  password: '111111',
+  username: '',
+  password: '',
   twoFactorCode: ''
 });
 const useRecoveryCode = ref(false);
