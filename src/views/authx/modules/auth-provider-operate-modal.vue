@@ -47,7 +47,6 @@ type FormModel = Omit<Api.Authx.AuthProviderCreateParams, 'settings'> & {
   scopes: string;
   version: 2 | 3;
   slo_enabled: boolean;
-  slo_trusted_networks: string[];
   subject_attribute: string;
   principal_fallback_enabled: boolean;
   use_pkce: boolean;
@@ -83,7 +82,6 @@ function createDefaultModel(): FormModel {
     scopes: 'read:user, user:email',
     version: 3,
     slo_enabled: true,
-    slo_trusted_networks: [],
     subject_attribute: '',
     principal_fallback_enabled: false,
     use_pkce: true,
@@ -277,7 +275,6 @@ function buildSettings(): Api.Authx.AuthProviderSettings {
       callback_url: model.value.callback_url,
       version: model.value.version,
       slo_enabled: model.value.slo_enabled,
-      slo_trusted_networks: model.value.slo_trusted_networks,
       subject_attribute: model.value.subject_attribute || null,
       username_field: model.value.username_field || null,
       name_field: model.value.name_field || null,

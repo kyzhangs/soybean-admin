@@ -9,7 +9,6 @@ declare namespace Api {
       callback_url: string;
       version: 2 | 3;
       slo_enabled: boolean;
-      slo_trusted_networks: string[];
       subject_attribute: string | null;
       username_field: string | null;
       name_field: string | null;
