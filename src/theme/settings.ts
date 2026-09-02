@@ -45,8 +45,8 @@ export const themeSettings: App.Theme.ThemeSetting = {
   fixedHeaderAndTab: true,
   sider: {
     inverted: false,
-    width: 220,
-    collapsedWidth: 64,
+    width: 180,
+    collapsedWidth: 50,
     mixWidth: 90,
     mixCollapsedWidth: 64,
     mixChildMenuWidth: 200,
@@ -55,7 +55,7 @@ export const themeSettings: App.Theme.ThemeSetting = {
   footer: {
     visible: true,
     fixed: false,
-    height: 40,
+    height: 28,
     right: true
   },
   watermark: {

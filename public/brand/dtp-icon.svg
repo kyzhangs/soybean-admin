@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="title">
+  <title id="title">DTP</title>
+  <defs>
+    <linearGradient id="flow" x1="120" y1="120" x2="820" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#52c7ea" />
+      <stop offset="0.55" stop-color="#1296db" />
+      <stop offset="1" stop-color="#0875bd" />
+    </linearGradient>
+    <linearGradient id="letter" x1="560" y1="420" x2="850" y2="790" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1296db" />
+      <stop offset="1" stop-color="#52c7ea" />
+    </linearGradient>
+  </defs>
+
+  <path
+    d="M190 190h330c132 0 220 86 220 210h92"
+    fill="none"
+    stroke="url(#flow)"
+    stroke-linecap="round"
+    stroke-width="92"
+  />
+  <path d="M165 360h675M510 360v450" fill="none" stroke="url(#flow)" stroke-linecap="round" stroke-width="92" />
+
+  <path
+    d="M165 315v350h184c112 0 190-72 190-175 0-101-78-175-190-175H165Zm104 92h74c55 0 91 33 91 83 0 51-36 83-91 83h-74V407Z"
+    fill="url(#flow)"
+    fill-rule="evenodd"
+  />
+  <path
+    d="M602 430v380h104V676h87c101 0 170-47 170-124 0-76-69-122-170-122H602Zm104 88h78c45 0 73 12 73 35 0 24-28 36-73 36h-78v-71Z"
+    fill="url(#letter)"
+    fill-rule="evenodd"
+  />
+
+  <circle cx="190" cy="190" r="60" fill="url(#flow)" />
+  <circle cx="190" cy="190" r="25" fill="white" fill-opacity="0.92" />
+  <circle cx="840" cy="360" r="60" fill="url(#flow)" />
+  <circle cx="840" cy="360" r="25" fill="white" fill-opacity="0.92" />
+  <circle cx="510" cy="810" r="60" fill="url(#letter)" />
+  <circle cx="510" cy="810" r="25" fill="white" fill-opacity="0.92" />
+</svg>
