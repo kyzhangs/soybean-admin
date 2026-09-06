@@ -4,11 +4,14 @@ import { useRoute } from 'vue-router';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
 import {
   fetchAuthBindingFlow,
+  fetchCancelAuthBinding,
+  fetchConfirmAuthBinding,
   fetchDeleteAuthIdentity,
   fetchGetAuthIdentities,
   fetchGetPasskeys,
   fetchGetRoleList,
   fetchGetTwoFactorStatus,
+  fetchPendingAuthBinding,
   fetchPublicAuthProviders,
   fetchSyncAuthIdentity,
   fetchUpdateTimezone
@@ -43,6 +46,10 @@ const twoFactorStatus = ref<Api.Common.Status>('2');
 const authIdentities = ref<Api.UserCenter.AuthIdentity[]>([]);
 const authProviders = ref<Api.Authx.PublicAuthProvider[]>([]);
 const bindingProviderCode = ref('');
+const pendingBinding = ref<Api.UserCenter.PendingAuthBinding | null>(null);
+const pendingBindingVisible = ref(false);
+const pendingBindingLoading = ref(false);
+const pendingBindingSubmitting = ref(false);
 const syncingIdentityId = ref('');
 const timezoneSaving = ref(false);
 const DEVICE_TIMEZONE = '__device__';
@@ -88,7 +95,7 @@ const passkeyCards = computed(() =>
 );
 const boundProviderCodes = computed(() => new Set(authIdentities.value.map(identity => identity.provider_code)));
 const bindableProviders = computed(() =>
-  authProviders.value.filter(provider => provider.protocol === 'oauth2' && !boundProviderCodes.value.has(provider.code))
+  authProviders.value.filter(provider => !boundProviderCodes.value.has(provider.code))
 );
 
 function valueOrEmpty(value: string | null | undefined) {
@@ -146,6 +153,61 @@ async function bindAuthProvider(providerCode: string) {
   }
 }
 
+function clearBindingQuery() {
+  window.history.replaceState({}, '', route.path);
+}
+
+function closePendingBinding() {
+  pendingBindingVisible.value = false;
+  pendingBinding.value = null;
+  clearBindingQuery();
+}
+
+async function loadPendingAuthBinding() {
+  pendingBindingLoading.value = true;
+  try {
+    const { data, error } = await fetchPendingAuthBinding();
+    if (!error) {
+      pendingBinding.value = data;
+      pendingBindingVisible.value = true;
+    } else {
+      clearBindingQuery();
+    }
+  } finally {
+    pendingBindingLoading.value = false;
+  }
+}
+
+async function confirmPendingAuthBinding() {
+  const binding = pendingBinding.value;
+  if (!binding || pendingBindingSubmitting.value) return;
+  pendingBindingSubmitting.value = true;
+  try {
+    const { error } = await fetchConfirmAuthBinding(binding.flow_id);
+    if (!error) {
+      closePendingBinding();
+      window.$message?.success($t('page.user-center.authIdentity.bindSuccess'));
+      await refreshUserInfo();
+    } else if (String(error.response?.data?.code) === '100183') {
+      closePendingBinding();
+    }
+  } finally {
+    pendingBindingSubmitting.value = false;
+  }
+}
+
+async function cancelPendingAuthBinding() {
+  const binding = pendingBinding.value;
+  if (!binding || pendingBindingSubmitting.value) return;
+  pendingBindingSubmitting.value = true;
+  try {
+    await fetchCancelAuthBinding(binding.flow_id);
+  } finally {
+    closePendingBinding();
+    pendingBindingSubmitting.value = false;
+  }
+}
+
 async function unbindAuthIdentity(identityId: string) {
   const { error } = await fetchDeleteAuthIdentity(identityId);
   if (!error) {
@@ -194,7 +256,9 @@ function openTwoFactorModal(action: 'toggle' | 'regenerate') {
 }
 
 onMounted(() => {
-  if (route.query.binding === 'success') {
+  if (route.query.binding === 'confirm') {
+    loadPendingAuthBinding();
+  } else if (route.query.binding === 'success') {
     window.$message?.success($t('page.user-center.authIdentity.bindSuccess'));
     window.history.replaceState({}, '', route.path);
   } else if (route.query.error) {
@@ -448,6 +512,45 @@ onMounted(() => {
       :action="twoFactorAction"
       @submitted="handleTwoFactorChanged"
     />
+    <NModal
+      v-model:show="pendingBindingVisible"
+      preset="card"
+      :title="$t('page.user-center.authIdentity.confirmTitle')"
+      :mask-closable="false"
+      :close-on-esc="false"
+      :closable="false"
+      class="max-w-95vw w-520px"
+    >
+      <NSpin :show="pendingBindingLoading">
+        <NAlert type="warning" show-icon class="mb-16px">
+          {{ $t('page.user-center.authIdentity.confirmTip') }}
+        </NAlert>
+        <NDescriptions v-if="pendingBinding" bordered label-placement="left" :column="1" size="small">
+          <NDescriptionsItem :label="$t('page.user-center.authIdentity.confirmProvider')">
+            {{ pendingBinding.provider_name }}
+          </NDescriptionsItem>
+          <NDescriptionsItem :label="$t('page.user-center.authIdentity.confirmAccount')">
+            {{ pendingBinding.username || pendingBinding.subject }}
+          </NDescriptionsItem>
+          <NDescriptionsItem :label="$t('page.user-center.authIdentity.confirmName')">
+            {{ valueOrEmpty(pendingBinding.name) }}
+          </NDescriptionsItem>
+          <NDescriptionsItem :label="$t('page.user-center.authIdentity.confirmEmail')">
+            {{ valueOrEmpty(pendingBinding.email) }}
+          </NDescriptionsItem>
+        </NDescriptions>
+      </NSpin>
+      <template #footer>
+        <NSpace justify="end">
+          <NButton :disabled="pendingBindingSubmitting" @click="cancelPendingAuthBinding">
+            {{ $t('common.cancel') }}
+          </NButton>
+          <NButton type="primary" :loading="pendingBindingSubmitting" @click="confirmPendingAuthBinding">
+            {{ $t('page.user-center.authIdentity.confirmAction') }}
+          </NButton>
+        </NSpace>
+      </template>
+    </NModal>
   </div>
 </template>
 

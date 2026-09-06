@@ -36,7 +36,7 @@ declare namespace Api {
       provider_type: 'generic' | 'github';
     };
 
-    type AuthProviderSettings = CasProviderSettings | OAuth2ProviderSettings;
+    type AuthProviderSettings = Partial<CasProviderSettings> | Partial<OAuth2ProviderSettings>;
 
     type AuthProvider = Common.CommonRecord<{
       code: string;
@@ -49,6 +49,7 @@ declare namespace Api {
       verify_tls: boolean;
       timeout: number;
       settings: AuthProviderSettings;
+      configured: boolean;
       client_secret_configured: boolean;
     }>;
 
@@ -56,22 +57,20 @@ declare namespace Api {
 
     type AuthProviderSearchParams = Common.CommonSearchParams;
 
-    type AuthProviderCreateParams = Pick<
+    type AuthProviderCreateParams = Pick<AuthProvider, 'name' | 'code' | 'icon' | 'sort'>;
+
+    type AuthProviderBasicUpdateParams = Pick<AuthProvider, 'name' | 'icon' | 'sort'>;
+
+    type AuthProviderAccessUpdateParams = Pick<AuthProvider, 'protocol' | 'settings'>;
+
+    type AuthProviderAdvancedUpdateParams = Pick<
       AuthProvider,
-      | 'name'
-      | 'code'
-      | 'protocol'
-      | 'icon'
-      | 'sort'
-      | 'status'
-      | 'auto_bind'
-      | 'auto_provision'
-      | 'verify_tls'
-      | 'timeout'
-      | 'settings'
+      'auto_bind' | 'auto_provision' | 'verify_tls' | 'timeout' | 'settings'
     >;
 
-    type AuthProviderUpdateParams = Partial<AuthProviderCreateParams>;
+    type AuthProviderUpdateParams = Partial<
+      AuthProviderBasicUpdateParams & AuthProviderAccessUpdateParams & AuthProviderAdvancedUpdateParams
+    >;
 
     type AuthProviderProfileTestFlow = {
       authorization_url: string;

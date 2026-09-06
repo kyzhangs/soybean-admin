@@ -71,6 +71,31 @@ export function fetchAuthBindingFlow(providerCode: string, callbackUrl: string) 
   });
 }
 
+export function fetchPendingAuthBinding() {
+  return request<Api.UserCenter.PendingAuthBinding>({
+    url: '/uc/identities/binding/pending',
+    withCredentials: true
+  });
+}
+
+export function fetchConfirmAuthBinding(flowId: string) {
+  return request<null>({
+    url: '/uc/identities/binding/confirm',
+    method: 'post',
+    data: { flow_id: flowId },
+    withCredentials: true
+  });
+}
+
+export function fetchCancelAuthBinding(flowId: string) {
+  return request<null>({
+    url: '/uc/identities/binding/pending',
+    method: 'delete',
+    data: { flow_id: flowId },
+    withCredentials: true
+  });
+}
+
 export function fetchLogout() {
   return request<void>({ url: '/authx/logout', method: 'post' });
 }

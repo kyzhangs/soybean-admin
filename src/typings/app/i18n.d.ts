@@ -494,15 +494,15 @@ declare namespace App {
           clientSecret: string;
           configured: string;
           notConfigured: string;
+          pendingConfiguration: string;
+          cardClickTip: string;
           notApplicable: string;
-          validate: string;
           deleteConfirm: string;
           status: {
             enabled: string;
             disabled: string;
           };
           message: {
-            validateSuccess: string;
             enabled: string;
             disabled: string;
             deleteSuccess: string;
@@ -510,9 +510,8 @@ declare namespace App {
           form: {
             addTitle: string;
             editTitle: string;
+            configTitle: string;
             genericOauth2: string;
-            githubTip: string;
-            useDefaultCallback: string;
             testAndRead: string;
             section: {
               basic: string;
@@ -531,6 +530,7 @@ declare namespace App {
               icon: string;
               sort: string;
               authorizationUrl: string;
+              loginUrl: string;
               validationUrl: string;
               oauth2Type: string;
               tokenUrl: string;
@@ -557,6 +557,8 @@ declare namespace App {
               rawUserInfo: string;
               autoBind: string;
               autoProvision: string;
+              verifyTls: string;
+              timeout: string;
             };
             placeholder: {
               code: string;
@@ -564,15 +566,15 @@ declare namespace App {
               githubPreset: string;
               authorizationUrl: string;
               clientSecretConfigured: string;
+              urlPrefix: string;
               clientSecret: string;
               callbackUrl: string;
               subjectAttribute: string;
             };
             validation: {
               code: string;
-              validationUrl: string;
-              tokenUrl: string;
-              userinfoUrl: string;
+              urlRequired: string;
+              urlPrefixRequired: string;
               clientId: string;
               userIdField: string;
             };
@@ -620,6 +622,13 @@ declare namespace App {
             bound: string;
             bindSuccess: string;
             bindFailed: string;
+            confirmTitle: string;
+            confirmTip: string;
+            confirmProvider: string;
+            confirmAccount: string;
+            confirmName: string;
+            confirmEmail: string;
+            confirmAction: string;
             sync: string;
             syncSuccess: string;
             unbind: string;

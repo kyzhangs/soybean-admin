@@ -101,5 +101,18 @@ declare namespace Api {
       last_login_at: string | null;
       create_time: string;
     }
+
+    interface PendingAuthBinding {
+      flow_id: string;
+      subject: string;
+      provider_code: string;
+      provider_name: string;
+      provider_protocol: Api.Authx.AuthProtocol;
+      provider_icon: string | null;
+      username: string | null;
+      name: string | null;
+      email: string | null;
+      avatar: string | null;
+    }
   }
 }

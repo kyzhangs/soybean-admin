@@ -31,8 +31,8 @@ const model: FormModel = reactive({
 });
 const useRecoveryCode = ref(false);
 const authProviders = ref<Api.Authx.PublicAuthProvider[]>([]);
-const casProvider = computed(() => authProviders.value.find(provider => provider.protocol === 'cas'));
-const oauth2Providers = computed(() => authProviders.value.filter(provider => provider.protocol === 'oauth2'));
+const primaryAuthProvider = computed(() => authProviders.value[0]);
+const otherAuthProviders = computed(() => authProviders.value.slice(1));
 const twoFactorOtp = computed<string[]>({
   get: () => model.twoFactorCode.slice(0, useRecoveryCode.value ? 16 : 6).split(''),
   set: value => {
@@ -92,13 +92,13 @@ function handleProviderLogin(provider: Api.Authx.PublicAuthProvider) {
   window.location.assign(getAuthProviderLoginUrl(provider.code, redirect, callbackUrl));
 }
 
-function handleCasLogin() {
-  if (!casProvider.value) {
+function handlePrimaryProviderLogin() {
+  if (!primaryAuthProvider.value) {
     message.warning($t('page.login.cas.disabled'));
     return;
   }
 
-  handleProviderLogin(casProvider.value);
+  handleProviderLogin(primaryAuthProvider.value);
 }
 
 onMounted(loadAuthProviders);
@@ -158,7 +158,7 @@ onMounted(loadAuthProviders);
         <a
           href="#"
           class="flex items-center justify-center gap-6px text-primary transition-colors hover:text-primary-hover hover:underline"
-          @click.prevent="handleCasLogin"
+          @click.prevent="handlePrimaryProviderLogin"
         >
           <span>{{ $t('page.login.cas.login') }}</span>
         </a>
@@ -172,11 +172,11 @@ onMounted(loadAuthProviders);
             </NButton>
           </div>
         -->
-        <template v-if="oauth2Providers.length">
+        <template v-if="otherAuthProviders.length">
           <NDivider class="text-14px text-#666 !m-0">{{ $t('page.login.pwdLogin.otherAccountLogin') }}</NDivider>
           <div class="flex-center flex-wrap gap-12px">
             <NButton
-              v-for="provider in oauth2Providers"
+              v-for="provider in otherAuthProviders"
               :key="provider.code"
               secondary
               strong
