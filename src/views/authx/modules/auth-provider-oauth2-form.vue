@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
+import type { InputInst } from 'naive-ui';
 import { useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 
@@ -40,6 +41,7 @@ const model = ref<FormModel>({
   scopes: (savedSettings.scopes ?? ['read:user', 'user:email']).join(', ')
 });
 const callbackEditable = ref(false);
+const callbackInputRef = ref<InputInst | null>(null);
 const isGithub = computed(() => model.value.provider_type === 'github');
 const clientSecretConfigured = computed(
   () => props.rowData.protocol === 'oauth2' && props.rowData.client_secret_configured
@@ -69,6 +71,14 @@ function applyGithubPreset() {
   if (!model.value.authorization_url) model.value.authorization_url = githubPreset.authorization_url;
   if (!model.value.token_url) model.value.token_url = githubPreset.token_url;
   if (!model.value.userinfo_url) model.value.userinfo_url = githubPreset.userinfo_url;
+}
+
+async function toggleCallbackEdit() {
+  callbackEditable.value = !callbackEditable.value;
+  if (callbackEditable.value) {
+    await nextTick();
+    callbackInputRef.value?.focus();
+  }
 }
 
 function buildSettings(): OAuth2AccessSettings {
@@ -147,20 +157,21 @@ defineExpose({ validate, buildSettings });
       </NFormItemGi>
       <NFormItemGi :span="24" :label="$t('page.authx.form.label.callbackUrl')" path="callback_url">
         <NInput
+          ref="callbackInputRef"
           v-model:value="model.callback_url"
           :disabled="!callbackEditable"
           :input-props="{ 'aria-label': $t('page.authx.form.label.callbackUrl') }"
           :placeholder="$t('page.authx.form.placeholder.callbackUrl')"
+          @keydown.enter.prevent="callbackEditable = false"
         >
           <template #suffix>
             <NButton
-              v-if="!callbackEditable"
               text
-              :aria-label="$t('common.edit')"
-              :title="$t('common.edit')"
-              @click="callbackEditable = true"
+              :aria-label="`${callbackEditable ? $t('common.confirm') : $t('common.edit')} ${$t('page.authx.form.label.callbackUrl')}`"
+              :title="callbackEditable ? $t('common.confirm') : $t('common.edit')"
+              @click="toggleCallbackEdit"
             >
-              <SvgIcon icon="lucide:pencil" />
+              <SvgIcon :icon="callbackEditable ? 'lucide:check' : 'lucide:pencil'" />
             </NButton>
           </template>
         </NInput>

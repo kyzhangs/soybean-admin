@@ -93,6 +93,7 @@ const savedSettings = (
 const version = ref<CasVersion>(savedSettings.version ?? 3);
 const callbackUrl = ref(savedSettings.callback_url || props.defaultCallbackUrl);
 const callbackEditable = ref(false);
+const callbackInputRef = ref<InputInst | null>(null);
 const uriEditable = ref<Record<CasUrlField, boolean>>({ login: false, validation: false, logout: false });
 const uriInputRefs: Record<CasUrlField, InputInst | null> = { login: null, validation: null, logout: null };
 const urlFields = computed(
@@ -181,6 +182,14 @@ async function toggleUriEdit(field: CasUrlField) {
   uriInputRefs[field]?.focus();
 }
 
+async function toggleCallbackEdit() {
+  callbackEditable.value = !callbackEditable.value;
+  if (callbackEditable.value) {
+    await nextTick();
+    callbackInputRef.value?.focus();
+  }
+}
+
 function buildSettings(): CasAccessSettings {
   return { ...model.value };
 }
@@ -236,19 +245,20 @@ defineExpose({ validate, buildSettings });
       </NFormItemGi>
       <NFormItemGi :span="24" :label="$t('page.authx.form.label.callbackUrl')" path="callback_url">
         <NInput
+          ref="callbackInputRef"
           v-model:value="callbackUrl"
           :disabled="!callbackEditable"
           :input-props="{ 'aria-label': $t('page.authx.form.label.callbackUrl') }"
+          @keydown.enter.prevent="callbackEditable = false"
         >
           <template #suffix>
             <NButton
-              v-if="!callbackEditable"
               text
-              :aria-label="$t('common.edit')"
-              :title="$t('common.edit')"
-              @click="callbackEditable = true"
+              :aria-label="`${callbackEditable ? $t('common.confirm') : $t('common.edit')} ${$t('page.authx.form.label.callbackUrl')}`"
+              :title="callbackEditable ? $t('common.confirm') : $t('common.edit')"
+              @click="toggleCallbackEdit"
             >
-              <SvgIcon icon="lucide:pencil" />
+              <SvgIcon :icon="callbackEditable ? 'lucide:check' : 'lucide:pencil'" />
             </NButton>
           </template>
         </NInput>
