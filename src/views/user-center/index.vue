@@ -7,12 +7,15 @@ import {
   fetchCancelAuthBinding,
   fetchConfirmAuthBinding,
   fetchDeleteAuthIdentity,
+  fetchGetAuthSessions,
   fetchGetAuthIdentities,
+  fetchGetOwnLoginLogPage,
   fetchGetPasskeys,
   fetchGetRoleList,
   fetchGetTwoFactorStatus,
   fetchPendingAuthBinding,
   fetchPublicAuthProviders,
+  fetchRevokeAuthSession,
   fetchSyncAuthIdentity,
   fetchUpdateTimezone
 } from '@/service/api';
@@ -51,6 +54,13 @@ const pendingBindingVisible = ref(false);
 const pendingBindingLoading = ref(false);
 const pendingBindingSubmitting = ref(false);
 const syncingIdentityId = ref('');
+const authSessions = ref<Api.UserCenter.AuthSession[]>([]);
+const revokingSessionId = ref('');
+const loginLogs = ref<Api.UserCenter.LoginLog[]>([]);
+const loginLogPage = ref(1);
+const loginLogTotal = ref(0);
+const loginLogLoading = ref(false);
+const LOGIN_LOG_PAGE_SIZE = 10;
 const timezoneSaving = ref(false);
 const DEVICE_TIMEZONE = '__device__';
 const timezoneValue = ref(DEVICE_TIMEZONE);
@@ -60,6 +70,14 @@ const timezoneOptions = computed(() => [
 ]);
 const selectedTimezone = computed(() => (timezoneValue.value === DEVICE_TIMEZONE ? null : timezoneValue.value));
 const effectiveTimezone = computed(() => resolveTimeZone(selectedTimezone.value));
+type UserCenterSection = 'profile' | 'security' | 'sessions' | 'loginLogs';
+const activeSection = ref<UserCenterSection>('profile');
+const sectionNavigation = computed<Array<{ key: UserCenterSection; label: string; icon: string }>>(() => [
+  { key: 'profile', label: $t('page.user-center.personalInfo'), icon: 'mdi:account-outline' },
+  { key: 'security', label: $t('page.user-center.securitySettings'), icon: 'mdi:shield-key-outline' },
+  { key: 'sessions', label: $t('page.user-center.sessions.title'), icon: 'mdi:devices' },
+  { key: 'loginLogs', label: $t('page.user-center.loginLogs.title'), icon: 'mdi:history' }
+]);
 
 const genderLabel = computed(() => $t(userGenderRecord[userInfo.gender]));
 const genderTagType = computed(() => {
@@ -98,20 +116,79 @@ const bindableProviders = computed(() =>
   authProviders.value.filter(provider => !boundProviderCodes.value.has(provider.code))
 );
 
+const deviceIconRecord: Record<Api.UserCenter.DeviceType, string> = {
+  pc: 'mdi:monitor',
+  mobile: 'mdi:cellphone',
+  tablet: 'mdi:tablet',
+  bot: 'mdi:robot-outline',
+  unknown: 'mdi:devices'
+};
+
+const loginStageLabel = {
+  password: 'page.user-center.loginLogs.stage.password',
+  mfa: 'page.user-center.loginLogs.stage.mfa',
+  passkey: 'page.user-center.loginLogs.stage.passkey',
+  provider_callback: 'page.user-center.loginLogs.stage.providerCallback',
+  ticket_exchange: 'page.user-center.loginLogs.stage.ticketExchange'
+} as const;
+
+function sessionLocation(session: Api.UserCenter.AuthSession) {
+  return (
+    [session.country, session.region, session.city]
+      .filter((value, index, values) => value && values.indexOf(value) === index)
+      .join(' · ') || $t('common.noData')
+  );
+}
+
+function sessionDevice(session: Api.UserCenter.AuthSession) {
+  const details = [session.browser, session.os, $t(`page.user-center.sessions.device.${session.device}`)].filter(
+    Boolean
+  );
+  return details.join(' · ');
+}
+
+function sessionProtocol(session: Api.UserCenter.AuthSession) {
+  return session.provider_name || $t(`page.user-center.sessions.protocol.${session.login_protocol}`);
+}
+
+function loginLogLocation(loginLog: Api.UserCenter.LoginLog) {
+  return (
+    [loginLog.country, loginLog.region, loginLog.city]
+      .filter((value, index, values) => value && values.indexOf(value) === index)
+      .join(' · ') || $t('common.noData')
+  );
+}
+
+function loginLogDevice(loginLog: Api.UserCenter.LoginLog) {
+  return [loginLog.browser, loginLog.os, $t(`page.user-center.sessions.device.${loginLog.device}`)]
+    .filter(Boolean)
+    .join(' · ');
+}
+
+function loginLogProtocol(loginLog: Api.UserCenter.LoginLog) {
+  if (loginLog.provider_name) return loginLog.provider_name;
+  if (!loginLog.login_protocol) return $t('common.noData');
+  return $t(`page.user-center.sessions.protocol.${loginLog.login_protocol}`);
+}
+
 function valueOrEmpty(value: string | null | undefined) {
   return value || $t('common.noData');
 }
 
 async function refreshUserInfo() {
   loading.value = true;
-  const [, roleRes, twoFactorStatusRes, passkeyRes, identityRes, providerRes] = await Promise.all([
-    authStore.getUserInfo(),
-    fetchGetRoleList(),
-    fetchGetTwoFactorStatus(),
-    fetchGetPasskeys(),
-    fetchGetAuthIdentities(),
-    fetchPublicAuthProviders()
-  ]);
+  loginLogPage.value = 1;
+  const [, roleRes, twoFactorStatusRes, passkeyRes, identityRes, providerRes, sessionRes, loginLogRes] =
+    await Promise.all([
+      authStore.getUserInfo(),
+      fetchGetRoleList(),
+      fetchGetTwoFactorStatus(),
+      fetchGetPasskeys(),
+      fetchGetAuthIdentities(),
+      fetchPublicAuthProviders(),
+      fetchGetAuthSessions(),
+      fetchGetOwnLoginLogPage({ page: 1, page_size: LOGIN_LOG_PAGE_SIZE })
+    ]);
 
   if (!roleRes.error) {
     roles.value = roleRes.data;
@@ -124,9 +201,45 @@ async function refreshUserInfo() {
   }
   if (!identityRes.error) authIdentities.value = identityRes.data;
   if (!providerRes.error) authProviders.value = providerRes.data;
+  if (!sessionRes.error) authSessions.value = sessionRes.data;
+  if (!loginLogRes.error) {
+    loginLogs.value = loginLogRes.data.rows;
+    loginLogTotal.value = loginLogRes.data.total;
+  }
   timezoneValue.value = userInfo.timezone || DEVICE_TIMEZONE;
 
   loading.value = false;
+}
+
+async function loadLoginLogs(page: number) {
+  loginLogLoading.value = true;
+  try {
+    const { data, error } = await fetchGetOwnLoginLogPage({ page, page_size: LOGIN_LOG_PAGE_SIZE });
+    if (!error) {
+      loginLogPage.value = data.page;
+      loginLogs.value = data.rows;
+      loginLogTotal.value = data.total;
+    }
+  } finally {
+    loginLogLoading.value = false;
+  }
+}
+
+async function revokeAuthSession(session: Api.UserCenter.AuthSession) {
+  revokingSessionId.value = session.id;
+  try {
+    const { error } = await fetchRevokeAuthSession(session.id);
+    if (error) return;
+    window.$message?.success($t('page.user-center.sessions.revokeSuccess'));
+    if (session.is_current) {
+      await authStore.resetStore();
+      return;
+    }
+    const { data, error: refreshError } = await fetchGetAuthSessions();
+    if (!refreshError) authSessions.value = data;
+  } finally {
+    revokingSessionId.value = '';
+  }
 }
 
 async function updateTimezone(value: string) {
@@ -270,234 +383,411 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-500px flex-col-stretch gap-16px overflow-x-hidden overflow-y-auto">
-    <NCard :bordered="false" size="small" class="card-wrapper" :loading="loading">
-      <div class="flex flex-wrap items-center gap-18px">
-        <SoybeanAvatar :url="userInfo.avatar" class="size-84px! shrink-0" />
-        <div class="min-w-0 flex-1">
-          <h2 class="m-0 flex flex-wrap items-center gap-6px text-22px font-semibold leading-30px">
-            <span>{{ authStore.userDisplayName }}</span>
-            <SvgIcon v-if="userInfo.is_superuser" icon="eos-icons:admin" class="text-22px text-primary" />
-          </h2>
-          <div class="mt-8px flex flex-wrap items-center gap-8px">
-            <span class="text-13px text-#6b7280">{{ $t('page.user-center.roles') }}:</span>
-            <template v-if="displayRoles.length">
-              <NTag v-for="role in displayRoles" :key="role" type="warning" size="small">
-                {{ role }}
-              </NTag>
-            </template>
-            <span v-else class="text-13px text-#6b7280">{{ $t('page.user-center.unassignedRole') }}</span>
-          </div>
-          <div class="mt-8px flex flex-wrap gap-x-16px gap-y-6px text-13px text-#6b7280">
-            <span>@{{ userInfo.username }}</span>
-            <span class="break-all">{{ $t('page.user-center.userId') }}: {{ userInfo.userId }}</span>
-          </div>
-        </div>
-      </div>
-    </NCard>
-
-    <NCard
-      :title="$t('page.user-center.personalInfo')"
-      :bordered="false"
-      size="small"
-      class="card-wrapper"
-      :loading="loading"
-    >
-      <NGrid responsive="screen" item-responsive :x-gap="16" :y-gap="12">
-        <NGi span="24 s:12">
-          <NDescriptions label-placement="left" bordered :column="1" size="small">
-            <NDescriptionsItem :label="$t('page.system-manage.users.name')">
-              {{ valueOrEmpty(userInfo.name) }}
-            </NDescriptionsItem>
-            <NDescriptionsItem :label="$t('page.system-manage.users.gender')">
-              <NTag :type="genderTagType" size="small">{{ genderLabel }}</NTag>
-            </NDescriptionsItem>
-            <NDescriptionsItem :label="$t('page.system-manage.users.phone')">
-              {{ valueOrEmpty(userInfo.phone) }}
-            </NDescriptionsItem>
-            <NDescriptionsItem :label="$t('page.system-manage.users.email')">
-              {{ valueOrEmpty(userInfo.email) }}
-            </NDescriptionsItem>
-          </NDescriptions>
-        </NGi>
-        <NGi span="24 s:12">
-          <NDescriptions label-placement="left" bordered :column="1" size="small">
-            <NDescriptionsItem :label="$t('page.user-center.accountStatus')">
-              <NTag :type="statusTagType" size="small">{{ statusLabel }}</NTag>
-            </NDescriptionsItem>
-            <NDescriptionsItem :label="$t('common.create_time')">
-              {{ formatDateTime(userInfo.create_time, selectedTimezone, 'datetime', appStore.locale) }}
-            </NDescriptionsItem>
-            <NDescriptionsItem :label="$t('page.user-center.activeTime')">
-              {{ formatDateTime(userInfo.active_time, selectedTimezone, 'datetime', appStore.locale) }}
-            </NDescriptionsItem>
-            <NDescriptionsItem :label="$t('page.user-center.lastLogin')">
-              {{ formatDateTime(userInfo.last_login, selectedTimezone, 'datetime', appStore.locale) }}
-            </NDescriptionsItem>
-          </NDescriptions>
-        </NGi>
-      </NGrid>
-    </NCard>
-
-    <NCard :title="$t('page.user-center.timezone.title')" :bordered="false" size="small" class="card-wrapper">
-      <div class="flex flex-wrap items-center justify-between gap-16px">
-        <div class="min-w-0 flex-1">
-          <div class="text-15px font-medium">{{ $t('page.user-center.timezone.label') }}</div>
-          <div class="mt-6px text-13px text-#6b7280">
-            {{ $t('page.user-center.timezone.tip', { timezone: effectiveTimezone }) }}
-          </div>
-        </div>
-        <NSelect
-          :value="timezoneValue"
-          :options="timezoneOptions"
-          filterable
-          class="w-280px"
-          :loading="timezoneSaving"
-          @update:value="updateTimezone"
-        />
-      </div>
-    </NCard>
-
-    <NCard
-      :title="$t('page.user-center.securitySettings')"
-      :bordered="false"
-      size="small"
-      class="card-wrapper"
-      :loading="loading"
-    >
-      <div class="flex flex-wrap items-center justify-between gap-16px">
-        <div class="min-w-0 flex-1">
-          <div class="text-15px font-medium">{{ $t('page.user-center.loginPwd') }}</div>
-          <div class="mt-6px text-13px text-#6b7280">{{ $t('page.user-center.loginPwdTip') }}</div>
-        </div>
-        <NButton class="shrink-0" secondary @click="passwordChangeVisible = true">
-          {{ $t('page.user-center.modifyPwd') }}
-        </NButton>
-      </div>
-      <NDivider />
-      <div class="flex flex-wrap items-center justify-between gap-16px">
-        <div class="min-w-0 flex-1">
-          <div class="flex flex-wrap items-center gap-8px text-15px font-medium">
-            {{ $t('page.user-center.twoFactor.title') }}
-            <NTag :type="twoFactorEnabled ? 'success' : 'default'" size="small">
-              {{
-                twoFactorEnabled ? $t('page.user-center.twoFactor.enabled') : $t('page.user-center.twoFactor.disabled')
-              }}
-            </NTag>
-          </div>
-          <div class="mt-6px text-13px text-#6b7280">{{ $t('page.user-center.twoFactor.tip') }}</div>
-        </div>
-        <div class="flex shrink-0 flex-wrap justify-end gap-8px">
-          <NButton v-if="twoFactorEnabled" secondary @click="openTwoFactorModal('regenerate')">
-            {{ $t('page.user-center.twoFactor.regenerateRecoveryCodes') }}
-          </NButton>
-          <NButton :type="twoFactorEnabled ? 'error' : 'primary'" secondary @click="openTwoFactorModal('toggle')">
-            {{ twoFactorEnabled ? $t('page.user-center.twoFactor.disable') : $t('page.user-center.twoFactor.enable') }}
-          </NButton>
-        </div>
-      </div>
-      <NDivider />
-      <div>
-        <div class="flex flex-wrap items-center justify-between gap-16px">
-          <div class="min-w-0 flex-1">
-            <div class="text-15px font-medium">{{ $t('page.user-center.authIdentity.title') }}</div>
-            <div class="mt-6px text-13px text-#6b7280">{{ $t('page.user-center.authIdentity.tip') }}</div>
-          </div>
-          <NSpace>
-            <NButton
-              v-for="provider in bindableProviders"
-              :key="provider.code"
-              type="primary"
-              secondary
-              :loading="bindingProviderCode === provider.code"
-              @click="bindAuthProvider(provider.code)"
-            >
-              {{ $t('page.user-center.authIdentity.bind', { provider: provider.name }) }}
-            </NButton>
-          </NSpace>
-        </div>
-        <NGrid v-if="authIdentities.length" responsive="screen" item-responsive :x-gap="12" :y-gap="12" class="mt-12px">
-          <NGi v-for="identity in authIdentities" :key="identity.id" span="24 s:12">
-            <NCard size="small" embedded>
-              <div class="flex items-center justify-between gap-12px">
-                <div class="min-w-0 flex items-center gap-10px">
-                  <SvgIcon :icon="identity.provider_icon || 'mdi:account-key-outline'" class="text-22px text-primary" />
-                  <div class="min-w-0">
-                    <div class="font-medium">{{ identity.provider_name }}</div>
-                    <div class="truncate text-12px text-#6b7280">
-                      {{ identity.username || identity.email || $t('page.user-center.authIdentity.bound') }}
-                    </div>
-                  </div>
-                </div>
-                <NSpace size="small">
-                  <NButton
-                    text
-                    type="primary"
-                    size="small"
-                    :loading="syncingIdentityId === identity.id"
-                    @click="syncAuthIdentity(identity.id)"
-                  >
-                    {{ $t('page.user-center.authIdentity.sync') }}
-                  </NButton>
-                  <NPopconfirm @positive-click="unbindAuthIdentity(identity.id)">
-                    <template #trigger>
-                      <NButton text type="error" size="small">
-                        {{ $t('page.user-center.authIdentity.unbind') }}
-                      </NButton>
-                    </template>
-                    {{ $t('page.user-center.authIdentity.unbindConfirm') }}
-                  </NPopconfirm>
-                </NSpace>
+  <div class="user-center-page min-h-500px overflow-x-hidden overflow-y-auto">
+    <NSpin :show="loading">
+      <div class="user-center-shell card-wrapper">
+        <aside class="user-center-aside">
+          <div class="user-profile">
+            <SoybeanAvatar :url="userInfo.avatar" class="size-76px! shrink-0" />
+            <div class="min-w-0">
+              <h2 class="m-0 flex items-center justify-center gap-6px text-20px font-semibold leading-28px">
+                <span class="truncate">{{ authStore.userDisplayName }}</span>
+                <SvgIcon v-if="userInfo.is_superuser" icon="eos-icons:admin" class="shrink-0 text-20px text-primary" />
+              </h2>
+              <div class="mt-4px truncate text-13px text-#6b7280">@{{ userInfo.username }}</div>
+              <div class="mt-10px flex flex-wrap justify-center gap-6px">
+                <NTag :type="statusTagType" size="small" round>{{ statusLabel }}</NTag>
+                <NTag v-for="role in displayRoles" :key="role" type="warning" size="small" round>{{ role }}</NTag>
               </div>
-            </NCard>
-          </NGi>
-        </NGrid>
-      </div>
-      <NDivider />
-      <div>
-        <div class="flex flex-wrap items-center justify-between gap-16px">
-          <div class="min-w-0 flex-1">
-            <div class="flex flex-wrap items-center gap-8px text-15px font-medium">
-              {{ $t('page.user-center.passkey.title') }}
-              <NTag :type="passkeys.length ? 'success' : 'default'" size="small">
-                {{ $t('page.user-center.passkey.boundCount', { count: passkeys.length }) }}
-              </NTag>
             </div>
-            <div class="mt-6px text-13px text-#6b7280">{{ $t('page.user-center.passkey.tip') }}</div>
           </div>
-          <NButton class="shrink-0" type="primary" secondary @click="passkeyVisible = true">
-            {{ $t('page.user-center.passkey.bind') }}
-          </NButton>
-        </div>
 
-        <NGrid v-if="passkeyCards.length" responsive="screen" item-responsive :x-gap="12" :y-gap="12" class="mt-12px">
-          <NGi v-for="card in passkeyCards" :key="card.passkey.id" span="24 s:12">
-            <NCard size="small" embedded class="h-full">
-              <div class="flex items-start justify-between gap-12px">
-                <div class="min-w-0 flex-y-center gap-8px text-15px font-medium">
-                  <SvgIcon icon="mdi:fingerprint" class="shrink-0 text-20px text-primary" />
-                  <span class="truncate">{{ card.passkey.name }}</span>
+          <nav class="user-center-nav" :aria-label="$t('route.user-center')">
+            <button
+              v-for="item in sectionNavigation"
+              :key="item.key"
+              type="button"
+              class="user-center-nav-item"
+              :class="{ 'is-active': activeSection === item.key }"
+              @click="activeSection = item.key"
+            >
+              <SvgIcon :icon="item.icon" class="text-19px" />
+              <span>{{ item.label }}</span>
+            </button>
+          </nav>
+        </aside>
+
+        <main class="user-center-content">
+          <section v-if="activeSection === 'profile'" class="user-center-section">
+            <div class="section-heading">
+              <h3>{{ $t('page.user-center.personalInfo') }}</h3>
+            </div>
+            <div class="profile-info-grid">
+              <div class="min-w-0">
+                <NDescriptions label-placement="left" :column="1" size="medium" class="profile-descriptions">
+                  <NDescriptionsItem :label="$t('page.system-manage.users.name')">
+                    {{ valueOrEmpty(userInfo.name) }}
+                  </NDescriptionsItem>
+                  <NDescriptionsItem :label="$t('page.system-manage.users.gender')">
+                    <NTag :type="genderTagType" size="small">{{ genderLabel }}</NTag>
+                  </NDescriptionsItem>
+                  <NDescriptionsItem :label="$t('page.system-manage.users.phone')">
+                    {{ valueOrEmpty(userInfo.phone) }}
+                  </NDescriptionsItem>
+                  <NDescriptionsItem :label="$t('page.system-manage.users.email')">
+                    {{ valueOrEmpty(userInfo.email) }}
+                  </NDescriptionsItem>
+                </NDescriptions>
+              </div>
+              <div class="min-w-0">
+                <NDescriptions label-placement="left" :column="1" size="medium" class="profile-descriptions">
+                  <NDescriptionsItem :label="$t('page.user-center.userId')">
+                    <span class="break-all">{{ userInfo.userId }}</span>
+                  </NDescriptionsItem>
+                  <NDescriptionsItem :label="$t('common.create_time')">
+                    {{ formatDateTime(userInfo.create_time, selectedTimezone, 'datetime', appStore.locale) }}
+                  </NDescriptionsItem>
+                  <NDescriptionsItem :label="$t('page.user-center.activeTime')">
+                    {{ formatDateTime(userInfo.active_time, selectedTimezone, 'datetime', appStore.locale) }}
+                  </NDescriptionsItem>
+                  <NDescriptionsItem :label="$t('page.user-center.lastLogin')">
+                    {{ formatDateTime(userInfo.last_login, selectedTimezone, 'datetime', appStore.locale) }}
+                  </NDescriptionsItem>
+                </NDescriptions>
+              </div>
+            </div>
+
+            <NDivider />
+            <div class="section-heading section-heading--small">
+              <h3>{{ $t('page.user-center.timezone.title') }}</h3>
+            </div>
+            <div class="timezone-setting flex flex-wrap items-center justify-between gap-16px">
+              <div class="min-w-0 flex-1 text-13px text-#6b7280">
+                {{ $t('page.user-center.timezone.tip', { timezone: effectiveTimezone }) }}
+              </div>
+              <NSelect
+                :value="timezoneValue"
+                :options="timezoneOptions"
+                filterable
+                class="max-w-full w-280px"
+                :loading="timezoneSaving"
+                @update:value="updateTimezone"
+              />
+            </div>
+          </section>
+
+          <section v-else-if="activeSection === 'sessions'" class="user-center-section">
+            <div class="section-heading">
+              <h3>{{ $t('page.user-center.sessions.title') }}</h3>
+            </div>
+            <p class="section-tip">{{ $t('page.user-center.sessions.tip') }}</p>
+            <NEmpty v-if="!authSessions.length" :description="$t('page.user-center.sessions.empty')" />
+            <div v-else class="table-scroll">
+              <NTable :bordered="false" :single-line="false" size="small" class="user-center-table session-table">
+                <colgroup>
+                  <col style="width: 31%" />
+                  <col style="width: 20%" />
+                  <col style="width: 13%" />
+                  <col style="width: 25%" />
+                  <col style="width: 11%" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>{{ $t('page.user-center.loginLogs.device') }}</th>
+                    <th>
+                      {{ $t('page.user-center.loginLogs.ipAddress') }} / {{ $t('page.user-center.loginLogs.location') }}
+                    </th>
+                    <th>{{ $t('page.user-center.sessions.loginMethod') }}</th>
+                    <th>
+                      {{ $t('page.user-center.sessions.loginTime') }} / {{ $t('page.user-center.sessions.lastSeen') }}
+                    </th>
+                    <th class="text-right">{{ $t('common.action') }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="session in authSessions" :key="session.id">
+                    <td>
+                      <div class="flex flex-wrap items-center gap-8px">
+                        <SvgIcon :icon="deviceIconRecord[session.device]" class="shrink-0 text-20px text-primary" />
+                        <span>{{ sessionDevice(session) }}</span>
+                        <NTag v-if="session.is_current" type="success" size="small" round>
+                          {{ $t('page.user-center.sessions.current') }}
+                        </NTag>
+                      </div>
+                    </td>
+                    <td>
+                      <div>{{ session.ip_address || $t('common.noData') }}</div>
+                      <div class="mt-2px text-12px text-#6b7280">{{ sessionLocation(session) }}</div>
+                    </td>
+                    <td>{{ sessionProtocol(session) }}</td>
+                    <td>
+                      <div>{{ formatDateTime(session.auth_time, selectedTimezone, 'datetime', appStore.locale) }}</div>
+                      <div class="mt-2px text-12px text-#6b7280">
+                        {{ $t('page.user-center.sessions.lastSeen') }}：
+                        {{ formatDateTime(session.last_seen_at, selectedTimezone, 'datetime', appStore.locale) }}
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <NPopconfirm @positive-click="revokeAuthSession(session)">
+                        <template #trigger>
+                          <NButton text type="error" size="small" :loading="revokingSessionId === session.id">
+                            {{ $t('page.user-center.sessions.revoke') }}
+                          </NButton>
+                        </template>
+                        {{
+                          session.is_current
+                            ? $t('page.user-center.sessions.revokeCurrentConfirm')
+                            : $t('page.user-center.sessions.revokeConfirm')
+                        }}
+                      </NPopconfirm>
+                    </td>
+                  </tr>
+                </tbody>
+              </NTable>
+            </div>
+          </section>
+
+          <section v-else-if="activeSection === 'loginLogs'" class="user-center-section">
+            <div class="section-heading">
+              <h3>{{ $t('page.user-center.loginLogs.title') }}</h3>
+            </div>
+            <p class="section-tip">{{ $t('page.user-center.loginLogs.tip') }}</p>
+            <NSpin :show="loginLogLoading">
+              <NEmpty v-if="!loginLogs.length" :description="$t('page.user-center.loginLogs.empty')" />
+              <div v-else class="table-scroll">
+                <NTable :bordered="false" :single-line="false" size="small" class="user-center-table login-log-table">
+                  <colgroup>
+                    <col style="width: 11%" />
+                    <col style="width: 15%" />
+                    <col style="width: 20%" />
+                    <col style="width: 22%" />
+                    <col style="width: 16%" />
+                    <col style="width: 16%" />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>{{ $t('page.system-manage.loginLogs.result.title') }}</th>
+                      <th>{{ $t('page.system-manage.loginLogs.stage.title') }}</th>
+                      <th>{{ $t('page.user-center.loginLogs.device') }}</th>
+                      <th>
+                        {{ $t('page.user-center.loginLogs.ipAddress') }} /
+                        {{ $t('page.user-center.loginLogs.location') }}
+                      </th>
+                      <th>{{ $t('page.system-manage.loginLogs.loginTime') }}</th>
+                      <th>{{ $t('page.system-manage.loginLogs.logoutTime') }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="loginLog in loginLogs" :key="loginLog.id">
+                      <td>
+                        <NTag :type="loginLog.result === 'success' ? 'success' : 'error'" size="small" round>
+                          {{
+                            loginLog.result === 'success'
+                              ? $t('page.user-center.loginLogs.result.success')
+                              : $t('page.user-center.loginLogs.result.failure')
+                          }}
+                        </NTag>
+                      </td>
+                      <td>
+                        <div class="font-medium">{{ $t(loginStageLabel[loginLog.stage]) }}</div>
+                        <div class="mt-2px text-12px text-#6b7280">{{ loginLogProtocol(loginLog) }}</div>
+                      </td>
+                      <td>{{ loginLogDevice(loginLog) }}</td>
+                      <td>
+                        <div>{{ loginLog.ip_address || $t('common.noData') }}</div>
+                        <div class="mt-2px text-12px text-#6b7280">{{ loginLogLocation(loginLog) }}</div>
+                        <div v-if="loginLog.failure_code !== null" class="mt-2px text-12px text-error">
+                          {{ $t('page.user-center.loginLogs.failureCode') }}：{{ loginLog.failure_code }}
+                        </div>
+                      </td>
+                      <td>
+                        {{ formatDateTime(loginLog.create_time, selectedTimezone, 'datetime', appStore.locale) }}
+                      </td>
+                      <td>
+                        {{
+                          loginLog.logout_time
+                            ? formatDateTime(loginLog.logout_time, selectedTimezone, 'datetime', appStore.locale)
+                            : $t('common.noData')
+                        }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </NTable>
+              </div>
+              <div v-if="loginLogTotal > LOGIN_LOG_PAGE_SIZE" class="mt-16px flex justify-end">
+                <NPagination
+                  :page="loginLogPage"
+                  :page-size="LOGIN_LOG_PAGE_SIZE"
+                  :item-count="loginLogTotal"
+                  @update:page="loadLoginLogs"
+                />
+              </div>
+            </NSpin>
+          </section>
+
+          <section v-else class="user-center-section">
+            <div class="section-heading">
+              <h3>{{ $t('page.user-center.securitySettings') }}</h3>
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-16px">
+              <div class="min-w-0 flex-1">
+                <div class="text-15px font-medium">{{ $t('page.user-center.loginPwd') }}</div>
+                <div class="mt-6px text-13px text-#6b7280">{{ $t('page.user-center.loginPwdTip') }}</div>
+              </div>
+              <NButton class="shrink-0" secondary @click="passwordChangeVisible = true">
+                {{ $t('page.user-center.modifyPwd') }}
+              </NButton>
+            </div>
+            <NDivider />
+            <div class="flex flex-wrap items-center justify-between gap-16px">
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-8px text-15px font-medium">
+                  {{ $t('page.user-center.twoFactor.title') }}
+                  <NTag :type="twoFactorEnabled ? 'success' : 'default'" size="small">
+                    {{
+                      twoFactorEnabled
+                        ? $t('page.user-center.twoFactor.enabled')
+                        : $t('page.user-center.twoFactor.disabled')
+                    }}
+                  </NTag>
                 </div>
-                <NButton text type="error" size="tiny" class="shrink-0" @click="openPasskeyDelete(card.passkey)">
-                  <template #icon><SvgIcon icon="mdi:trash-can-outline" /></template>
-                  {{ $t('page.user-center.passkey.delete') }}
+                <div class="mt-6px text-13px text-#6b7280">{{ $t('page.user-center.twoFactor.tip') }}</div>
+              </div>
+              <div class="flex shrink-0 flex-wrap justify-end gap-8px">
+                <NButton v-if="twoFactorEnabled" secondary @click="openTwoFactorModal('regenerate')">
+                  {{ $t('page.user-center.twoFactor.regenerateRecoveryCodes') }}
+                </NButton>
+                <NButton :type="twoFactorEnabled ? 'error' : 'primary'" secondary @click="openTwoFactorModal('toggle')">
+                  {{
+                    twoFactorEnabled
+                      ? $t('page.user-center.twoFactor.disable')
+                      : $t('page.user-center.twoFactor.enable')
+                  }}
                 </NButton>
               </div>
-              <div class="mt-12px flex-col-stretch gap-8px text-13px">
-                <div class="flex items-start justify-between gap-12px">
-                  <span class="shrink-0 text-#6b7280">{{ $t('page.user-center.passkey.addedAt') }}</span>
-                  <span class="break-all text-right">{{ card.addedAt }}</span>
+            </div>
+            <NDivider />
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-16px">
+                <div class="min-w-0 flex-1">
+                  <div class="text-15px font-medium">{{ $t('page.user-center.authIdentity.title') }}</div>
+                  <div class="mt-6px text-13px text-#6b7280">{{ $t('page.user-center.authIdentity.tip') }}</div>
                 </div>
-                <div class="flex items-start justify-between gap-12px">
-                  <span class="shrink-0 text-#6b7280">{{ $t('page.user-center.passkey.lastUsedAt') }}</span>
-                  <span class="break-all text-right">{{ card.lastUsedAt }}</span>
-                </div>
+                <NSpace>
+                  <NButton
+                    v-for="provider in bindableProviders"
+                    :key="provider.code"
+                    type="primary"
+                    secondary
+                    :loading="bindingProviderCode === provider.code"
+                    @click="bindAuthProvider(provider.code)"
+                  >
+                    {{ $t('page.user-center.authIdentity.bind', { provider: provider.name }) }}
+                  </NButton>
+                </NSpace>
               </div>
-            </NCard>
-          </NGi>
-        </NGrid>
+              <NGrid
+                v-if="authIdentities.length"
+                responsive="screen"
+                item-responsive
+                :x-gap="12"
+                :y-gap="12"
+                class="mt-12px"
+              >
+                <NGi v-for="identity in authIdentities" :key="identity.id" span="24 s:12">
+                  <NCard size="small" embedded>
+                    <div class="flex items-center justify-between gap-12px">
+                      <div class="min-w-0 flex items-center gap-10px">
+                        <SvgIcon
+                          :icon="identity.provider_icon || 'mdi:account-key-outline'"
+                          class="text-22px text-primary"
+                        />
+                        <div class="min-w-0">
+                          <div class="font-medium">{{ identity.provider_name }}</div>
+                          <div class="truncate text-12px text-#6b7280">
+                            {{ identity.username || identity.email || $t('page.user-center.authIdentity.bound') }}
+                          </div>
+                        </div>
+                      </div>
+                      <NSpace size="small">
+                        <NButton
+                          text
+                          type="primary"
+                          size="small"
+                          :loading="syncingIdentityId === identity.id"
+                          @click="syncAuthIdentity(identity.id)"
+                        >
+                          {{ $t('page.user-center.authIdentity.sync') }}
+                        </NButton>
+                        <NPopconfirm @positive-click="unbindAuthIdentity(identity.id)">
+                          <template #trigger>
+                            <NButton text type="error" size="small">
+                              {{ $t('page.user-center.authIdentity.unbind') }}
+                            </NButton>
+                          </template>
+                          {{ $t('page.user-center.authIdentity.unbindConfirm') }}
+                        </NPopconfirm>
+                      </NSpace>
+                    </div>
+                  </NCard>
+                </NGi>
+              </NGrid>
+            </div>
+            <NDivider />
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-16px">
+                <div class="min-w-0 flex-1">
+                  <div class="flex flex-wrap items-center gap-8px text-15px font-medium">
+                    {{ $t('page.user-center.passkey.title') }}
+                    <NTag :type="passkeys.length ? 'success' : 'default'" size="small">
+                      {{ $t('page.user-center.passkey.boundCount', { count: passkeys.length }) }}
+                    </NTag>
+                  </div>
+                  <div class="mt-6px text-13px text-#6b7280">{{ $t('page.user-center.passkey.tip') }}</div>
+                </div>
+                <NButton class="shrink-0" type="primary" secondary @click="passkeyVisible = true">
+                  {{ $t('page.user-center.passkey.bind') }}
+                </NButton>
+              </div>
+
+              <NGrid
+                v-if="passkeyCards.length"
+                responsive="screen"
+                item-responsive
+                :x-gap="12"
+                :y-gap="12"
+                class="mt-12px"
+              >
+                <NGi v-for="card in passkeyCards" :key="card.passkey.id" span="24 s:12">
+                  <NCard size="small" embedded class="h-full">
+                    <div class="flex items-start justify-between gap-12px">
+                      <div class="min-w-0 flex-y-center gap-8px text-15px font-medium">
+                        <SvgIcon icon="mdi:fingerprint" class="shrink-0 text-20px text-primary" />
+                        <span class="truncate">{{ card.passkey.name }}</span>
+                      </div>
+                      <NButton text type="error" size="tiny" class="shrink-0" @click="openPasskeyDelete(card.passkey)">
+                        <template #icon><SvgIcon icon="mdi:trash-can-outline" /></template>
+                        {{ $t('page.user-center.passkey.delete') }}
+                      </NButton>
+                    </div>
+                    <div class="mt-12px flex-col-stretch gap-8px text-13px">
+                      <div class="flex items-start justify-between gap-12px">
+                        <span class="shrink-0 text-#6b7280">{{ $t('page.user-center.passkey.addedAt') }}</span>
+                        <span class="break-all text-right">{{ card.addedAt }}</span>
+                      </div>
+                      <div class="flex items-start justify-between gap-12px">
+                        <span class="shrink-0 text-#6b7280">{{ $t('page.user-center.passkey.lastUsedAt') }}</span>
+                        <span class="break-all text-right">{{ card.lastUsedAt }}</span>
+                      </div>
+                    </div>
+                  </NCard>
+                </NGi>
+              </NGrid>
+            </div>
+          </section>
+        </main>
       </div>
-    </NCard>
+    </NSpin>
 
     <PasswordChangeModal v-model:visible="passwordChangeVisible" />
     <PasskeyModal v-model:visible="passkeyVisible" @submitted="handlePasskeyChanged" />
@@ -554,4 +844,269 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.user-center-shell {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: 620px;
+  overflow: hidden;
+  border: 1px solid rgb(229 231 235 / 70%);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.user-center-aside {
+  border-right: 1px solid #edf0f5;
+  background: linear-gradient(180deg, rgb(245 249 255 / 92%) 0%, #fff 48%);
+}
+
+.user-profile {
+  display: flex;
+  min-height: 188px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+
+.user-center-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px 20px;
+}
+
+.user-center-nav-item {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  border-radius: 7px;
+  padding: 12px 16px;
+  background: transparent;
+  color: #4b5563;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease;
+}
+
+.user-center-nav-item:hover {
+  background: rgb(var(--primary-color) / 8%);
+  color: rgb(var(--primary-color));
+}
+
+.user-center-nav-item.is-active {
+  background: rgb(var(--primary-color) / 11%);
+  color: rgb(var(--primary-color));
+  font-weight: 600;
+}
+
+.user-center-nav-item.is-active::before {
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  width: 3px;
+  border-radius: 3px;
+  background: rgb(var(--primary-color));
+  content: '';
+}
+
+.user-center-content {
+  min-width: 0;
+  padding: 28px 40px 36px;
+}
+
+.user-center-section {
+  min-width: 0;
+}
+
+.profile-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 24px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.section-heading::before {
+  width: 4px;
+  height: 16px;
+  border-radius: 4px;
+  background: rgb(var(--primary-color));
+  content: '';
+}
+
+.section-heading h3 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 26px;
+}
+
+.section-heading--small {
+  margin-bottom: 14px;
+}
+
+.section-heading--small h3 {
+  font-size: 16px;
+}
+
+.section-tip {
+  margin: -10px 0 18px 14px;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  border-top: 1px solid #edf0f5;
+}
+
+.user-center-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.user-center-table :deep(th) {
+  padding: 12px 16px;
+  background: #f7f8fa;
+  color: #374151;
+  font-weight: 600;
+  white-space: normal;
+}
+
+.user-center-table :deep(td) {
+  padding: 13px 16px;
+  color: #374151;
+  overflow-wrap: anywhere;
+}
+
+.user-center-section :deep(.n-descriptions-table) {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.user-center-section :deep(.n-descriptions-table-content),
+.user-center-section :deep(.n-descriptions-table-content__content) {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.dark .user-center-shell {
+  border-color: rgb(255 255 255 / 10%);
+  background: #18181c;
+}
+
+.dark .user-center-aside {
+  border-right-color: rgb(255 255 255 / 9%);
+  background: linear-gradient(180deg, rgb(var(--primary-color) / 10%) 0%, #18181c 48%);
+}
+
+.dark .user-center-nav-item,
+.dark .section-tip,
+.dark .user-center-table :deep(td) {
+  color: #c3c7ce;
+}
+
+.dark .section-heading h3 {
+  color: #f3f4f6;
+}
+
+.dark .table-scroll {
+  border-top-color: rgb(255 255 255 / 10%);
+}
+
+.dark .user-center-table :deep(th) {
+  background: rgb(255 255 255 / 5%);
+  color: #e5e7eb;
+}
+
+@media (max-width: 800px) {
+  .user-center-shell {
+    display: block;
+  }
+
+  .user-center-aside {
+    border-right: 0;
+    border-bottom: 1px solid #edf0f5;
+  }
+
+  .user-profile {
+    min-height: auto;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 18px 20px 14px;
+    text-align: left;
+  }
+
+  .user-profile > div:last-child {
+    text-align: left;
+  }
+
+  .user-profile :deep(.n-tag) {
+    margin-right: auto;
+  }
+
+  .user-center-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 4px 12px 12px;
+  }
+
+  .user-center-nav-item {
+    width: auto;
+    flex: 0 0 auto;
+    padding: 10px 12px;
+  }
+
+  .user-center-nav-item.is-active::before {
+    top: auto;
+    right: 12px;
+    bottom: 2px;
+    left: 12px;
+    width: auto;
+    height: 2px;
+  }
+
+  .user-center-content {
+    padding: 22px 18px 28px;
+  }
+
+  .profile-info-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .timezone-setting {
+    display: block;
+  }
+
+  .timezone-setting :deep(.n-select) {
+    width: 100%;
+    margin-top: 14px;
+  }
+
+  .user-center-table {
+    min-width: 760px;
+  }
+
+  .section-tip {
+    margin-left: 0;
+  }
+}
+</style>

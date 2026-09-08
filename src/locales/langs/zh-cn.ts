@@ -292,6 +292,7 @@ const local: App.I18n.Schema = {
     'system-manage': '系统管理',
     'system-manage_users': '用户管理',
     'system-manage_user-detail': '用户详情',
+    'system-manage_login-logs': '登录日志',
     'system-manage_roles': '角色管理',
     'system-manage_menus': '菜单管理',
     authx: '认证配置',
@@ -736,6 +737,53 @@ const local: App.I18n.Schema = {
         tip: '当前按 {timezone} 显示；定时任务在跟随设备时使用系统默认时区或 UTC',
         saveSuccess: '时区设置已保存'
       },
+      sessions: {
+        title: '登录设备',
+        tip: '以下是当前仍然有效的认证会话。发现陌生设备时，请立即退出该会话并修改密码。',
+        empty: '暂无有效会话',
+        current: '当前会话',
+        revoke: '退出',
+        revokeConfirm: '确认退出该设备的会话？',
+        revokeCurrentConfirm: '确认退出当前会话？退出后需要重新登录。',
+        revokeSuccess: '会话已退出',
+        loginMethod: '登录方式',
+        loginTime: '登录时间',
+        lastSeen: '最近活动',
+        device: {
+          pc: 'PC 端',
+          mobile: '移动端',
+          tablet: '平板',
+          bot: '自动化客户端',
+          unknown: '未知设备'
+        },
+        protocol: {
+          password: '密码',
+          cas: 'CAS',
+          oauth2: 'OAuth2',
+          oidc: 'OIDC',
+          webauthn: 'Passkey'
+        }
+      },
+      loginLogs: {
+        title: '登录历史',
+        tip: '这里展示当前账号可识别的全部登录记录，包括成功和失败的登录尝试。',
+        empty: '暂无登录记录',
+        device: '设备',
+        ipAddress: 'IP 地址',
+        location: '归属地',
+        failureCode: '失败代码',
+        result: {
+          success: '登录成功',
+          failure: '登录失败'
+        },
+        stage: {
+          password: '密码登录',
+          mfa: '双因素验证',
+          passkey: '生物识别',
+          providerCallback: '认证回调',
+          ticketExchange: '登录票据兑换'
+        }
+      },
       form: {
         oldPassword: '请输入原密码',
         newPassword: '请输入新密码',
@@ -906,6 +954,49 @@ const local: App.I18n.Schema = {
           status: '请选择用户状态',
           newPassword: '请输入新密码',
           confirmPassword: '请再次输入新密码'
+        }
+      },
+      loginLogs: {
+        title: '登录日志',
+        searchTitle: '日志筛选',
+        keyword: '账号',
+        keywordPlaceholder: '请输入用户名或姓名',
+        account: '账号 / 姓名',
+        loginMethod: '登录方式',
+        ipAddress: 'IP 地址',
+        location: '归属地',
+        failureCode: '失败代码',
+        requestId: '请求 ID',
+        loginTime: '登录时间',
+        logoutTime: '登出时间',
+        timeRange: '时间范围',
+        result: {
+          title: '结果',
+          success: '成功',
+          failure: '失败'
+        },
+        stage: {
+          title: '登录阶段',
+          password: '密码登录',
+          mfa: '双因素验证',
+          passkey: '生物识别',
+          providerCallback: '认证回调',
+          ticketExchange: '登录票据兑换'
+        },
+        protocol: {
+          password: '密码',
+          cas: 'CAS',
+          oauth2: 'OAuth 2.0',
+          oidc: 'OIDC',
+          webauthn: 'Passkey'
+        },
+        device: {
+          title: '设备',
+          pc: '电脑',
+          mobile: '手机',
+          tablet: '平板',
+          bot: '自动程序',
+          unknown: '未知设备'
         }
       },
       menus: {

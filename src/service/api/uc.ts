@@ -9,6 +9,18 @@ export function fetchUpdateTimezone(data: Api.UserCenter.TimezoneUpdateParams) {
   return request<Api.UserCenter.UserInfo>({ url: '/uc/profile/timezone', method: 'PUT', data });
 }
 
+export function fetchGetAuthSessions() {
+  return request<Api.UserCenter.AuthSession[]>({ url: '/uc/sessions' });
+}
+
+export function fetchRevokeAuthSession(sessionId: string) {
+  return request<null>({ url: `/uc/sessions/${sessionId}`, method: 'delete' });
+}
+
+export function fetchGetOwnLoginLogPage(params: Api.UserCenter.LoginLogSearchParams) {
+  return request<Api.UserCenter.LoginLogPage>({ url: '/uc/login-logs/page', params });
+}
+
 export function fetchGetAuthIdentities() {
   return request<Api.UserCenter.AuthIdentity[]>({ url: '/uc/identities' });
 }

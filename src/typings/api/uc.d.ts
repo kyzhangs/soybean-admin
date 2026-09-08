@@ -114,5 +114,34 @@ declare namespace Api {
       email: string | null;
       avatar: string | null;
     }
+
+    type DeviceType = 'pc' | 'mobile' | 'tablet' | 'bot' | 'unknown';
+    type LoginProtocol = 'password' | 'cas' | 'oauth2' | 'oidc' | 'webauthn';
+
+    interface AuthSession {
+      id: string;
+      is_current: boolean;
+      login_protocol: LoginProtocol;
+      provider_name: string | null;
+      auth_time: string;
+      last_seen_at: string;
+      expires_at: string;
+      ip_address: string | null;
+      browser: string | null;
+      os: string | null;
+      device: DeviceType;
+      country_code: string | null;
+      country: string | null;
+      region: string | null;
+      city: string | null;
+    }
+
+    interface LoginLogSearchParams {
+      page: number;
+      page_size: number;
+    }
+
+    type LoginLog = Api.SystemManage.LoginLog;
+    type LoginLogPage = Api.Common.PaginatingQueryRecord<LoginLog>;
   }
 }

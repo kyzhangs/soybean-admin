@@ -610,6 +610,53 @@ declare namespace App {
             tip: string;
             saveSuccess: string;
           };
+          sessions: {
+            title: string;
+            tip: string;
+            empty: string;
+            current: string;
+            revoke: string;
+            revokeConfirm: string;
+            revokeCurrentConfirm: string;
+            revokeSuccess: string;
+            loginMethod: string;
+            loginTime: string;
+            lastSeen: string;
+            device: {
+              pc: string;
+              mobile: string;
+              tablet: string;
+              bot: string;
+              unknown: string;
+            };
+            protocol: {
+              password: string;
+              cas: string;
+              oauth2: string;
+              oidc: string;
+              webauthn: string;
+            };
+          };
+          loginLogs: {
+            title: string;
+            tip: string;
+            empty: string;
+            device: string;
+            ipAddress: string;
+            location: string;
+            failureCode: string;
+            result: {
+              success: string;
+              failure: string;
+            };
+            stage: {
+              password: string;
+              mfa: string;
+              passkey: string;
+              providerCallback: string;
+              ticketExchange: string;
+            };
+          };
           form: {
             oldPassword: string;
             newPassword: string;
@@ -780,6 +827,49 @@ declare namespace App {
               status: string;
               newPassword: string;
               confirmPassword: string;
+            };
+          };
+          loginLogs: {
+            title: string;
+            searchTitle: string;
+            keyword: string;
+            keywordPlaceholder: string;
+            account: string;
+            loginMethod: string;
+            ipAddress: string;
+            location: string;
+            failureCode: string;
+            requestId: string;
+            loginTime: string;
+            logoutTime: string;
+            timeRange: string;
+            result: {
+              title: string;
+              success: string;
+              failure: string;
+            };
+            stage: {
+              title: string;
+              password: string;
+              mfa: string;
+              passkey: string;
+              providerCallback: string;
+              ticketExchange: string;
+            };
+            protocol: {
+              password: string;
+              cas: string;
+              oauth2: string;
+              oidc: string;
+              webauthn: string;
+            };
+            device: {
+              title: string;
+              pc: string;
+              mobile: string;
+              tablet: string;
+              bot: string;
+              unknown: string;
             };
           };
           menus: {

@@ -671,6 +671,18 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
+        name: 'system-manage_login-logs',
+        path: '/system-manage/login-logs',
+        component: 'view.system-manage_login-logs',
+        meta: {
+          title: 'system-manage_login-logs',
+          i18nKey: 'route.system-manage_login-logs',
+          icon: 'mdi:login-variant',
+          order: 6,
+          roles: ['R_ADMIN']
+        }
+      },
+      {
         name: 'system-manage_menus',
         path: '/system-manage/menus',
         component: 'view.system-manage_menus',

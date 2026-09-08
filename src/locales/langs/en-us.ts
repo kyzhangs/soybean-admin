@@ -296,6 +296,7 @@ const local: App.I18n.Schema = {
     'system-manage': 'System Manage',
     'system-manage_users': 'Users Manage',
     'system-manage_user-detail': 'User Detail',
+    'system-manage_login-logs': 'Login Logs',
     'system-manage_roles': 'Roles Manage',
     'system-manage_menus': 'Menus Manage',
     authx: 'Authentication',
@@ -740,6 +741,53 @@ const local: App.I18n.Schema = {
         tip: 'Times are displayed in {timezone}; scheduled jobs use the system default or UTC in device mode',
         saveSuccess: 'Time zone saved'
       },
+      sessions: {
+        title: 'Login Devices',
+        tip: 'These authentication sessions are still valid. Revoke unfamiliar sessions and change your password.',
+        empty: 'No active sessions',
+        current: 'Current session',
+        revoke: 'Sign out',
+        revokeConfirm: 'Sign out this device session?',
+        revokeCurrentConfirm: 'Sign out the current session? You will need to sign in again.',
+        revokeSuccess: 'Session signed out',
+        loginMethod: 'Sign-in method',
+        loginTime: 'Signed in',
+        lastSeen: 'Last active',
+        device: {
+          pc: 'PC',
+          mobile: 'Mobile',
+          tablet: 'Tablet',
+          bot: 'Automated client',
+          unknown: 'Unknown device'
+        },
+        protocol: {
+          password: 'Password',
+          cas: 'CAS',
+          oauth2: 'OAuth2',
+          oidc: 'OIDC',
+          webauthn: 'Passkey'
+        }
+      },
+      loginLogs: {
+        title: 'Login History',
+        tip: 'All identifiable sign-in records for this account, including successful and failed attempts.',
+        empty: 'No login records',
+        device: 'Device',
+        ipAddress: 'IP Address',
+        location: 'Location',
+        failureCode: 'Failure Code',
+        result: {
+          success: 'Signed In',
+          failure: 'Sign-in Failed'
+        },
+        stage: {
+          password: 'Password',
+          mfa: 'Two-factor Verification',
+          passkey: 'Biometrics',
+          providerCallback: 'Provider Callback',
+          ticketExchange: 'Login Ticket Exchange'
+        }
+      },
       form: {
         oldPassword: 'Please enter the current password',
         newPassword: 'Please enter a new password',
@@ -914,6 +962,49 @@ const local: App.I18n.Schema = {
           status: 'Please select status',
           newPassword: 'Please enter a new password',
           confirmPassword: 'Please enter the new password again'
+        }
+      },
+      loginLogs: {
+        title: 'Login Logs',
+        searchTitle: 'Log Filters',
+        keyword: 'Account',
+        keywordPlaceholder: 'Enter username or name',
+        account: 'Account / Name',
+        loginMethod: 'Login Method',
+        ipAddress: 'IP Address',
+        location: 'Location',
+        failureCode: 'Failure Code',
+        requestId: 'Request ID',
+        loginTime: 'Login Time',
+        logoutTime: 'Logout Time',
+        timeRange: 'Time Range',
+        result: {
+          title: 'Result',
+          success: 'Success',
+          failure: 'Failure'
+        },
+        stage: {
+          title: 'Login Stage',
+          password: 'Password',
+          mfa: 'Two-factor Verification',
+          passkey: 'Biometrics',
+          providerCallback: 'Provider Callback',
+          ticketExchange: 'Login Ticket Exchange'
+        },
+        protocol: {
+          password: 'Password',
+          cas: 'CAS',
+          oauth2: 'OAuth 2.0',
+          oidc: 'OIDC',
+          webauthn: 'Passkey'
+        },
+        device: {
+          title: 'Device',
+          pc: 'Computer',
+          mobile: 'Phone',
+          tablet: 'Tablet',
+          bot: 'Bot',
+          unknown: 'Unknown Device'
         }
       },
       menus: {
