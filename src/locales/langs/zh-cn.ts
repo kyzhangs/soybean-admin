@@ -738,7 +738,7 @@ const local: App.I18n.Schema = {
         saveSuccess: '时区设置已保存'
       },
       sessions: {
-        title: '登录设备',
+        title: '活跃会话',
         tip: '以下是当前仍然有效的认证会话。发现陌生设备时，请立即退出该会话并修改密码。',
         empty: '暂无有效会话',
         current: '当前会话',
@@ -961,7 +961,7 @@ const local: App.I18n.Schema = {
         searchTitle: '日志筛选',
         keyword: '账号',
         keywordPlaceholder: '请输入用户名或姓名',
-        account: '账号 / 姓名',
+        account: '姓名 / 账号',
         loginMethod: '登录方式',
         ipAddress: 'IP 地址',
         location: '归属地',

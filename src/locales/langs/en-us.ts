@@ -742,7 +742,7 @@ const local: App.I18n.Schema = {
         saveSuccess: 'Time zone saved'
       },
       sessions: {
-        title: 'Login Devices',
+        title: 'Active Sessions',
         tip: 'These authentication sessions are still valid. Revoke unfamiliar sessions and change your password.',
         empty: 'No active sessions',
         current: 'Current session',
@@ -969,7 +969,7 @@ const local: App.I18n.Schema = {
         searchTitle: 'Log Filters',
         keyword: 'Account',
         keywordPlaceholder: 'Enter username or name',
-        account: 'Account / Name',
+        account: 'Name / Account',
         loginMethod: 'Login Method',
         ipAddress: 'IP Address',
         location: 'Location',

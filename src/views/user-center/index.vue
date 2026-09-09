@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
 import {
   fetchAuthBindingFlow,
@@ -35,6 +35,7 @@ defineOptions({
 const authStore = useAuthStore();
 const appStore = useAppStore();
 const route = useRoute();
+const router = useRouter();
 const userInfo = authStore.userInfo;
 const loading = ref(false);
 const roles = ref<Api.SystemManage.Role[]>([]);
@@ -71,6 +72,13 @@ const timezoneOptions = computed(() => [
 const selectedTimezone = computed(() => (timezoneValue.value === DEVICE_TIMEZONE ? null : timezoneValue.value));
 const effectiveTimezone = computed(() => resolveTimeZone(selectedTimezone.value));
 type UserCenterSection = 'profile' | 'security' | 'sessions' | 'loginLogs';
+const sectionHashRecord: Record<UserCenterSection, string> = {
+  profile: '#profile',
+  security: '#security',
+  sessions: '#sessions',
+  loginLogs: '#login-logs'
+};
+const sectionByHash = new Map(Object.entries(sectionHashRecord).map(([section, hash]) => [hash, section]));
 const activeSection = ref<UserCenterSection>('profile');
 const sectionNavigation = computed<Array<{ key: UserCenterSection; label: string; icon: string }>>(() => [
   { key: 'profile', label: $t('page.user-center.personalInfo'), icon: 'mdi:account-outline' },
@@ -78,6 +86,14 @@ const sectionNavigation = computed<Array<{ key: UserCenterSection; label: string
   { key: 'sessions', label: $t('page.user-center.sessions.title'), icon: 'mdi:devices' },
   { key: 'loginLogs', label: $t('page.user-center.loginLogs.title'), icon: 'mdi:history' }
 ]);
+
+watch(
+  () => route.hash,
+  hash => {
+    activeSection.value = (sectionByHash.get(hash) as UserCenterSection | undefined) || 'profile';
+  },
+  { immediate: true }
+);
 
 const genderLabel = computed(() => $t(userGenderRecord[userInfo.gender]));
 const genderTagType = computed(() => {
@@ -123,14 +139,6 @@ const deviceIconRecord: Record<Api.UserCenter.DeviceType, string> = {
   bot: 'mdi:robot-outline',
   unknown: 'mdi:devices'
 };
-
-const loginStageLabel = {
-  password: 'page.user-center.loginLogs.stage.password',
-  mfa: 'page.user-center.loginLogs.stage.mfa',
-  passkey: 'page.user-center.loginLogs.stage.passkey',
-  provider_callback: 'page.user-center.loginLogs.stage.providerCallback',
-  ticket_exchange: 'page.user-center.loginLogs.stage.ticketExchange'
-} as const;
 
 function sessionLocation(session: Api.UserCenter.AuthSession) {
   return (
@@ -266,14 +274,20 @@ async function bindAuthProvider(providerCode: string) {
   }
 }
 
-function clearBindingQuery() {
-  window.history.replaceState({}, '', route.path);
+async function clearBindingQuery() {
+  await router.replace({ path: route.path, hash: route.hash });
 }
 
-function closePendingBinding() {
+async function selectSection(section: UserCenterSection) {
+  activeSection.value = section;
+  const hash = sectionHashRecord[section];
+  if (route.hash !== hash) await router.push({ path: route.path, query: route.query, hash });
+}
+
+async function closePendingBinding() {
   pendingBindingVisible.value = false;
   pendingBinding.value = null;
-  clearBindingQuery();
+  await clearBindingQuery();
 }
 
 async function loadPendingAuthBinding() {
@@ -284,7 +298,7 @@ async function loadPendingAuthBinding() {
       pendingBinding.value = data;
       pendingBindingVisible.value = true;
     } else {
-      clearBindingQuery();
+      await clearBindingQuery();
     }
   } finally {
     pendingBindingLoading.value = false;
@@ -298,11 +312,11 @@ async function confirmPendingAuthBinding() {
   try {
     const { error } = await fetchConfirmAuthBinding(binding.flow_id);
     if (!error) {
-      closePendingBinding();
+      await closePendingBinding();
       window.$message?.success($t('page.user-center.authIdentity.bindSuccess'));
       await refreshUserInfo();
     } else if (String(error.response?.data?.code) === '100183') {
-      closePendingBinding();
+      await closePendingBinding();
     }
   } finally {
     pendingBindingSubmitting.value = false;
@@ -316,7 +330,7 @@ async function cancelPendingAuthBinding() {
   try {
     await fetchCancelAuthBinding(binding.flow_id);
   } finally {
-    closePendingBinding();
+    await closePendingBinding();
     pendingBindingSubmitting.value = false;
   }
 }
@@ -368,23 +382,26 @@ function openTwoFactorModal(action: 'toggle' | 'regenerate') {
   twoFactorVisible.value = true;
 }
 
-onMounted(() => {
+onMounted(async () => {
   if (route.query.binding === 'confirm') {
-    loadPendingAuthBinding();
+    await loadPendingAuthBinding();
   } else if (route.query.binding === 'success') {
     window.$message?.success($t('page.user-center.authIdentity.bindSuccess'));
-    window.history.replaceState({}, '', route.path);
+    await clearBindingQuery();
   } else if (route.query.error) {
     window.$message?.error($t('page.user-center.authIdentity.bindFailed', { error: String(route.query.error) }));
-    window.history.replaceState({}, '', route.path);
+    await clearBindingQuery();
   }
-  refreshUserInfo();
+  await refreshUserInfo();
 });
 </script>
 
 <template>
-  <div class="user-center-page min-h-500px overflow-x-hidden overflow-y-auto">
-    <NSpin :show="loading">
+  <div
+    class="user-center-page min-h-500px"
+    :class="{ 'user-center-page--table': activeSection === 'sessions' || activeSection === 'loginLogs' }"
+  >
+    <NSpin :show="loading" class="user-center-spin">
       <div class="user-center-shell card-wrapper">
         <aside class="user-center-aside">
           <div class="user-profile">
@@ -409,7 +426,7 @@ onMounted(() => {
               type="button"
               class="user-center-nav-item"
               :class="{ 'is-active': activeSection === item.key }"
-              @click="activeSection = item.key"
+              @click="selectSection(item.key)"
             >
               <SvgIcon :icon="item.icon" class="text-19px" />
               <span>{{ item.label }}</span>
@@ -476,7 +493,7 @@ onMounted(() => {
             </div>
           </section>
 
-          <section v-else-if="activeSection === 'sessions'" class="user-center-section">
+          <section v-else-if="activeSection === 'sessions'" class="user-center-section user-center-section--table">
             <div class="section-heading">
               <h3>{{ $t('page.user-center.sessions.title') }}</h3>
             </div>
@@ -501,7 +518,7 @@ onMounted(() => {
                     <th>
                       {{ $t('page.user-center.sessions.loginTime') }} / {{ $t('page.user-center.sessions.lastSeen') }}
                     </th>
-                    <th class="text-right">{{ $t('common.action') }}</th>
+                    <th class="text-center">{{ $t('common.action') }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -527,7 +544,7 @@ onMounted(() => {
                         {{ formatDateTime(session.last_seen_at, selectedTimezone, 'datetime', appStore.locale) }}
                       </div>
                     </td>
-                    <td class="text-right">
+                    <td class="text-center">
                       <NPopconfirm @positive-click="revokeAuthSession(session)">
                         <template #trigger>
                           <NButton text type="error" size="small" :loading="revokingSessionId === session.id">
@@ -547,38 +564,52 @@ onMounted(() => {
             </div>
           </section>
 
-          <section v-else-if="activeSection === 'loginLogs'" class="user-center-section">
+          <section v-else-if="activeSection === 'loginLogs'" class="user-center-section user-center-section--table">
             <div class="section-heading">
               <h3>{{ $t('page.user-center.loginLogs.title') }}</h3>
             </div>
             <p class="section-tip">{{ $t('page.user-center.loginLogs.tip') }}</p>
-            <NSpin :show="loginLogLoading">
+            <NSpin :show="loginLogLoading" class="table-section-spin">
               <NEmpty v-if="!loginLogs.length" :description="$t('page.user-center.loginLogs.empty')" />
               <div v-else class="table-scroll">
                 <NTable :bordered="false" :single-line="false" size="small" class="user-center-table login-log-table">
                   <colgroup>
-                    <col style="width: 11%" />
-                    <col style="width: 15%" />
-                    <col style="width: 20%" />
-                    <col style="width: 22%" />
-                    <col style="width: 16%" />
-                    <col style="width: 16%" />
+                    <col style="width: 14%" />
+                    <col style="width: 25%" />
+                    <col style="width: 13%" />
+                    <col style="width: 10%" />
+                    <col style="width: 19%" />
+                    <col style="width: 19%" />
                   </colgroup>
                   <thead>
                     <tr>
-                      <th>{{ $t('page.system-manage.loginLogs.result.title') }}</th>
-                      <th>{{ $t('page.system-manage.loginLogs.stage.title') }}</th>
+                      <th>{{ $t('page.system-manage.loginLogs.loginMethod') }}</th>
                       <th>{{ $t('page.user-center.loginLogs.device') }}</th>
                       <th>
                         {{ $t('page.user-center.loginLogs.ipAddress') }} /
                         {{ $t('page.user-center.loginLogs.location') }}
                       </th>
+                      <th>{{ $t('page.system-manage.loginLogs.result.title') }}</th>
                       <th>{{ $t('page.system-manage.loginLogs.loginTime') }}</th>
                       <th>{{ $t('page.system-manage.loginLogs.logoutTime') }}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="loginLog in loginLogs" :key="loginLog.id">
+                      <td>{{ loginLogProtocol(loginLog) }}</td>
+                      <td>
+                        <div class="flex items-center gap-8px">
+                          <SvgIcon :icon="deviceIconRecord[loginLog.device]" class="shrink-0 text-20px text-primary" />
+                          <span>{{ loginLogDevice(loginLog) }}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <div>{{ loginLog.ip_address || $t('common.noData') }}</div>
+                        <div class="mt-2px text-12px text-#6b7280">{{ loginLogLocation(loginLog) }}</div>
+                        <div v-if="loginLog.failure_code !== null" class="mt-2px text-12px text-error">
+                          {{ $t('page.user-center.loginLogs.failureCode') }}：{{ loginLog.failure_code }}
+                        </div>
+                      </td>
                       <td>
                         <NTag :type="loginLog.result === 'success' ? 'success' : 'error'" size="small" round>
                           {{
@@ -587,18 +618,6 @@ onMounted(() => {
                               : $t('page.user-center.loginLogs.result.failure')
                           }}
                         </NTag>
-                      </td>
-                      <td>
-                        <div class="font-medium">{{ $t(loginStageLabel[loginLog.stage]) }}</div>
-                        <div class="mt-2px text-12px text-#6b7280">{{ loginLogProtocol(loginLog) }}</div>
-                      </td>
-                      <td>{{ loginLogDevice(loginLog) }}</td>
-                      <td>
-                        <div>{{ loginLog.ip_address || $t('common.noData') }}</div>
-                        <div class="mt-2px text-12px text-#6b7280">{{ loginLogLocation(loginLog) }}</div>
-                        <div v-if="loginLog.failure_code !== null" class="mt-2px text-12px text-error">
-                          {{ $t('page.user-center.loginLogs.failureCode') }}：{{ loginLog.failure_code }}
-                        </div>
                       </td>
                       <td>
                         {{ formatDateTime(loginLog.create_time, selectedTimezone, 'datetime', appStore.locale) }}
@@ -845,6 +864,22 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.user-center-page {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.user-center-page--table {
+  height: 100%;
+  overflow: hidden;
+}
+
+.user-center-page--table .user-center-spin,
+.user-center-page--table :deep(.n-spin-content) {
+  height: 100%;
+  min-height: 0;
+}
+
 .user-center-shell {
   display: grid;
   grid-template-columns: 232px minmax(0, 1fr);
@@ -853,6 +888,11 @@ onMounted(() => {
   border: 1px solid rgb(229 231 235 / 70%);
   border-radius: 12px;
   background: #fff;
+}
+
+.user-center-page--table .user-center-shell {
+  height: 100%;
+  min-height: 0;
 }
 
 .user-center-aside {
@@ -925,8 +965,45 @@ onMounted(() => {
   padding: 28px 40px 36px;
 }
 
+.user-center-page--table .user-center-content {
+  min-height: 0;
+  overflow: hidden;
+}
+
 .user-center-section {
   min-width: 0;
+}
+
+.user-center-section--table {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-center-section--table > .table-scroll {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+}
+
+.table-section-spin {
+  min-height: 0;
+  flex: 1;
+}
+
+.table-section-spin :deep(.n-spin-content) {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.table-section-spin .table-scroll {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
 }
 
 .profile-info-grid {
@@ -997,6 +1074,20 @@ onMounted(() => {
   overflow-wrap: anywhere;
 }
 
+.login-log-table {
+  min-width: 960px;
+}
+
+.login-log-table :deep(th:nth-child(2)),
+.login-log-table :deep(td:nth-child(2)),
+.login-log-table :deep(th:nth-child(5)),
+.login-log-table :deep(th:nth-child(6)),
+.login-log-table :deep(td:nth-child(5)),
+.login-log-table :deep(td:nth-child(6)) {
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
 .user-center-section :deep(.n-descriptions-table) {
   width: 100%;
   table-layout: fixed;
@@ -1038,8 +1129,20 @@ onMounted(() => {
 }
 
 @media (max-width: 800px) {
+  .user-center-page--table,
+  .user-center-page--table .user-center-spin,
+  .user-center-page--table :deep(.n-spin-content) {
+    height: auto;
+    overflow: visible;
+  }
+
   .user-center-shell {
     display: block;
+  }
+
+  .user-center-page--table .user-center-shell {
+    height: auto;
+    min-height: 620px;
   }
 
   .user-center-aside {
@@ -1085,7 +1188,18 @@ onMounted(() => {
   }
 
   .user-center-content {
+    overflow: visible;
     padding: 22px 18px 28px;
+  }
+
+  .user-center-section--table {
+    height: auto;
+    overflow: visible;
+  }
+
+  .user-center-section--table > .table-scroll,
+  .table-section-spin .table-scroll {
+    overflow: auto;
   }
 
   .profile-info-grid {

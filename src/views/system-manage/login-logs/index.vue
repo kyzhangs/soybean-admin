@@ -55,14 +55,6 @@ const resultLabel = {
   failure: 'page.system-manage.loginLogs.result.failure'
 } as const;
 
-const stageLabel = {
-  password: 'page.system-manage.loginLogs.stage.password',
-  mfa: 'page.system-manage.loginLogs.stage.mfa',
-  passkey: 'page.system-manage.loginLogs.stage.passkey',
-  provider_callback: 'page.system-manage.loginLogs.stage.providerCallback',
-  ticket_exchange: 'page.system-manage.loginLogs.stage.ticketExchange'
-} as const;
-
 const protocolLabel = {
   password: 'page.system-manage.loginLogs.protocol.password',
   cas: 'page.system-manage.loginLogs.protocol.cas',
@@ -114,17 +106,10 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       width: 100,
       render: row => (
         <div>
-          <div>{row.username || $t('common.noData')}</div>
-          {row.name && <div class="text-12px text-gray-500">{row.name}</div>}
+          <div>{row.name || $t('common.noData')}</div>
+          <div class="text-12px text-gray-500">{row.username || $t('common.noData')}</div>
         </div>
       )
-    },
-    {
-      key: 'stage',
-      title: $t('page.system-manage.loginLogs.stage.title'),
-      align: 'center',
-      width: 120,
-      render: row => $t(stageLabel[row.stage])
     },
     {
       key: 'login_protocol',
@@ -231,40 +216,88 @@ function reset() {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <NCard :title="$t('page.system-manage.loginLogs.searchTitle')" :bordered="false" size="small">
-      <NForm :model="searchParams" label-placement="left" :show-feedback="false">
-        <NGrid responsive="screen" item-responsive :x-gap="16" :y-gap="16">
-          <NFormItemGi span="24 s:12 m:8 l:6" :label="$t('page.system-manage.loginLogs.keyword')">
-            <NInput
-              v-model:value="searchParams.keyword"
-              clearable
-              :placeholder="$t('page.system-manage.loginLogs.keywordPlaceholder')"
-              @keyup.enter="search"
-            />
-          </NFormItemGi>
-          <NFormItemGi span="24 s:12 m:8 l:6" :label="$t('page.system-manage.loginLogs.result.title')">
-            <NSelect v-model:value="searchParams.result" clearable :options="resultOptions" />
-          </NFormItemGi>
-          <NFormItemGi span="24 s:12 m:8 l:6" :label="$t('page.system-manage.loginLogs.loginMethod')">
-            <NSelect v-model:value="searchParams.login_protocol" clearable :options="protocolOptions" />
-          </NFormItemGi>
-          <NFormItemGi span="24 s:12 m:8 l:6" :label="$t('page.system-manage.loginLogs.device.title')">
-            <NSelect v-model:value="searchParams.device" clearable :options="deviceOptions" />
-          </NFormItemGi>
-          <NFormItemGi span="24 s:12 m:8 l:6" :label="$t('page.system-manage.loginLogs.ipAddress')">
-            <NInput v-model:value="searchParams.ip_address" clearable />
-          </NFormItemGi>
-          <NFormItemGi span="24 s:24 m:16 l:12" :label="$t('page.system-manage.loginLogs.timeRange')">
-            <NDatePicker v-model:value="dateRange" type="datetimerange" clearable class="w-full" />
-          </NFormItemGi>
-          <NFormItemGi span="24 s:24 m:8 l:6">
-            <NSpace justify="end" class="w-full">
-              <NButton @click="reset">{{ $t('common.reset') }}</NButton>
-              <NButton type="primary" @click="search">{{ $t('common.search') }}</NButton>
-            </NSpace>
-          </NFormItemGi>
-        </NGrid>
-      </NForm>
+    <NCard :bordered="false" size="small" class="w-full card-wrapper">
+      <NCollapse class="w-full" :default-expanded-names="['login-log-search']">
+        <NCollapseItem :title="$t('common.search')" name="login-log-search">
+          <NForm :model="searchParams" label-placement="left" label-align="right" label-width="auto">
+            <NGrid responsive="screen" item-responsive>
+              <NFormItemGi span="24 s:18 m:20 l:18 xl:20" :show-feedback="false">
+                <NGrid responsive="screen" item-responsive>
+                  <NFormItemGi
+                    span="24 s:12 m:8 l:8 xl:5"
+                    :label="$t('page.system-manage.loginLogs.keyword')"
+                    path="keyword"
+                    class="pr-24px"
+                  >
+                    <NInput
+                      v-model:value="searchParams.keyword"
+                      clearable
+                      :placeholder="$t('page.system-manage.loginLogs.keywordPlaceholder')"
+                      @keyup.enter="search"
+                    />
+                  </NFormItemGi>
+                  <NFormItemGi
+                    span="24 s:12 m:8 l:8 xl:5"
+                    :label="$t('page.system-manage.loginLogs.result.title')"
+                    path="result"
+                    class="pr-24px"
+                  >
+                    <NSelect v-model:value="searchParams.result" clearable :options="resultOptions" />
+                  </NFormItemGi>
+                  <NFormItemGi
+                    span="24 s:12 m:8 l:8 xl:5"
+                    :label="$t('page.system-manage.loginLogs.loginMethod')"
+                    path="login_protocol"
+                    class="pr-24px"
+                  >
+                    <NSelect v-model:value="searchParams.login_protocol" clearable :options="protocolOptions" />
+                  </NFormItemGi>
+                  <NFormItemGi
+                    span="24 s:12 m:8 l:8 xl:5"
+                    :label="$t('page.system-manage.loginLogs.device.title')"
+                    path="device"
+                    class="pr-24px"
+                  >
+                    <NSelect v-model:value="searchParams.device" clearable :options="deviceOptions" />
+                  </NFormItemGi>
+                  <NFormItemGi
+                    span="24 s:12 m:8 l:8 xl:5"
+                    :label="$t('page.system-manage.loginLogs.ipAddress')"
+                    path="ip_address"
+                    class="pr-24px"
+                  >
+                    <NInput v-model:value="searchParams.ip_address" clearable />
+                  </NFormItemGi>
+                  <NFormItemGi
+                    span="24 s:24 m:16 l:8 xl:10"
+                    :label="$t('page.system-manage.loginLogs.timeRange')"
+                    class="pr-24px"
+                  >
+                    <NDatePicker v-model:value="dateRange" type="datetimerange" clearable class="w-full" />
+                  </NFormItemGi>
+                </NGrid>
+              </NFormItemGi>
+
+              <NFormItemGi span="24 s:6 m:4 l:6 xl:4">
+                <NSpace class="w-full" justify="end">
+                  <NButton type="default" @click="reset">
+                    <template #icon>
+                      <icon-ic-round-refresh class="text-icon" />
+                    </template>
+                    {{ $t('common.reset') }}
+                  </NButton>
+                  <NButton type="primary" ghost @click="search">
+                    <template #icon>
+                      <icon-ic-round-search class="text-icon" />
+                    </template>
+                    {{ $t('common.search') }}
+                  </NButton>
+                </NSpace>
+              </NFormItemGi>
+            </NGrid>
+          </NForm>
+        </NCollapseItem>
+      </NCollapse>
     </NCard>
 
     <NCard
@@ -283,7 +316,7 @@ function reset() {
         :data="data"
         size="small"
         :flex-height="!appStore.isMobile"
-        :scroll-x="1384"
+        :scroll-x="1264"
         :loading="loading"
         remote
         :row-key="row => row.id"
