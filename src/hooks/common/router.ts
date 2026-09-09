@@ -88,6 +88,13 @@ export function useRouterPush(inSetup = true) {
     return routerPushByKey('login', { query, params: { module } });
   }
 
+  /** Replace the current history entry with another login module. */
+  async function replaceLoginModule(module: UnionKey.LoginModule) {
+    const query = route.value.query as Record<string, string>;
+
+    return router.replace({ name: 'login', query, params: { module } });
+  }
+
   /**
    * Redirect from login
    *
@@ -110,6 +117,7 @@ export function useRouterPush(inSetup = true) {
     routerPushByKeyWithMetaQuery,
     toLogin,
     toggleLoginModule,
+    replaceLoginModule,
     redirectFromLogin
   };
 }

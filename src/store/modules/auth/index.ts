@@ -26,7 +26,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const authStore = useAuthStore();
   const routeStore = useRouteStore();
   const tabStore = useTabStore();
-  const { routerPush, toLogin, redirectFromLogin } = useRouterPush(false);
+  const { routerPush, toLogin, replaceLoginModule, redirectFromLogin } = useRouterPush(false);
   const { loading: loginLoading, startLoading, endLoading } = useLoading();
 
   const token = ref('');
@@ -141,6 +141,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     if (!error) {
       if ('challenge_token' in loginResult) {
         twoFactorChallengeToken.value = loginResult.challenge_token;
+        await replaceLoginModule('2fa');
       } else {
         await completeLogin(loginResult, redirect);
       }
@@ -161,8 +162,15 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
         code
       });
       if (!error) {
+        if ('provider_code' in loginToken) {
+          await completeLogin(loginToken, redirect, loginToken.redirect, {
+            code: loginToken.provider_code,
+            protocol: loginToken.provider_protocol
+          });
+        } else {
+          await completeLogin(loginToken, redirect);
+        }
         twoFactorChallengeToken.value = '';
-        await completeLogin(loginToken, redirect);
       }
     } finally {
       endLoading();
@@ -202,6 +210,11 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     try {
       const { data, error } = await fetchAuthProviderExchange(loginTicket);
       if (error) return false;
+      if ('challenge_token' in data) {
+        twoFactorChallengeToken.value = data.challenge_token;
+        await replaceLoginModule('2fa');
+        return true;
+      }
       return await completeLogin(data, true, data.redirect, {
         code: data.provider_code,
         protocol: data.provider_protocol

@@ -10,6 +10,7 @@ import { useRouterPush } from '@/hooks/common/router';
 import { $t } from '@/locales';
 import PwdLogin from './modules/pwd-login.vue';
 import PasskeyLogin from './modules/passkey-login.vue';
+import TwoFactor from './modules/2fa.vue';
 import Callback from './modules/callback.vue';
 import CodeLogin from './modules/code-login.vue';
 import Register from './modules/register.vue';
@@ -36,6 +37,7 @@ interface LoginModule {
 const moduleMap: Record<UnionKey.LoginModule, LoginModule> = {
   'pwd-login': { label: loginModuleRecord['pwd-login'], component: PwdLogin },
   'passkey-login': { label: loginModuleRecord['passkey-login'], component: PasskeyLogin },
+  '2fa': { label: loginModuleRecord['2fa'], component: TwoFactor },
   callback: { label: loginModuleRecord['callback'], component: Callback },
   'code-login': { label: loginModuleRecord['code-login'], component: CodeLogin },
   register: { label: loginModuleRecord.register, component: Register },
@@ -48,13 +50,7 @@ const currentModule = computed(() => props.module || 'pwd-login');
 const showLoginModeTabs = computed(
   () => !authStore.requiresTwoFactor && ['pwd-login', 'passkey-login'].includes(currentModule.value)
 );
-const activeModuleLabel = computed<App.I18n.I18nKey>(() => {
-  if (currentModule.value === 'pwd-login' && authStore.requiresTwoFactor) {
-    return 'page.login.twoFactor.title';
-  }
-
-  return activeModule.value.label;
-});
+const activeModuleLabel = computed<App.I18n.I18nKey>(() => activeModule.value.label);
 
 const bgThemeColor = computed(() =>
   themeStore.darkMode ? getPaletteColorByNumber(themeStore.themeColor, 600) : themeStore.themeColor

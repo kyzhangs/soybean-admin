@@ -28,7 +28,10 @@ function loginWithPasskey() {
         :aria-label="$t('page.login.passkey.login')"
         @click="loginWithPasskey"
       >
-        <SvgIcon icon="mdi:fingerprint" />
+        <SvgIcon
+          :icon="authStore.loginLoading ? 'mdi:loading' : 'mdi:fingerprint'"
+          :class="{ 'animate-spin': authStore.loginLoading }"
+        />
       </button>
     </div>
 
@@ -41,8 +44,7 @@ function loginWithPasskey() {
       type="primary"
       size="large"
       class="self-center text-18px"
-      :disabled="!supported"
-      :loading="authStore.loginLoading"
+      :disabled="!supported || authStore.loginLoading"
       @click="loginWithPasskey"
     >
       {{ $t('page.login.passkey.login') }}

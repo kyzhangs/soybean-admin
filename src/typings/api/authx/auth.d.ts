@@ -47,6 +47,9 @@ declare namespace Api {
       provider_protocol: AuthProtocol;
     }
 
+    type AuthProviderExchangeResult = CasExchangeResult | TwoFactorChallenge;
+    type TwoFactorVerifyResult = Token | CasExchangeResult;
+
     interface PublicAuthProvider {
       code: string;
       name: string;

@@ -21,64 +21,29 @@ const { formRef, validate } = useNaiveForm();
 interface FormModel {
   username: string;
   password: string;
-  twoFactorCode: string;
 }
 
 const model: FormModel = reactive({
   username: '',
-  password: '',
-  twoFactorCode: ''
+  password: ''
 });
-const useRecoveryCode = ref(false);
 const authProviders = ref<Api.Authx.PublicAuthProvider[]>([]);
 const primaryAuthProvider = computed(() => authProviders.value[0]);
 const otherAuthProviders = computed(() => authProviders.value.slice(1));
-const twoFactorOtp = computed<string[]>({
-  get: () => model.twoFactorCode.slice(0, useRecoveryCode.value ? 16 : 6).split(''),
-  set: value => {
-    const code = value.join('');
-    model.twoFactorCode = useRecoveryCode.value ? code.toUpperCase() : code;
-  }
-});
 
 const rules = computed<Record<keyof FormModel, App.Global.FormRule[]>>(() => {
   // inside computed to make locale reactive, if not apply i18n, you can define it without computed
-  const { formRules, createRequiredRule } = useFormRules();
+  const { createRequiredRule } = useFormRules();
 
   return {
-    username: formRules.username,
-    password: formRules.pwd,
-    twoFactorCode: [createRequiredRule($t('page.login.twoFactor.codePlaceholder'))]
+    username: [createRequiredRule($t('form.username.required'))],
+    password: [createRequiredRule($t('form.pwd.required'))]
   };
 });
 
 async function handleSubmit() {
-  if (authStore.requiresTwoFactor) {
-    await handleTwoFactorSubmit();
-    return;
-  }
   await validate();
   await authStore.login(model.username, model.password);
-}
-
-async function handleTwoFactorSubmit() {
-  if (authStore.loginLoading) return;
-
-  await validate();
-  await authStore.verifyTwoFactor(model.twoFactorCode);
-}
-
-function allowOtpInput(char: string) {
-  return /^\d$/.test(char);
-}
-
-function allowRecoveryCodeInput(char: string) {
-  return /^[\dA-Fa-f]$/.test(char);
-}
-
-function toggleRecoveryCode() {
-  model.twoFactorCode = '';
-  useRecoveryCode.value = !useRecoveryCode.value;
 }
 
 async function loadAuthProviders() {
@@ -106,63 +71,35 @@ onMounted(loadAuthProviders);
 
 <template>
   <NForm ref="formRef" :model="model" :rules="rules" size="large" :show-label="false" @keyup.enter="handleSubmit">
-    <template v-if="!authStore.requiresTwoFactor">
-      <NFormItem path="username">
-        <NInput v-model:value="model.username" :placeholder="$t('page.login.common.usernamePlaceholder')" />
-      </NFormItem>
-      <NFormItem path="password">
-        <NInput
-          v-model:value="model.password"
-          type="password"
-          show-password-on="click"
-          :placeholder="$t('page.login.common.passwordPlaceholder')"
-        />
-      </NFormItem>
-    </template>
-    <template v-else>
-      <NFormItem path="twoFactorCode">
-        <NInputOtp
-          v-model:value="twoFactorOtp"
-          :length="useRecoveryCode ? 16 : 6"
-          class="two-factor-otp"
-          :class="[{ 'two-factor-otp--recovery': useRecoveryCode }]"
-          :allow-input="useRecoveryCode ? allowRecoveryCodeInput : allowOtpInput"
-          @finish="handleTwoFactorSubmit"
-        />
-      </NFormItem>
-    </template>
+    <NFormItem path="username">
+      <NInput v-model:value="model.username" :placeholder="$t('page.login.common.usernamePlaceholder')" />
+    </NFormItem>
+    <NFormItem path="password">
+      <NInput
+        v-model:value="model.password"
+        type="password"
+        show-password-on="click"
+        :placeholder="$t('page.login.common.passwordPlaceholder')"
+      />
+    </NFormItem>
     <NSpace vertical :size="24">
-      <div v-if="!authStore.requiresTwoFactor" class="flex-y-center justify-between">
+      <div class="flex-y-center justify-between">
         <NCheckbox>{{ $t('page.login.pwdLogin.rememberMe') }}</NCheckbox>
         <NButton quaternary @click="toggleLoginModule('reset-pwd')">
           {{ $t('page.login.pwdLogin.forgetPassword') }}
         </NButton>
       </div>
-      <NButton
-        v-if="!authStore.requiresTwoFactor"
-        type="primary"
-        size="large"
-        round
-        block
-        :loading="authStore.loginLoading"
-        @click="handleSubmit"
-      >
+      <NButton type="primary" size="large" round block :loading="authStore.loginLoading" @click="handleSubmit">
         {{ $t('common.confirm') }}
       </NButton>
-      <NButton v-if="authStore.requiresTwoFactor" size="large" round block @click="toggleRecoveryCode">
-        {{
-          useRecoveryCode ? $t('page.login.twoFactor.useAuthenticatorCode') : $t('page.login.twoFactor.useRecoveryCode')
-        }}
-      </NButton>
-      <template v-else>
-        <a
-          href="#"
-          class="flex items-center justify-center gap-6px text-primary transition-colors hover:text-primary-hover hover:underline"
-          @click.prevent="handlePrimaryProviderLogin"
-        >
-          <span>{{ $t('page.login.cas.login') }}</span>
-        </a>
-        <!--
+      <a
+        href="#"
+        class="flex items-center justify-center gap-6px text-primary transition-colors hover:text-primary-hover hover:underline"
+        @click.prevent="handlePrimaryProviderLogin"
+      >
+        <span>{{ $t('page.login.cas.login') }}</span>
+      </a>
+      <!--
           <div class="flex-y-center justify-between gap-12px">
             <NButton class="flex-1" block @click="toggleLoginModule('code-login')">
               {{ $t(loginModuleRecord['code-login']) }}
@@ -171,77 +108,22 @@ onMounted(loadAuthProviders);
               {{ $t(loginModuleRecord.register) }}
             </NButton>
           </div>
-        -->
-        <template v-if="otherAuthProviders.length">
-          <NDivider class="text-14px text-#666 !m-0">{{ $t('page.login.pwdLogin.otherAccountLogin') }}</NDivider>
-          <div class="flex-center flex-wrap gap-12px">
-            <NButton
-              v-for="provider in otherAuthProviders"
-              :key="provider.code"
-              secondary
-              strong
-              @click="handleProviderLogin(provider)"
-            >
-              <template v-if="provider.icon" #icon><SvgIcon :icon="provider.icon" /></template>
-              {{ provider.name }}
-            </NButton>
-          </div>
-        </template>
+      -->
+      <template v-if="otherAuthProviders.length">
+        <NDivider class="text-14px text-#666 !m-0">{{ $t('page.login.pwdLogin.otherAccountLogin') }}</NDivider>
+        <div class="flex-center flex-wrap gap-12px">
+          <NButton
+            v-for="provider in otherAuthProviders"
+            :key="provider.code"
+            secondary
+            strong
+            @click="handleProviderLogin(provider)"
+          >
+            <template v-if="provider.icon" #icon><SvgIcon :icon="provider.icon" /></template>
+            {{ provider.name }}
+          </NButton>
+        </div>
       </template>
     </NSpace>
   </NForm>
 </template>
-
-<style scoped>
-.two-factor-otp {
-  --otp-gap: clamp(10px, 2vw, 20px);
-
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  width: 100%;
-  gap: var(--otp-gap);
-}
-
-.two-factor-otp :deep(.n-input) {
-  width: 100% !important;
-  height: auto !important;
-  aspect-ratio: 1;
-}
-
-.two-factor-otp :deep(.n-input-wrapper) {
-  align-items: center;
-}
-
-.two-factor-otp :deep(.n-input__input-el) {
-  font-size: clamp(20px, 4vw, 24px);
-  font-weight: 600;
-}
-
-.two-factor-otp :deep(.n-input + .n-input::before) {
-  content: '-';
-  position: absolute;
-  top: 50%;
-  left: calc(var(--otp-gap) / -2);
-  color: var(--n-text-color);
-  transform: translate(-50%, -50%);
-  font-size: 16px;
-  font-weight: 700;
-  opacity: 0.7;
-}
-
-.two-factor-otp--recovery {
-  --otp-gap: 10px;
-
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  row-gap: 12px;
-}
-
-.two-factor-otp--recovery :deep(.n-input + .n-input::before) {
-  content: none;
-}
-
-.two-factor-otp--recovery :deep(.n-input:nth-child(5)::before),
-.two-factor-otp--recovery :deep(.n-input:nth-child(13)::before) {
-  content: '-';
-}
-</style>

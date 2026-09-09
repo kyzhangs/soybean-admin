@@ -5,6 +5,7 @@ declare namespace UnionKey {
    *
    * - pwd-login: password login
    * - passkey-login: username-less Passkey login
+   * - 2fa: two-factor verification during login
    * - code-login: phone code login
    * - register: register
    * - reset-pwd: reset password
@@ -13,6 +14,7 @@ declare namespace UnionKey {
   type LoginModule =
     | 'pwd-login'
     | 'passkey-login'
+    | '2fa'
     | 'callback'
     | 'code-login'
     | 'register'

@@ -53,7 +53,7 @@ declare module "@elegant-router/types" {
     "function_toggle-auth": "/function/toggle-auth";
     "home": "/home";
     "iframe-page": "/iframe-page/:url";
-    "login": "/login/:module(pwd-login|passkey-login|callback|code-login|register|reset-pwd|bind-wechat)?";
+    "login": "/login/:module(pwd-login|passkey-login|2fa|callback|code-login|register|reset-pwd|bind-wechat)?";
     "multi-menu": "/multi-menu";
     "multi-menu_first": "/multi-menu/first";
     "multi-menu_first_child": "/multi-menu/first/child";

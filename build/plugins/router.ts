@@ -33,6 +33,7 @@ export function setupElegantRouter() {
         const modules: UnionKey.LoginModule[] = [
           'pwd-login',
           'passkey-login',
+          '2fa',
           'callback',
           'code-login',
           'register',

@@ -14,9 +14,10 @@ export function fetchLogin(username: string, password: string) {
 }
 
 export function fetchVerifyTwoFactor(data: Api.Authx.TwoFactorVerifyParams) {
-  return request<Api.Authx.Token>({
+  return request<Api.Authx.TwoFactorVerifyResult>({
     url: '/authx/2fa/verify',
     method: 'post',
+    withCredentials: true,
     data
   });
 }
@@ -49,7 +50,7 @@ export function fetchPublicAuthProviders() {
 }
 
 export function fetchAuthProviderExchange(login_ticket: string) {
-  return request<Api.Authx.CasExchangeResult>({
+  return request<Api.Authx.AuthProviderExchangeResult>({
     url: '/authx/exchange',
     method: 'post',
     withCredentials: true,
