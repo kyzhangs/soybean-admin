@@ -34,4 +34,5 @@ yarn.lock
 
 .VSCodeCounter
 src-tauri/target
+.codegraph
 CLAUDE.md
