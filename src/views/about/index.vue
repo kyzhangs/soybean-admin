@@ -42,7 +42,7 @@
 <template>
   <div>
     <iframe
-      src="https://aitest.wisedu.com/chatbot/HbZzdoc1SDJhl3zP"
+      src="https://ai.show.wisedu.com/chatbot/mxn51fMQPAKpJzEQ"
       style="width: 100%; height: 100%; min-height: 700px"
       frameborder="0"
       allow="microphone"
