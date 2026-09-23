@@ -1,47 +1,55 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useAppStore } from '@/store/modules/app';
-import { $t } from '@/locales';
-import pkg from '~/package.json';
+// import { computed } from 'vue';
+// import { useAppStore } from '@/store/modules/app';
+// import pkg from '~/package.json';
 
-const appStore = useAppStore();
+// const appStore = useAppStore();
 
-const column = computed(() => (appStore.isMobile ? 1 : 2));
+// const column = computed(() => (appStore.isMobile ? 1 : 2));
 
-interface PkgJson {
-  name: string;
-  version: string;
-  dependencies: PkgVersionInfo[];
-  devDependencies: PkgVersionInfo[];
-}
+// interface PkgJson {
+//   name: string;
+//   version: string;
+//   dependencies: PkgVersionInfo[];
+//   devDependencies: PkgVersionInfo[];
+// }
 
-interface PkgVersionInfo {
-  name: string;
-  version: string;
-}
+// interface PkgVersionInfo {
+//   name: string;
+//   version: string;
+// }
 
-const { name, version, dependencies, devDependencies } = pkg;
+// const { name, version, dependencies, devDependencies } = pkg;
 
-function transformVersionData(tuple: [string, string]): PkgVersionInfo {
-  const [$name, $version] = tuple;
-  return {
-    name: $name,
-    version: $version
-  };
-}
+// function transformVersionData(tuple: [string, string]): PkgVersionInfo {
+//   const [$name, $version] = tuple;
+//   return {
+//     name: $name,
+//     version: $version
+//   };
+// }
 
-const pkgJson: PkgJson = {
-  name,
-  version,
-  dependencies: Object.entries(dependencies).map(item => transformVersionData(item)),
-  devDependencies: Object.entries(devDependencies).map(item => transformVersionData(item))
-};
+// const pkgJson: PkgJson = {
+//   name,
+//   version,
+//   dependencies: Object.entries(dependencies).map(item => transformVersionData(item)),
+//   devDependencies: Object.entries(devDependencies).map(item => transformVersionData(item))
+// };
 
-const latestBuildTime = BUILD_TIME;
+// const latestBuildTime = BUILD_TIME;
 </script>
 
 <template>
-  <NSpace vertical :size="16">
+  <div>
+    <iframe
+      src="https://aitest.wisedu.com/chatbot/HbZzdoc1SDJhl3zP"
+      style="width: 100%; height: 100%; min-height: 700px"
+      frameborder="0"
+      allow="microphone"
+    ></iframe>
+  </div>
+  <!--
+ <NSpace vertical :size="16">
     <NCard :title="$t('page.about.title')" :bordered="false" size="small" segmented class="card-wrapper">
       <p>{{ $t('page.about.introduction') }}</p>
     </NCard>
@@ -79,7 +87,7 @@ const latestBuildTime = BUILD_TIME;
         </NDescriptionsItem>
       </NDescriptions>
     </NCard>
-  </NSpace>
-</template>
+  </NSpace> 
+--></template>
 
 <style scoped></style>
