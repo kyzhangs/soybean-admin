@@ -47,8 +47,8 @@ declare namespace Api {
     >;
 
     type Menu = Common.CommonRecord<{
-      /** parent menu id */
-      parentId: number;
+      /** parent menu id, null means the menu is top level */
+      parentId: string | null;
       /** menu type */
       type: MenuType;
       /** menu name */

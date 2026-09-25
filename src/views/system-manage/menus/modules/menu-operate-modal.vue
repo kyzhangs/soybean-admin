@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import type { SelectOption } from 'naive-ui';
 import { enableStatusOptions, menuIconTypeOptions, menuTypeOptions } from '@/constants/business';
-import { fetchGetMenuOptions } from '@/service/api';
+import { fetchAddMenu, fetchGetMenuOptions, fetchUpdateMenu } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { getLocalIcons } from '@/utils/icon';
 import { $t } from '@/locales';
@@ -12,7 +12,10 @@ import {
   getPathParamFromRoutePath,
   getRoutePathByRouteName,
   getRoutePathWithParam,
-  transformLayoutAndPageToComponent
+  transformLayoutAndPageToComponent,
+  transformPairsToQuery,
+  transformQueryToPairs,
+  type QueryPair
 } from './shared';
 
 defineOptions({
@@ -73,7 +76,7 @@ type Model = Pick<
   | 'multiTab'
   | 'fixedIndexInTab'
 > & {
-  query: NonNullable<Api.SystemManage.Menu['query']>;
+  query: QueryPair[];
   layout: string;
   page: string;
   pathParam: string;
@@ -94,7 +97,7 @@ function createDefaultModel(): Model {
     i18nKey: null,
     icon: '',
     iconType: '1',
-    parentId: 0,
+    parentId: null,
     status: '1',
     keepAlive: null,
     constant: null,
@@ -130,7 +133,7 @@ const localIconOptions = localIcons.map<SelectOption>(item => ({
   value: item
 }));
 
-const showLayout = computed(() => model.value.parentId === 0);
+const showLayout = computed(() => model.value.parentId === null);
 
 const showPage = computed(() => model.value.type === '2');
 
@@ -171,7 +174,13 @@ function handleInitModel() {
     const { layout, page } = getLayoutAndPage(component);
     const { path, param } = getPathParamFromRoutePath(rest.path);
 
-    Object.assign(model.value, rest, { layout, page, routePath: path, pathParam: param });
+    Object.assign(model.value, rest, {
+      layout,
+      page,
+      path,
+      query: transformQueryToPairs(rest.query),
+      pathParam: param
+    });
   }
 
   if (!model.value.query) {
@@ -200,15 +209,19 @@ function handleUpdateI18nKeyByRouteName() {
 }
 
 function getSubmitParams() {
-  const { layout, page, pathParam, ...params } = model.value;
+  const { layout, page, pathParam, query, constant, ...params } = model.value;
 
   const component = transformLayoutAndPageToComponent(layout, page);
-  const routePath = getRoutePathWithParam(model.value.path, pathParam);
+  const path = getRoutePathWithParam(model.value.path, pathParam);
 
-  params.component = component;
-  params.path = routePath;
-
-  return params;
+  return {
+    ...params,
+    component,
+    path,
+    query: transformPairsToQuery(query),
+    // the api column is not nullable, and the form has no unset option for it
+    constant: Boolean(constant)
+  };
 }
 
 async function handleSubmit() {
@@ -216,10 +229,15 @@ async function handleSubmit() {
 
   const params = getSubmitParams();
 
-  console.log('params: ', params);
+  const isEdit = props.operateType === 'edit';
 
-  // request
-  window.$message?.success($t('common.updateSuccess'));
+  const { error } = isEdit && props.rowData
+    ? await fetchUpdateMenu(props.rowData.id, params)
+    : await fetchAddMenu(params);
+
+  if (error) return;
+
+  window.$message?.success($t(isEdit ? 'common.updateSuccess' : 'common.addSuccess'));
   closeDrawer();
   emit('submitted');
 }

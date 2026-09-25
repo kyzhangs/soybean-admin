@@ -46,10 +46,19 @@ export function fetchUpdateMenuButtons(menuId: string, data: Api.SystemManage.Me
   });
 }
 
+/** create menu */
+export function fetchAddMenu(data: any) {
+  return request<Api.SystemManage.Menu>({
+    url: '/system-manage/menus',
+    method: 'POST',
+    data
+  });
+}
+
 /** update menu */
 export function fetchUpdateMenu(menuId: string, data: any) {
   return request<Api.SystemManage.Menu>({
-    url: `/system-manage/users/${menuId}`,
+    url: `/system-manage/menus/${menuId}`,
     method: 'PUT',
     data
   });

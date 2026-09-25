@@ -302,6 +302,7 @@ init();
         :operate-type="operateType"
         :row-data="editingData"
         :all-pages="allPages"
+        @submitted="getData"
       />
       <MenuButtonBindModal v-model:visible="buttonBindVisible" :row-data="buttonBindData" @submitted="getData" />
     </NCard>

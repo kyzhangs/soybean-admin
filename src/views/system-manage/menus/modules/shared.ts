@@ -77,3 +77,45 @@ export function getRoutePathWithParam(routePath: string, param: string) {
 
   return routePath;
 }
+
+/** the key-value pair of the menu route query, used by the form component */
+export interface QueryPair {
+  key: string;
+  value: string;
+}
+
+/**
+ * Transform the route query of the menu to key-value pairs
+ *
+ * The backend stores the route query as an object, but the form component(NDynamicInput) requires key-value pairs.
+ *
+ * @param query route query of the menu
+ */
+export function transformQueryToPairs(query: Api.SystemManage.Menu['query'] | Record<string, unknown> | null) {
+  if (!query) {
+    return [] as QueryPair[];
+  }
+
+  if (Array.isArray(query)) {
+    return query as QueryPair[];
+  }
+
+  return Object.entries(query).map<QueryPair>(([key, value]) => ({ key, value: String(value) }));
+}
+
+/**
+ * Transform key-value pairs to the route query of the menu
+ *
+ * @param pairs key-value pairs of the form
+ */
+export function transformPairsToQuery(pairs: QueryPair[] | null) {
+  const query: Record<string, string> = {};
+
+  (pairs || []).forEach(({ key, value }) => {
+    if (key) {
+      query[key] = value;
+    }
+  });
+
+  return Object.keys(query).length ? query : null;
+}
