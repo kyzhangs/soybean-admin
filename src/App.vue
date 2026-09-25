@@ -3,6 +3,8 @@ import { computed } from 'vue';
 import { NConfigProvider, darkTheme } from 'naive-ui';
 import type { WatermarkProps } from 'naive-ui';
 import { useAppStore } from './store/modules/app';
+import WisagentChatbot from './components/common/wisagent-chatbot.vue';
+import { useAuthStore } from './store/modules/auth';
 import { useThemeStore } from './store/modules/theme';
 import { naiveDateLocales, naiveLocales } from './locales/naive';
 
@@ -11,6 +13,7 @@ defineOptions({
 });
 
 const appStore = useAppStore();
+const authStore = useAuthStore();
 const themeStore = useThemeStore();
 
 const naiveDarkTheme = computed(() => (themeStore.darkMode ? darkTheme : undefined));
@@ -50,6 +53,7 @@ const watermarkProps = computed<WatermarkProps>(() => {
   >
     <AppProvider>
       <RouterView class="bg-layout" />
+      <WisagentChatbot v-if="authStore.isLogin" />
       <NWatermark v-if="themeStore.watermark.visible" v-bind="watermarkProps" />
     </AppProvider>
   </NConfigProvider>

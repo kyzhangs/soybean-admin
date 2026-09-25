@@ -149,6 +149,7 @@ declare module 'vue' {
     ThemeSchemaSwitch: typeof import('./../components/common/theme-schema-switch.vue')['default']
     WaveBg: typeof import('./../components/custom/wave-bg.vue')['default']
     WebSiteLink: typeof import('./../components/custom/web-site-link.vue')['default']
+    WisagentChatbot: typeof import('./../components/common/wisagent-chatbot.vue')['default']
   }
 }
 
@@ -291,4 +292,5 @@ declare global {
   const ThemeSchemaSwitch: typeof import('./../components/common/theme-schema-switch.vue')['default']
   const WaveBg: typeof import('./../components/custom/wave-bg.vue')['default']
   const WebSiteLink: typeof import('./../components/custom/web-site-link.vue')['default']
+  const WisagentChatbot: typeof import('./../components/common/wisagent-chatbot.vue')['default']
 }

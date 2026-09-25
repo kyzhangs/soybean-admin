@@ -206,7 +206,8 @@ declare namespace App {
           resetSuccessMsg: string;
         };
       };
-      route: Record<I18nRouteKey, string>;
+      /** Static routes plus route keys supplied by the dynamic backend menu. */
+      route: Record<I18nRouteKey, string> & Record<string, string>;
       page: {
         login: {
           common: {
