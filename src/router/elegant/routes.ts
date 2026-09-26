@@ -671,18 +671,6 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
-        name: 'system-manage_login-logs',
-        path: '/system-manage/login-logs',
-        component: 'view.system-manage_login-logs',
-        meta: {
-          title: 'system-manage_login-logs',
-          i18nKey: 'route.system-manage_login-logs',
-          icon: 'mdi:login-variant',
-          order: 6,
-          roles: ['R_ADMIN']
-        }
-      },
-      {
         name: 'system-manage_menus',
         path: '/system-manage/menus',
         component: 'view.system-manage_menus',
@@ -703,6 +691,18 @@ export const generatedRoutes: GeneratedRoute[] = [
           icon: 'carbon:user-role',
           order: 2,
           roles: ['R_SUPER']
+        }
+      },
+      {
+        name: 'system-manage_signins',
+        path: '/system-manage/signins',
+        component: 'view.system-manage_signins',
+        meta: {
+          title: 'system-manage_signins',
+          i18nKey: 'route.system-manage_signins',
+          icon: 'mdi:login-variant',
+          order: 6,
+          roles: ['R_ADMIN']
         }
       },
       {

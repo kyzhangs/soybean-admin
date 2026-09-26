@@ -18,7 +18,7 @@ export function fetchRevokeAuthSession(sessionId: string) {
 }
 
 export function fetchGetOwnLoginLogPage(params: Api.UserCenter.LoginLogSearchParams) {
-  return request<Api.UserCenter.LoginLogPage>({ url: '/uc/login-logs/page', params });
+  return request<Api.UserCenter.LoginLogPage>({ url: '/uc/signins/page', params });
 }
 
 export function fetchGetAuthIdentities() {

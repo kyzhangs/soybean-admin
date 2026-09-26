@@ -299,7 +299,7 @@ const local: App.I18n.Schema = {
     'system-manage': 'System Manage',
     'system-manage_users': 'Users Manage',
     'system-manage_user-detail': 'User Detail',
-    'system-manage_login-logs': 'Login Logs',
+    'system-manage_signins': 'Login Logs',
     'system-manage_roles': 'Roles Manage',
     'system-manage_menus': 'Menus Manage',
     authx: 'Authentication',

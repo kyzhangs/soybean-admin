@@ -295,7 +295,7 @@ const local: App.I18n.Schema = {
     'system-manage': '系统管理',
     'system-manage_users': '用户管理',
     'system-manage_user-detail': '用户详情',
-    'system-manage_login-logs': '登录日志',
+    'system-manage_signins': '登录日志',
     'system-manage_roles': '角色管理',
     'system-manage_menus': '菜单管理',
     authx: '认证配置',
