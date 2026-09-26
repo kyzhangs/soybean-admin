@@ -71,6 +71,14 @@ const deviceLabel = {
   unknown: 'page.system-manage.loginLogs.device.unknown'
 } as const;
 
+const stageLabel = {
+  password: 'page.system-manage.loginLogs.stage.password',
+  mfa: 'page.system-manage.loginLogs.stage.mfa',
+  passkey: 'page.system-manage.loginLogs.stage.passkey',
+  provider_callback: 'page.system-manage.loginLogs.stage.providerCallback',
+  ticket_exchange: 'page.system-manage.loginLogs.stage.ticketExchange'
+} as const;
+
 function compact(values: Array<string | null | undefined>) {
   return values.filter((value): value is string => Boolean(value)).join(' · ');
 }
@@ -83,6 +91,10 @@ function getProtocol(row: Api.SystemManage.LoginLog) {
   if (row.provider_name) return row.provider_name;
   if (!row.login_protocol) return $t('common.noData');
   return $t(protocolLabel[row.login_protocol]);
+}
+
+function getStage(row: Api.SystemManage.LoginLog) {
+  return $t(stageLabel[row.stage]);
 }
 
 const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination } = useNaivePaginatedTable({
@@ -117,6 +129,13 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       align: 'center',
       width: 130,
       render: row => getProtocol(row)
+    },
+    {
+      key: 'stage',
+      title: $t('page.system-manage.loginLogs.stage.title'),
+      align: 'center',
+      width: 140,
+      render: row => getStage(row)
     },
     {
       key: 'device',
