@@ -6,13 +6,11 @@ import { enableStatusRecord, userGenderRecord } from '@/constants/business';
 import { yesOrNoRecord } from "@/constants/common";
 import { fetchGetUserPageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
-import { useAuthStore } from '@/store/modules/auth';
 import { isTableColumnHasKey, useNaiveTable } from '@/hooks/common/table';
 import { $t } from '@/locales';
-import { formatDateTime } from '@/utils/datetime';
+import { formatUserDateTime } from '@/utils/datetime';
 
 const appStore = useAppStore();
-const authStore = useAuthStore();
 
 const searchParams: Api.SystemManage.UserSearchParams = reactive({
   page: 1,
@@ -114,12 +112,7 @@ const { columns, data, loading } = useNaiveTable({
               {{
                 default: () =>
                   $t('page.system-manage.users.active_time', {
-                    active_time: formatDateTime(
-                      row.active_time,
-                      authStore.userInfo.timezone,
-                      'datetime',
-                      appStore.locale
-                    )
+                    active_time: formatUserDateTime(row.active_time)
                   }),
                 trigger: () => tag
               }}
@@ -134,7 +127,7 @@ const { columns, data, loading } = useNaiveTable({
       title: $t('page.system-manage.users.last_login'),
       align: 'center',
       minWidth: 200,
-      render: row => formatDateTime(row.last_login, authStore.userInfo.timezone, 'datetime', appStore.locale)
+      render: row => formatUserDateTime(row.last_login)
     },
     {
       key: 'status',

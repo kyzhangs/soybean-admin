@@ -1,23 +1,21 @@
 <script setup lang="tsx">
 import { computed, ref } from 'vue';
 import { NTag, NTooltip } from 'naive-ui';
-import { fetchGetLoginLogPage } from '@/service/api';
+import { fetchGetRecordsPage } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
-import { useAuthStore } from '@/store/modules/auth';
 import { defaultTransform, useNaivePaginatedTable } from '@/hooks/common/table';
 import { $t } from '@/locales';
 import { getTableIndex } from '@/utils/common.js';
-import { formatDateTime } from '@/utils/datetime';
+import { formatUserDateTime } from '@/utils/datetime';
 
 defineOptions({
-  name: 'SystemManageLoginLogs'
+  name: 'AuthxRecords'
 });
 
 const appStore = useAppStore();
-const authStore = useAuthStore();
 const dateRange = ref<[number, number] | null>(null);
 
-const searchParams = ref<Api.SystemManage.LoginLogSearchParams>({
+const searchParams = ref<Api.Authx.LoginRecordSearchParams>({
   page: 1,
   page_size: 10,
   keyword: null,
@@ -29,7 +27,7 @@ const searchParams = ref<Api.SystemManage.LoginLogSearchParams>({
   end_time: null
 });
 
-const resultOptions = computed<CommonType.Option<Api.SystemManage.LoginResult>[]>(() => [
+const resultOptions = computed<CommonType.Option<Api.Authx.LoginRecordResult>[]>(() => [
   { label: $t('page.system-manage.loginLogs.result.success'), value: 'success' },
   { label: $t('page.system-manage.loginLogs.result.failure'), value: 'failure' }
 ]);
@@ -83,22 +81,22 @@ function compact(values: Array<string | null | undefined>) {
   return values.filter((value): value is string => Boolean(value)).join(' · ');
 }
 
-function getLocation(row: Api.SystemManage.LoginLog) {
+function getLocation(row: Api.Authx.LoginRecord) {
   return compact([row.country, row.region, row.city]) || $t('common.noData');
 }
 
-function getProtocol(row: Api.SystemManage.LoginLog) {
+function getProtocol(row: Api.Authx.LoginRecord) {
   if (row.provider_name) return row.provider_name;
   if (!row.login_protocol) return $t('common.noData');
   return $t(protocolLabel[row.login_protocol]);
 }
 
-function getStage(row: Api.SystemManage.LoginLog) {
+function getStage(row: Api.Authx.LoginRecord) {
   return $t(stageLabel[row.stage]);
 }
 
 const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination } = useNaivePaginatedTable({
-  api: () => fetchGetLoginLogPage(searchParams.value),
+  api: () => fetchGetRecordsPage(searchParams.value),
   transform: response => defaultTransform(response),
   onPaginationParamsChange: params => {
     searchParams.value.page = params.page ?? 1;
@@ -194,7 +192,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       title: $t('page.system-manage.loginLogs.loginTime'),
       align: 'center',
       width: 190,
-      render: row => formatDateTime(row.create_time, authStore.userInfo.timezone, 'datetime', appStore.locale)
+      render: row => formatUserDateTime(row.create_time)
     },
     {
       key: 'logout_time',
@@ -203,7 +201,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       width: 190,
       render: row =>
         row.logout_time
-          ? formatDateTime(row.logout_time, authStore.userInfo.timezone, 'datetime', appStore.locale)
+          ? formatUserDateTime(row.logout_time)
           : $t('common.noData')
     }
   ]

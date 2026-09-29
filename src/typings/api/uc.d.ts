@@ -141,7 +141,7 @@ declare namespace Api {
       page_size: number;
     }
 
-    type LoginLog = Api.SystemManage.LoginLog;
+    type LoginLog = Api.Authx.LoginRecord;
     type LoginLogPage = Api.Common.PaginatingQueryRecord<LoginLog>;
   }
 }

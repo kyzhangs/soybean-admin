@@ -30,7 +30,7 @@ const { columns, columnChecks, data, loading, getData, scrollX } = useNaiveTable
       key: 'type',
       title: $t('page.system-manage.menus.menuType'),
       align: 'center',
-      width: 60,
+      width: 80,
       render: row => {
         const tagMap: Record<Api.SystemManage.MenuType, NaiveUI.ThemeColor> = {
           1: 'primary',

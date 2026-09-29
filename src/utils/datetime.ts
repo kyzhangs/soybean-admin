@@ -1,3 +1,6 @@
+import { useAppStore } from '@/store/modules/app';
+import { useAuthStore } from '@/store/modules/auth';
+
 export type DateTimeDisplay = 'date' | 'time' | 'datetime';
 
 const EMPTY_VALUE = '-';
@@ -70,4 +73,15 @@ export function formatDateTime(
   } catch {
     return EMPTY_VALUE;
   }
+}
+
+/** Format an instant using the signed-in user's timezone and current locale. */
+export function formatUserDateTime(
+  value: string | Date | null | undefined,
+  display: DateTimeDisplay = 'datetime'
+): string {
+  const authStore = useAuthStore();
+  const appStore = useAppStore();
+
+  return formatDateTime(value, authStore.userInfo.timezone, display, appStore.locale);
 }

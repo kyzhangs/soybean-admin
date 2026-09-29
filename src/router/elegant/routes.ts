@@ -51,6 +51,26 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
+    name: 'ai',
+    path: '/ai',
+    component: 'layout.base',
+    meta: {
+      title: 'ai',
+      i18nKey: 'route.ai'
+    },
+    children: [
+      {
+        name: 'ai_model',
+        path: '/ai/model',
+        component: 'view.ai_model',
+        meta: {
+          title: 'ai_model',
+          i18nKey: 'route.ai_model'
+        }
+      }
+    ]
+  },
+  {
     name: 'alova',
     path: '/alova',
     component: 'layout.base',
@@ -87,11 +107,31 @@ export const generatedRoutes: GeneratedRoute[] = [
   {
     name: 'authx',
     path: '/authx',
-    component: 'layout.base$view.authx',
+    component: 'layout.base',
     meta: {
       title: 'authx',
       i18nKey: 'route.authx'
-    }
+    },
+    children: [
+      {
+        name: 'authx_configs',
+        path: '/authx/configs',
+        component: 'view.authx_configs',
+        meta: {
+          title: 'authx_configs',
+          i18nKey: 'route.authx_configs'
+        }
+      },
+      {
+        name: 'authx_records',
+        path: '/authx/records',
+        component: 'view.authx_records',
+        meta: {
+          title: 'authx_records',
+          i18nKey: 'route.authx_records'
+        }
+      }
+    ]
   },
   {
     name: 'function',
@@ -691,18 +731,6 @@ export const generatedRoutes: GeneratedRoute[] = [
           icon: 'carbon:user-role',
           order: 2,
           roles: ['R_SUPER']
-        }
-      },
-      {
-        name: 'system-manage_signins',
-        path: '/system-manage/signins',
-        component: 'view.system-manage_signins',
-        meta: {
-          title: 'system-manage_signins',
-          i18nKey: 'route.system-manage_signins',
-          icon: 'mdi:login-variant',
-          order: 6,
-          roles: ['R_ADMIN']
         }
       },
       {

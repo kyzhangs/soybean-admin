@@ -37,10 +37,14 @@ declare module "@elegant-router/types" {
     "404": "/404";
     "500": "/500";
     "about": "/about";
+    "ai": "/ai";
+    "ai_model": "/ai/model";
     "alova": "/alova";
     "alova_request": "/alova/request";
     "alova_scenes": "/alova/scenes";
     "authx": "/authx";
+    "authx_configs": "/authx/configs";
+    "authx_records": "/authx/records";
     "function": "/function";
     "function_hide-child": "/function/hide-child";
     "function_hide-child_one": "/function/hide-child/one";
@@ -97,7 +101,6 @@ declare module "@elegant-router/types" {
     "system-manage_buttons": "/system-manage/buttons";
     "system-manage_menus": "/system-manage/menus";
     "system-manage_roles": "/system-manage/roles";
-    "system-manage_signins": "/system-manage/signins";
     "system-manage_user-detail": "/system-manage/user-detail/:id";
     "system-manage_users": "/system-manage/users";
     "user-center": "/user-center";
@@ -152,6 +155,7 @@ declare module "@elegant-router/types" {
     | "404"
     | "500"
     | "about"
+    | "ai"
     | "alova"
     | "authx"
     | "function"
@@ -187,9 +191,11 @@ declare module "@elegant-router/types" {
     | "iframe-page"
     | "login"
     | "about"
+    | "ai_model"
     | "alova_request"
     | "alova_scenes"
-    | "authx"
+    | "authx_configs"
+    | "authx_records"
     | "function_hide-child_one"
     | "function_hide-child_three"
     | "function_hide-child_two"
@@ -229,7 +235,6 @@ declare module "@elegant-router/types" {
     | "system-manage_buttons"
     | "system-manage_menus"
     | "system-manage_roles"
-    | "system-manage_signins"
     | "system-manage_user-detail"
     | "system-manage_users"
     | "user-center"

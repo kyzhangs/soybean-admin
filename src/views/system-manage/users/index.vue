@@ -5,17 +5,15 @@ import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
 import { fetchGetUserPageList, fetchGetRoleList, fetchDeleteUser, fetchBatchUser } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
-import { useAuthStore } from '@/store/modules/auth';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
 import { getTableIndex } from '@/utils/common.js';
-import { formatDateTime } from '@/utils/datetime';
+import { formatUserDateTime } from '@/utils/datetime';
 import UserOperateModal from './modules/user-operate-modal.vue';
 import UserPasswordResetModal from './modules/user-password-reset-modal.vue';
 import UserSearch from './modules/user-search.vue';
 
 const appStore = useAppStore();
-const authStore = useAuthStore();
 
 const searchParams = ref<Api.SystemManage.UserSearchParams>({
   page: 1,
@@ -121,12 +119,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
               {{
                 default: () =>
                   $t('page.system-manage.users.active_time', {
-                    active_time: formatDateTime(
-                      row.active_time,
-                      authStore.userInfo.timezone,
-                      'datetime',
-                      appStore.locale
-                    )
+                    active_time: formatUserDateTime(row.active_time)
                   }),
                 trigger: () => tag
               }}
@@ -141,7 +134,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       title: $t('page.system-manage.users.last_login'),
       align: 'center',
       width: 200,
-      render: row => formatDateTime(row.last_login, authStore.userInfo.timezone, 'datetime', appStore.locale)
+      render: row => formatUserDateTime(row.last_login)
     },
     {
       key: 'status',
