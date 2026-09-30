@@ -27,6 +27,7 @@ const searchParams = ref<Api.AI.ModelChannelSearchParams>({
   page: 1,
   page_size: 10,
   keyword: null,
+  code: null,
   status: null
 });
 const statusOptions = [
@@ -50,7 +51,7 @@ const { columns, data, getData, getDataByPage, loading, mobilePagination } = use
       render: (_, index) => getTableIndex(index, searchParams.value)
     },
     {
-      key: 'channel_code',
+      key: 'code',
       title: '渠道',
       align: 'center',
       width: 64,

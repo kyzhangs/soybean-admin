@@ -258,6 +258,7 @@ const local: App.I18n.Schema = {
     500: 'Server Error',
     'iframe-page': 'Iframe',
     ai: 'AI',
+    ai_agent: 'Agents',
     'ai_external-agent': 'External Agents',
     ai_model: 'Models',
     'ai_external-agent_chatbot': 'Chatbot',

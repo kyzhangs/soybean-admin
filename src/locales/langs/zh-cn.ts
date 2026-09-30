@@ -254,6 +254,7 @@ const local: App.I18n.Schema = {
     500: '服务器错误',
     'iframe-page': '外链页面',
     ai: 'AI',
+    ai_agent: '智能体',
     'ai_external-agent': '外部智能体',
     ai_model: '模型管理',
     'ai_external-agent_chatbot': 'Chatbot',

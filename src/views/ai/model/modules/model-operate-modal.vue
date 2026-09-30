@@ -48,7 +48,7 @@ const inputModalityOptions = [
 function createDefaultForm(): Api.AI.ModelCreateParams {
   return {
     channel_id: '',
-    model_name: '',
+    name: '',
     display_name: null,
     context_window: 128000,
     max_tokens: 8192,
@@ -112,7 +112,7 @@ async function initForm() {
   if (isEdit.value && props.rowData) {
     Object.assign(form, {
       channel_id: props.rowData.channel_id,
-      model_name: props.rowData.model_name,
+      name: props.rowData.name,
       display_name: props.rowData.display_name,
       context_window: props.rowData.context_window,
       max_tokens: props.rowData.max_tokens,
@@ -133,7 +133,7 @@ function close() {
 
 async function submit() {
   if (!formRef.value) return;
-  if (!form.channel_id || !form.model_name.trim()) {
+  if (!form.channel_id || !form.name.trim()) {
     window.$message?.warning('请选择渠道并填写模型 ID');
     return;
   }
@@ -142,7 +142,7 @@ async function submit() {
   try {
     const payload: Api.AI.ModelCreateParams = {
       ...form,
-      model_name: form.model_name.trim(),
+      name: form.name.trim(),
       display_name: form.display_name?.trim() || null
     };
     const { error } =
@@ -186,11 +186,11 @@ watch(
             placeholder="请选择已配置的渠道"
           />
         </NFormItemGi>
-        <NFormItemGi span="12" label="模型 ID" path="model_name">
+        <NFormItemGi span="12" label="模型 ID" path="name">
           <div class="w-full flex gap-8px">
             <NAutoComplete
               ref="modelNameInput"
-              v-model:value="form.model_name"
+              v-model:value="form.name"
               :options="discoveredModelOptions"
               :get-show="shouldShowModelOptions"
               class="min-w-0 flex-1"

@@ -4,7 +4,7 @@ export function fetchModelPage(params: {
   page: number;
   page_size: number;
   channel_id?: string | null;
-  channel_code?: string | null;
+  code?: string | null;
   type?: Api.AI.ProtocolType | null;
   keyword?: string | null;
 }) {

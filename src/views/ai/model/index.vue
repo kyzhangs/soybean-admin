@@ -28,6 +28,7 @@ const searchParams = ref<Api.AI.ModelSearchParams>({
   page: 1,
   page_size: 10,
   channel_id: null,
+  code: null,
   type: null,
   keyword: null
 });
@@ -94,15 +95,15 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       }
     },
     {
-      key: 'model_name',
+      key: 'name',
       title: '模型名称',
       align: 'center',
       width: 180,
       render: row => (
         <NTooltip placement="top">
           {{
-            trigger: () => <span class="block truncate">{row.display_name || row.model_name}</span>,
-            default: () => row.model_name
+            trigger: () => <span class="block truncate">{row.display_name || row.name}</span>,
+            default: () => row.name
           }}
         </NTooltip>
       )

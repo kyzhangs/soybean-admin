@@ -44,6 +44,8 @@ const apiPattern = ref('');
 const menuTree = ref<TreeOption[]>([]);
 const buttonTree = ref<TreeOption[]>([]);
 const apiTree = ref<TreeOption[]>([]);
+const buttonExpandedKeys = ref<string[]>([]);
+const apiExpandedKeys = ref<string[]>([]);
 
 const model = ref<Api.SystemManage.RolePermissions>(createDefaultModel());
 
@@ -86,6 +88,21 @@ function collectTreeKeys(options: TreeOption[], leafOnly = false): string[] {
 
     return keys;
   }, []);
+}
+
+function collectExpandedKeys(options: TreeOption[]): string[] {
+  return options.reduce<string[]>((keys, option) => {
+    const children = option.children ?? [];
+    if (!children.length) return keys;
+
+    keys.push(String(option.key));
+    keys.push(...collectExpandedKeys(children));
+    return keys;
+  }, []);
+}
+
+function collectTopLevelExpandedKeys(options: TreeOption[]): string[] {
+  return options.filter(option => option.children?.length).map(option => String(option.key));
 }
 
 const permissionKeySets = computed<Record<keyof Api.SystemManage.RolePermissions, Set<string>>>(() => ({
@@ -132,9 +149,11 @@ async function handleLoadData() {
   }
   if (!buttonRes.error) {
     buttonTree.value = normalizeTree(buttonRes.data);
+    buttonExpandedKeys.value = collectExpandedKeys(buttonTree.value);
   }
   if (!apiRes.error) {
     apiTree.value = normalizeTree(apiRes.data);
+    apiExpandedKeys.value = collectTopLevelExpandedKeys(apiTree.value);
   }
 
   loading.value = false;
@@ -171,6 +190,8 @@ watch(visible, () => {
     menuPattern.value = '';
     buttonPattern.value = '';
     apiPattern.value = '';
+    buttonExpandedKeys.value = [];
+    apiExpandedKeys.value = [];
     model.value = createDefaultModel();
     handleLoadData();
   }
@@ -231,6 +252,7 @@ watch(visible, () => {
           <NScrollbar class="h-430px rounded-4px border border-#e5e7eb p-12px dark:border-#333">
             <NTree
               v-model:checked-keys="model.buttons"
+              v-model:expanded-keys="buttonExpandedKeys"
               checkable
               cascade
               check-strategy="child"
@@ -262,6 +284,7 @@ watch(visible, () => {
           <NScrollbar class="h-430px rounded-4px border border-#e5e7eb p-12px dark:border-#333">
             <NTree
               v-model:checked-keys="model.apis"
+              v-model:expanded-keys="apiExpandedKeys"
               checkable
               cascade
               check-strategy="child"

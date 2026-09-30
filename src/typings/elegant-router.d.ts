@@ -38,6 +38,7 @@ declare module "@elegant-router/types" {
     "500": "/500";
     "about": "/about";
     "ai": "/ai";
+    "ai_agent": "/ai/agent";
     "ai_model": "/ai/model";
     "alova": "/alova";
     "alova_request": "/alova/request";
@@ -191,6 +192,7 @@ declare module "@elegant-router/types" {
     | "iframe-page"
     | "login"
     | "about"
+    | "ai_agent"
     | "ai_model"
     | "alova_request"
     | "alova_scenes"

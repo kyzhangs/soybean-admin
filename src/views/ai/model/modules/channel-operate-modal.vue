@@ -27,9 +27,9 @@ const initializing = ref(false);
 const isEdit = computed(() => props.operateType === 'edit');
 const title = computed(() => (isEdit.value ? '编辑渠道' : '添加渠道'));
 const form = reactive<Api.AI.ModelChannelCreateParams>(createDefaultForm());
-const selectedChannel = computed(() => props.catalog.channels.find(item => item.channel_code === form.channel_code));
+const selectedChannel = computed(() => props.catalog.channels.find(item => item.code === form.code));
 const channelOptions = computed(() =>
-  props.catalog.channels.map(item => ({ label: item.name, value: item.channel_code, icon: item.icon }))
+  props.catalog.channels.map(item => ({ label: item.name, value: item.code, icon: item.icon }))
 );
 const protocolTypeOptions = computed(() =>
   (selectedChannel.value?.protocols || []).map(item => ({ label: item.type, value: item.type }))
@@ -46,7 +46,7 @@ const rules = {
 function createDefaultForm(): Api.AI.ModelChannelCreateParams {
   return {
     name: '',
-    channel_code: '',
+    code: '',
     type: 'openai-completions',
     base_url: '',
     api_key: ''
@@ -83,13 +83,13 @@ async function initForm() {
   if (isEdit.value && props.rowData) {
     Object.assign(form, {
       name: props.rowData.name,
-      channel_code: props.rowData.channel_code,
+      code: props.rowData.code,
       type: props.rowData.type,
       base_url: props.rowData.base_url,
       api_key: ''
     });
   } else {
-    form.channel_code = props.catalog.channels[0]?.channel_code || '';
+    form.code = props.catalog.channels[0]?.code || '';
     syncChannelDefaults();
   }
   await nextTick();
@@ -140,7 +140,7 @@ watch(
   }
 );
 watch(
-  () => form.channel_code,
+  () => form.code,
   () => {
     if (!initializing.value) syncChannelDefaults(true);
   }
@@ -157,8 +157,8 @@ watch(
   <NModal v-model:show="visible" preset="card" :title="title" :mask-closable="false" class="min-w-650px w-720px">
     <NForm ref="formRef" :model="form" :rules="rules" label-placement="top" class="pt-5px">
       <NGrid responsive="screen" item-responsive>
-        <NFormItemGi span="12" label="渠道" path="channel_code" class="pr-24px">
-          <NSelect v-model:value="form.channel_code" :options="channelOptions" :render-label="renderChannel" />
+        <NFormItemGi span="12" label="渠道" path="code" class="pr-24px">
+          <NSelect v-model:value="form.code" :options="channelOptions" :render-label="renderChannel" />
         </NFormItemGi>
         <NFormItemGi span="12" label="协议类型" path="type">
           <NSelect v-model:value="form.type" :options="protocolTypeOptions" :disabled="!selectedChannel" />

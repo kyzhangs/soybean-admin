@@ -5,7 +5,7 @@ declare namespace Api {
 
     type ModelChannel = Common.CommonRecord<{
       name: string;
-      channel_code: string;
+      code: string;
       channel_name: string;
       icon: string;
       type: ProtocolType;
@@ -16,11 +16,11 @@ declare namespace Api {
 
     type Model = Common.CommonRecord<{
       channel_id: string;
-      channel_code: string;
+      code: string;
       channel_name: string;
       type: ProtocolType;
       base_url: string;
-      model_name: string;
+      name: string;
       display_name: string | null;
       context_window: number;
       max_tokens: number;
@@ -43,7 +43,7 @@ declare namespace Api {
     };
 
     type Channel = {
-      channel_code: string;
+      code: string;
       name: string;
       icon: string;
       protocols: ChannelProtocol[];
@@ -62,18 +62,20 @@ declare namespace Api {
       page: number;
       page_size: number;
       keyword: string | null;
+      code: string | null;
       status: Common.Status | null;
     };
     type ModelSearchParams = {
       page: number;
       page_size: number;
       channel_id: string | null;
+      code: string | null;
       type: ProtocolType | null;
       keyword: string | null;
     };
     type ModelChannelCreateParams = {
       name: string;
-      channel_code: string;
+      code: string;
       type: ProtocolType;
       base_url: string | null;
       api_key?: string | null;
@@ -81,7 +83,7 @@ declare namespace Api {
     type ModelChannelUpdateParams = Partial<ModelChannelCreateParams>;
     type ModelCreateParams = {
       channel_id: string;
-      model_name: string;
+      name: string;
       display_name: string | null;
       context_window: number;
       max_tokens: number;
@@ -92,7 +94,12 @@ declare namespace Api {
     type ModelTestResult = {
       ok: boolean;
       message: string;
-      model_name: string;
+      name: string | null;
+    };
+
+    type AgentStreamEvent = {
+      event: string;
+      data: Record<string, unknown>;
     };
   }
 }
