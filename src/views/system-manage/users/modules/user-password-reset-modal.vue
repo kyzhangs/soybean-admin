@@ -3,6 +3,7 @@ import { computed, reactive, ref, watch } from 'vue';
 import { fetchBatchUser, fetchResetUserPassword } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
+import { useAuthStore } from '@/store/modules/auth';
 
 defineOptions({
   name: 'UserPasswordResetModal'
@@ -34,6 +35,7 @@ const visible = defineModel<boolean>('visible', {
 });
 
 const loading = ref(false);
+const authStore = useAuthStore();
 const { formRef, validate, restoreValidation } = useNaiveForm();
 
 const model = reactive({
@@ -89,6 +91,13 @@ async function handleSubmit() {
     if (!error) {
       closeModal();
       emit('submitted');
+
+      const currentUserId = authStore.userInfo.userId;
+      const resetsCurrentUser =
+        currentUserId && (props.mode === 'single' ? props.userId === currentUserId : props.ids.includes(currentUserId));
+      if (resetsCurrentUser) {
+        await authStore.resetStore();
+      }
     }
   } finally {
     loading.value = false;

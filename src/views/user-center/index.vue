@@ -167,12 +167,6 @@ function loginLogLocation(loginLog: Api.UserCenter.LoginLog) {
   );
 }
 
-function loginLogDevice(loginLog: Api.UserCenter.LoginLog) {
-  return [loginLog.browser, loginLog.os, $t(`page.user-center.sessions.device.${loginLog.device}`)]
-    .filter(Boolean)
-    .join(' · ');
-}
-
 function loginLogProtocol(loginLog: Api.UserCenter.LoginLog) {
   if (loginLog.provider_name) return loginLog.provider_name;
   if (!loginLog.login_protocol) return $t('common.noData');
@@ -598,26 +592,28 @@ onMounted(async () => {
                     <tr v-for="loginLog in loginLogs" :key="loginLog.id">
                       <td>{{ loginLogProtocol(loginLog) }}</td>
                       <td>
-                        <div class="flex items-center gap-8px">
-                          <SvgIcon :icon="deviceIconRecord[loginLog.device]" class="shrink-0 text-20px text-primary" />
-                          <span>{{ loginLogDevice(loginLog) }}</span>
+                        <div class="flex w-full items-center justify-center gap-8px">
+                          <SvgIcon :icon="deviceIconRecord[loginLog.device]" class="text-20px text-primary" />
                         </div>
                       </td>
                       <td>
                         <div>{{ loginLog.ip_address || $t('common.noData') }}</div>
                         <div class="mt-2px text-12px text-#6b7280">{{ loginLogLocation(loginLog) }}</div>
-                        <div v-if="loginLog.failure_code !== null" class="mt-2px text-12px text-error">
-                          {{ $t('page.user-center.loginLogs.failureCode') }}：{{ loginLog.failure_code }}
-                        </div>
                       </td>
                       <td>
-                        <NTag :type="loginLog.result === 'success' ? 'success' : 'error'" size="small" round>
-                          {{
-                            loginLog.result === 'success'
-                              ? $t('page.user-center.loginLogs.result.success')
-                              : $t('page.user-center.loginLogs.result.failure')
-                          }}
+                        <NTag v-if="loginLog.result === 'success'" type="success" size="small" round>
+                          {{ $t('page.user-center.loginLogs.result.success') }}
                         </NTag>
+                        <NTooltip v-else>
+                          <template #trigger>
+                            <NTag type="error" size="small" round>
+                              {{ $t('page.user-center.loginLogs.result.failure') }}
+                            </NTag>
+                          </template>
+                          {{
+                            `${loginLog.failure_code ?? '-'}:${loginLog.failure_reason || $t('page.system-manage.loginLogs.failureReasonUnavailable')}`
+                          }}
+                        </NTooltip>
                       </td>
                       <td>
                         {{ formatDateTime(loginLog.create_time, selectedTimezone, 'datetime', appStore.locale) }}
@@ -626,7 +622,7 @@ onMounted(async () => {
                         {{
                           loginLog.logout_time
                             ? formatDateTime(loginLog.logout_time, selectedTimezone, 'datetime', appStore.locale)
-                            : $t('common.noData')
+                            : '-'
                         }}
                       </td>
                     </tr>

@@ -3,6 +3,7 @@ import { computed, reactive, ref, watch } from 'vue';
 import { fetchChangePassword } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
+import { useAuthStore } from '@/store/modules/auth';
 
 defineOptions({
   name: 'PasswordChangeModal'
@@ -13,6 +14,7 @@ const visible = defineModel<boolean>('visible', {
 });
 
 const loading = ref(false);
+const authStore = useAuthStore();
 const { formRef, validate, restoreValidation } = useNaiveForm();
 const model = reactive({
   oldPassword: '',
@@ -49,6 +51,7 @@ async function handleSubmit() {
     if (!error) {
       window.$message?.success($t('common.modifySuccess'));
       closeModal();
+      await authStore.resetStore();
     }
   } finally {
     loading.value = false;

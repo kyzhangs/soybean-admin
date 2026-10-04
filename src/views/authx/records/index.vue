@@ -1,6 +1,7 @@
 <script setup lang="tsx">
 import { computed, ref } from 'vue';
 import { NTag, NTooltip } from 'naive-ui';
+import SvgIcon from '@/components/custom/svg-icon.vue';
 import { fetchGetRecordsPage } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable } from '@/hooks/common/table';
@@ -61,13 +62,13 @@ const protocolLabel = {
   webauthn: 'page.system-manage.loginLogs.protocol.webauthn'
 } as const;
 
-const deviceLabel = {
-  pc: 'page.system-manage.loginLogs.device.pc',
-  mobile: 'page.system-manage.loginLogs.device.mobile',
-  tablet: 'page.system-manage.loginLogs.device.tablet',
-  bot: 'page.system-manage.loginLogs.device.bot',
-  unknown: 'page.system-manage.loginLogs.device.unknown'
-} as const;
+const deviceIconRecord: Record<Api.UserCenter.DeviceType, string> = {
+  pc: 'mdi:monitor',
+  mobile: 'mdi:cellphone',
+  tablet: 'mdi:tablet',
+  bot: 'mdi:robot-outline',
+  unknown: 'mdi:devices'
+};
 
 const stageLabel = {
   password: 'page.system-manage.loginLogs.stage.password',
@@ -114,35 +115,38 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'username',
       title: $t('page.system-manage.loginLogs.account'),
       width: 100,
-      render: row => (
-        <div>
-          <div>{row.name || $t('common.noData')}</div>
-          <div class="text-12px text-gray-500">{row.username || $t('common.noData')}</div>
-        </div>
-      )
+      align: 'center',
+      render: row =>
+        row.name ? (
+          <NTooltip>
+            {{ trigger: () => <span>{row.username || $t('common.noData')}</span>, default: () => row.name }}
+          </NTooltip>
+        ) : (
+          row.username
+        )
     },
     {
       key: 'login_protocol',
       title: $t('page.system-manage.loginLogs.loginMethod'),
       align: 'center',
-      width: 130,
+      width: 80,
       render: row => getProtocol(row)
     },
     {
       key: 'stage',
       title: $t('page.system-manage.loginLogs.stage.title'),
       align: 'center',
-      width: 140,
+      width: 80,
       render: row => getStage(row)
     },
     {
       key: 'device',
       title: $t('page.system-manage.loginLogs.device.title'),
-      width: 120,
+      width: 64,
+      align: 'center',
       render: row => (
-        <div>
-          <div>{compact([row.browser, row.os]) || $t('common.noData')}</div>
-          <div class="text-12px text-gray-500">{$t(deviceLabel[row.device])}</div>
+        <div class="flex w-full justify-center">
+          <SvgIcon icon={deviceIconRecord[row.device]} class="text-20px text-primary" />
         </div>
       )
     },
@@ -150,13 +154,14 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'ip_address',
       title: $t('page.system-manage.loginLogs.ipAddress'),
       align: 'center',
-      width: 150,
+      width: 100,
       render: row => row.ip_address || $t('common.noData')
     },
     {
       key: 'location',
       title: $t('page.system-manage.loginLogs.location'),
       width: 80,
+      align: 'center',
       ellipsis: { tooltip: true },
       render: row => getLocation(row)
     },
@@ -165,44 +170,27 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       title: $t('page.system-manage.loginLogs.result.title'),
       align: 'center',
       width: 90,
-      render: row => <NTag type={row.result === 'success' ? 'success' : 'error'}>{$t(resultLabel[row.result])}</NTag>
-    },
-    {
-      key: 'failure_code',
-      title: $t('page.system-manage.loginLogs.failureCode'),
-      align: 'center',
-      width: 110,
       render: row => {
-        if (row.failure_code === null) return '-';
-        const content = `${row.failure_code}`;
-        return row.request_id ? (
-          <NTooltip>
-            {{
-              trigger: () => <span>{content}</span>,
-              default: () => `${$t('page.system-manage.loginLogs.requestId')}: ${row.request_id}`
-            }}
-          </NTooltip>
-        ) : (
-          content
-        );
+        const tag = <NTag type={row.result === 'success' ? 'success' : 'error'}>{$t(resultLabel[row.result])}</NTag>;
+        if (row.result === 'success') return tag;
+        const reason = row.failure_reason || $t('page.system-manage.loginLogs.failureReasonUnavailable');
+        const failureCode = row.failure_code ?? '-';
+        return <NTooltip>{{ trigger: () => tag, default: () => `${failureCode}: ${reason}` }}</NTooltip>;
       }
     },
     {
       key: 'create_time',
       title: $t('page.system-manage.loginLogs.loginTime'),
       align: 'center',
-      width: 190,
+      width: 120,
       render: row => formatUserDateTime(row.create_time)
     },
     {
       key: 'logout_time',
       title: $t('page.system-manage.loginLogs.logoutTime'),
       align: 'center',
-      width: 190,
-      render: row =>
-        row.logout_time
-          ? formatUserDateTime(row.logout_time)
-          : $t('common.noData')
+      width: 120,
+      render: row => (row.logout_time ? formatUserDateTime(row.logout_time) : '-')
     }
   ]
 });
@@ -259,7 +247,12 @@ function reset() {
                     path="result"
                     class="pr-24px"
                   >
-                    <NSelect v-model:value="searchParams.result" clearable :options="resultOptions" />
+                    <NSelect
+                      v-model:value="searchParams.result"
+                      clearable
+                      :options="resultOptions"
+                      @update:value="search"
+                    />
                   </NFormItemGi>
                   <NFormItemGi
                     span="24 s:12 m:8 l:8 xl:5"
@@ -267,7 +260,12 @@ function reset() {
                     path="login_protocol"
                     class="pr-24px"
                   >
-                    <NSelect v-model:value="searchParams.login_protocol" clearable :options="protocolOptions" />
+                    <NSelect
+                      v-model:value="searchParams.login_protocol"
+                      clearable
+                      :options="protocolOptions"
+                      @update:value="search"
+                    />
                   </NFormItemGi>
                   <NFormItemGi
                     span="24 s:12 m:8 l:8 xl:5"
@@ -275,7 +273,12 @@ function reset() {
                     path="device"
                     class="pr-24px"
                   >
-                    <NSelect v-model:value="searchParams.device" clearable :options="deviceOptions" />
+                    <NSelect
+                      v-model:value="searchParams.device"
+                      clearable
+                      :options="deviceOptions"
+                      @update:value="search"
+                    />
                   </NFormItemGi>
                   <NFormItemGi
                     span="24 s:12 m:8 l:8 xl:5"

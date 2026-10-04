@@ -840,6 +840,7 @@ declare namespace App {
             ipAddress: string;
             location: string;
             failureCode: string;
+            failureReasonUnavailable: string;
             requestId: string;
             loginTime: string;
             logoutTime: string;

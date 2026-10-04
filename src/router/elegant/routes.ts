@@ -249,7 +249,7 @@ export const generatedRoutes: GeneratedRoute[] = [
           i18nKey: 'route.function_super-page',
           icon: 'ic:round-supervisor-account',
           order: 3050,
-          roles: [ 'R_SUPER' ]
+          roles: ['R_SUPER']
         }
       },
       {
@@ -746,7 +746,7 @@ export const generatedRoutes: GeneratedRoute[] = [
       i18nKey: 'route.system-manage',
       icon: 'carbon:cloud-service-management',
       order: 20,
-      roles: [ 'R_ADMIN' ]
+      roles: ['R_ADMIN']
     },
     children: [
       {
@@ -792,7 +792,7 @@ export const generatedRoutes: GeneratedRoute[] = [
           i18nKey: 'route.system-manage_roles',
           icon: 'carbon:user-role',
           order: 2020,
-          roles: [ 'R_SUPER' ]
+          roles: ['R_SUPER']
         }
       },
       {
@@ -806,7 +806,7 @@ export const generatedRoutes: GeneratedRoute[] = [
           icon: 'icon-park-solid:address-book',
           hideInMenu: true,
           activeMenu: 'system-manage_users',
-          roles: [ 'R_ADMIN' ]
+          roles: ['R_ADMIN']
         }
       },
       {
@@ -818,7 +818,7 @@ export const generatedRoutes: GeneratedRoute[] = [
           i18nKey: 'route.system-manage_users',
           icon: 'ic:round-manage-accounts',
           order: 2010,
-          roles: [ 'R_ADMIN' ]
+          roles: ['R_ADMIN']
         }
       }
     ]

@@ -14,6 +14,7 @@ declare namespace Api {
       provider_name: string | null;
       logout_time: string | null;
       failure_code: number | null;
+      failure_reason: string | null;
       ip_address: string | null;
       browser: string | null;
       os: string | null;
