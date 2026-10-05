@@ -68,7 +68,7 @@ export function fetchUpdateRole(roleId: string, data: Api.SystemManage.RoleUpdat
 
 /** delete role */
 export function fetchDeleteRole(roleId: string) {
-  return request<Api.SystemManage.Role>({
+  return request<null>({
     url: `/system-manage/roles/${roleId}`,
     method: 'DELETE'
   });

@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { enableStatusRecord } from '@/constants/business';
-import { fetchGetRolePageList, fetchBatchRole, fetchGetMenuList } from '@/service/api';
+import { fetchBatchRole, fetchDeleteRole, fetchGetMenuList, fetchGetRolePageList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { defaultTransform, useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -171,11 +171,12 @@ async function handleBatchOperate(key: string) {
   }
 }
 
-function handleDelete(id: string) {
-  // request
-  console.log(id);
+async function handleDelete(id: string) {
+  const { error } = await fetchDeleteRole(id);
 
-  onDeleted();
+  if (!error) {
+    await onDeleted();
+  }
 }
 
 function edit(id: string) {
