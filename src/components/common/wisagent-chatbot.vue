@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue';
 
-const SCRIPT_ID = 'HbZzdoc1SDJhl3zP';
+const SCRIPT_ID = 'YGf5vcjgJp8hCjmF';
 const WIDGET_SELECTORS = [
   '#dify-chatbot-bubble-button',
   '#dify-chatbot-bubble-window',
