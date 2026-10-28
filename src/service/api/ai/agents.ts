@@ -1,33 +1,64 @@
-import { getServiceBaseURL } from '@/utils/service';
-import { getAuthorization } from '@/service/request/shared';
+import { request } from '@/service/request';
 
-const isHttpProxy = import.meta.env.DEV && import.meta.env.VITE_HTTP_PROXY === 'Y';
-const { baseURL } = getServiceBaseURL(import.meta.env, isHttpProxy);
+export function fetchAgentConversations() {
+  return request<Api.AI.AgentConversation[]>({
+    url: '/ai/conversations'
+  });
+}
+
+export function createAgentConversation() {
+  return request<Api.AI.AgentConversation>({
+    url: '/ai/conversations',
+    method: 'POST'
+  });
+}
+
+export function renameAgentConversation(conversationId: string, description: string) {
+  return request<Api.AI.AgentConversation>({
+    url: `/ai/conversations/${encodeURIComponent(conversationId)}`,
+    method: 'PATCH',
+    data: { description }
+  });
+}
+
+export function deleteAgentConversation(conversationId: string) {
+  return request<null>({
+    url: `/ai/conversations/${encodeURIComponent(conversationId)}`,
+    method: 'DELETE'
+  });
+}
+
+export function fetchAgentChatHistory(conversationId: string) {
+  return request<Api.AI.AgentChatHistoryMessage[]>({
+    url: '/ai/agent/chat-messages',
+    params: { conversation_id: conversationId }
+  });
+}
 
 export async function* streamAgentChat(
   query: string,
   modelId: string | null,
+  conversationId: string,
   signal?: AbortSignal
 ): AsyncGenerator<Api.AI.AgentStreamEvent> {
-  const params = new URLSearchParams({ query });
-  if (modelId) params.set('model_id', modelId);
-
-  const response = await fetch(`${baseURL}/ai/agent/chat-messages?${params.toString()}`, {
+  const { data: stream, error } = await request<Api.AI.AgentStreamEvent, 'stream'>({
+    url: '/ai/agent/chat-messages',
     method: 'POST',
-    headers: {
-      Authorization: getAuthorization() || ''
+    params: {
+      query,
+      conversation_id: conversationId,
+      ...(modelId ? { model_id: modelId } : {})
     },
+    adapter: 'fetch',
+    responseType: 'stream',
+    timeout: 0,
     signal
   });
 
-  if (!response.ok) {
-    const body = (await response.json().catch(() => null)) as { message?: string } | null;
-    throw new Error(body?.message || '聊天请求失败');
-  }
+  if (error) throw error;
+  if (!stream) throw new Error('聊天服务未返回数据流');
 
-  if (!response.body) throw new Error('聊天服务未返回数据流');
-
-  const reader = response.body.getReader();
+  const reader = stream.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
 

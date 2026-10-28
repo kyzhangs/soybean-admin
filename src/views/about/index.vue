@@ -80,5 +80,3 @@ const latestBuildTime = BUILD_TIME;
     </NCard>
   </NSpace>
 </template>
-
-<style scoped></style>

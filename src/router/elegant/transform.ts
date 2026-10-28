@@ -185,6 +185,8 @@ const routeMap: RouteMap = {
   "about": "/about",
   "ai": "/ai",
   "ai_agent": "/ai/agent",
+  "ai_external-agent": "/ai/external-agent",
+  "ai_external-agent_floating": "/ai/external-agent/floating",
   "ai_model": "/ai/model",
   "alova": "/alova",
   "alova_request": "/alova/request",
@@ -248,6 +250,7 @@ const routeMap: RouteMap = {
   "system-manage_buttons": "/system-manage/buttons",
   "system-manage_menus": "/system-manage/menus",
   "system-manage_roles": "/system-manage/roles",
+  "system-manage_settings": "/system-manage/settings",
   "system-manage_user-detail": "/system-manage/user-detail/:id",
   "system-manage_users": "/system-manage/users",
   "user-center": "/user-center"

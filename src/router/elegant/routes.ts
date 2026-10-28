@@ -76,6 +76,25 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
+        name: 'ai_external-agent',
+        path: '/ai/external-agent',
+        meta: {
+          title: 'ai_external-agent',
+          i18nKey: 'route.ai_external-agent'
+        },
+        children: [
+          {
+            name: 'ai_external-agent_floating',
+            path: '/ai/external-agent/floating',
+            component: 'view.ai_external-agent_floating',
+            meta: {
+              title: 'ai_external-agent_floating',
+              i18nKey: 'route.ai_external-agent_floating'
+            }
+          }
+        ]
+      },
+      {
         name: 'ai_model',
         path: '/ai/model',
         component: 'view.ai_model',
@@ -793,6 +812,15 @@ export const generatedRoutes: GeneratedRoute[] = [
           icon: 'carbon:user-role',
           order: 2020,
           roles: ['R_SUPER']
+        }
+      },
+      {
+        name: 'system-manage_settings',
+        path: '/system-manage/settings',
+        component: 'view.system-manage_settings',
+        meta: {
+          title: 'system-manage_settings',
+          i18nKey: 'route.system-manage_settings'
         }
       },
       {

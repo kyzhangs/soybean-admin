@@ -3,3 +3,4 @@ export * from './ai';
 export * from './uc';
 export * from './route';
 export * from './system-manage';
+export * from './system-manage/settings';

@@ -15,6 +15,8 @@ declare module 'vue' {
     AppProvider: typeof import('./../components/common/app-provider.vue')['default']
     BetterScroll: typeof import('./../components/custom/better-scroll.vue')['default']
     ButtonIcon: typeof import('./../components/custom/button-icon.vue')['default']
+    Chatbot: typeof import('./../components/common/chatbot.vue')['default']
+    Chatbox: typeof import('./../components/common/chatbox.vue')['default']
     CountTo: typeof import('./../components/custom/count-to.vue')['default']
     CustomIconSelect: typeof import('./../components/custom/custom-icon-select.vue')['default']
     DarkModeContainer: typeof import('./../components/common/dark-mode-container.vue')['default']
@@ -151,7 +153,8 @@ declare module 'vue' {
     ThemeSchemaSwitch: typeof import('./../components/common/theme-schema-switch.vue')['default']
     WaveBg: typeof import('./../components/custom/wave-bg.vue')['default']
     WebSiteLink: typeof import('./../components/custom/web-site-link.vue')['default']
-    WisagentChatbot: typeof import('./../components/common/wisagent-chatbot.vue')['default']
+    WisChatbot: typeof import('./../components/common/chatbot.vue')['default']
+    WisChatbox: typeof import('./../components/common/chatbox.vue')['default']
   }
 }
 
@@ -160,6 +163,8 @@ declare global {
   const AppProvider: typeof import('./../components/common/app-provider.vue')['default']
   const BetterScroll: typeof import('./../components/custom/better-scroll.vue')['default']
   const ButtonIcon: typeof import('./../components/custom/button-icon.vue')['default']
+  const Chatbot: typeof import('./../components/common/chatbot.vue')['default']
+  const Chatbox: typeof import('./../components/common/chatbox.vue')['default']
   const CountTo: typeof import('./../components/custom/count-to.vue')['default']
   const CustomIconSelect: typeof import('./../components/custom/custom-icon-select.vue')['default']
   const DarkModeContainer: typeof import('./../components/common/dark-mode-container.vue')['default']
@@ -296,5 +301,6 @@ declare global {
   const ThemeSchemaSwitch: typeof import('./../components/common/theme-schema-switch.vue')['default']
   const WaveBg: typeof import('./../components/custom/wave-bg.vue')['default']
   const WebSiteLink: typeof import('./../components/custom/web-site-link.vue')['default']
-  const WisagentChatbot: typeof import('./../components/common/wisagent-chatbot.vue')['default']
+  const WisChatbot: typeof import('./../components/common/chatbot.vue')['default']
+  const WisChatbox: typeof import('./../components/common/chatbox.vue')['default']
 }
